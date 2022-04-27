@@ -4,6 +4,8 @@
 enum FSMstate state;
 enum SYSmode lpm_mode;
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
 void main(void){
   
   state = state0;  // start in idle state on RESET
@@ -34,6 +36,7 @@ void main(void){
 	}
   }
 }
+#pragma clang diagnostic pop
   
   
   
