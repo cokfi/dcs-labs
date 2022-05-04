@@ -12,9 +12,10 @@ void main(void){
   
   while(1){
 	switch(state){
-	  case state0:
-		printSWs2LEDs();
-                enterLPM(lpm_mode);
+	  case state0: // frquency counter
+		disable_interrupts();
+		
+		enable_interrupts();
 		break;
 		 
 	  case state1:
