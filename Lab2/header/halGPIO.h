@@ -28,6 +28,7 @@
 #define FOURBIT_MODE	0x0
 #define EIGHTBIT_MODE	0x1
 #define LCD_MODE        FOURBIT_MODE
+#define SMCLK_FREQUENCY 0x100000
    
 #define OUTPUT_PIN      1	
 #define INPUT_PIN       0	
@@ -67,6 +68,7 @@ extern void enable_interrupts();
 extern void disable_interrupts();
 extern __interrupt void PBs_handler(void);
 //LCD
+extern void LCDconfig(void);
 extern void lcd_cmd(unsigned char);
 extern void lcd_data(unsigned char);
 extern void lcd_puts(const char * s);
