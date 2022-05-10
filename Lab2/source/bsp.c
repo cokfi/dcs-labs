@@ -24,6 +24,7 @@ void GPIOconfig(void){
   PBsArrIntEdgeSel &= ~0x04;         // pull-down mode
   PBsArrIntEn |= 0x07;
   PBsArrIntPend &= ~0xFF;            // clear pending interrupts 
+
   
   _BIS_SR(GIE);                     // enable interrupts globally
 }                             
