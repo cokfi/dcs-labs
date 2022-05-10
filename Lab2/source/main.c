@@ -3,7 +3,7 @@
 
 enum FSMstate state;
 enum SYSmode lpm_mode;
-bool initState = true;
+//boolean initState = true;
 unsigned long int frequency=0;
 void main(void){
   
@@ -18,11 +18,12 @@ void main(void){
 		break;
 		 
 	  case state1:
-	  	if (initState){
-			configState1();
-		  }
+	//  	if (initState){
+        //          initState = false;
+	//		configState1();
+	//	  }
 		enterLPM(lpm_mode);
-		calculateFin();
+	//	calculateFin();
 		displayFin();
 		break;
 		 

@@ -4,10 +4,19 @@
 
 #include  "../header/bsp.h"    		// private library - BSP layer
 #include  "../header/app.h"    		// private library - APP layer
-
+extern enum FSMstate state;   // global variable
+extern enum SYSmode lpm_mode; // global variable
+//extern unsigned long int frequency;
 /*----------------------------------------------------------
   CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/
+// #define CHECKBUSY	1  // using this define, only if we want to read from LCD
+
+#ifdef CHECKBUSY
+	#define	LCD_WAIT lcd_check_busy()
+#else
+	#define LCD_WAIT DelayMs(5)
+#endif
 #define LCD_EN(a)	(!a ? (P1OUT&=~0X20) : (P1OUT|=0X20)) // P1.5 is lcd enable pin
 #define LCD_EN_DIR(a)	(!a ? (P1DIR&=~0X20) : (P1DIR|=0X20)) // P1.5 pin direction 
 
@@ -52,8 +61,7 @@
 #define cursor_on               lcd_cmd(0x0F) 
 #define lcd_function_set        lcd_cmd(0x3C) // 8bit,two lines,5x10 dots 
 #define lcd_new_line            lcd_cmd(0xC0)                                  
-extern enum FSMstate state;   // global variable
-extern enum SYSmode lpm_mode; // global variable
+
 
 extern void sysConfig(void);
 extern void print2LEDs(unsigned char);

@@ -1,6 +1,6 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
 unsigned int REdge1, REdge2;
-bool isFirstEdge = true;
+int isFirstEdge = 0; // active low
 //--------------------------------------------------------------------
 //             System Configuration  
 //--------------------------------------------------------------------
@@ -11,8 +11,11 @@ void sysConfig(void){
 	LCDconfig();
 }
 void configState1(void){
-	state1TimerConfig();
+	//state1TimerConfig();
+        TA0CCTL0 &= ~CCIE;
+        TA1CCTL2 |= CCIE; // enable interupts Timer1
 	lcd_clear();
+        
 
 }
 //******************************************************************
@@ -235,24 +238,20 @@ void __attribute__ ((interrupt(TIMER0_A1_VECTOR))) TIMER0_A1_ISR (void)
     case  TA1IV_NONE: break;              // Vector  0:  No interrupt
     case  TA1IV_TACCR2:                   // Vector  2:  TACCR2 CCIFG
             // Rising Edge was captured
-            if (isFirstEdge)
+            if (!isFirstEdge)
             {
                 REdge1 = TA1CCR2;
-                isFirstEdge =false;
+                isFirstEdge +=1;
             }
             else //second edge
             {
                 REdge2 = TA1CCR2;
-                isFirstEdge=true;
+                isFirstEdge=0;
 				if (REdge2>REdge1){ // make sure overflow doesn't ruin calculation
 					frequency = SMCLK_FREQUENCY/(REdge2-REdge1);
 				}
                 __bic_SR_register_on_exit(LPM0_bits + GIE);  // Exit LPM0 on return to main
             }
-	case TA0IV_TACCR2: break;             // Vector  4:  TACCR2 CCIFG
-    case TA0IV_6: break;                  // Vector  6:  Reserved CCIFG
-    case TA0IV_8: break;                  // Vector  8:  Reserved CCIFG
-    case TA0IV_TAIFG: break;              // Vector 10:  TAIFG
 	default: 	break;
   }
 }

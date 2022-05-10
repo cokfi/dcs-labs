@@ -4,7 +4,7 @@
 
 enum FSMstate{state0,state1,state2,state3,state4}; // global variable
 enum SYSmode{mode0,mode1,mode2,mode3,mode4}; // global variable
-
+unsigned long int frequency;
 
 #endif
 

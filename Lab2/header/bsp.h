@@ -35,7 +35,6 @@
 extern void GPIOconfig(void);
 extern void TIMERconfig(void);
 extern void ADCconfig(void);
-extern void LCDconfig(void);
 #endif
 
 
