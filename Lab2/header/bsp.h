@@ -30,6 +30,8 @@
 #define PB1                0x02
 #define PB2                0x04
 
+#define LCD_C_SEL          P2SEL
+#define LCD_D_SEL	       P1SEL
 
 extern void GPIOconfig(void);
 extern void TIMERconfig(void);

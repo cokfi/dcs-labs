@@ -22,6 +22,7 @@ void main(void){
         //          initState = false;
 	//		configState1();
 	//	  }
+                enable_interrupts();
 		enterLPM(lpm_mode);
 	//	calculateFin();
 		displayFin();

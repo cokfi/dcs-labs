@@ -29,11 +29,14 @@ void lcd_init(void){
 	if (LCD_MODE == FOURBIT_MODE) init_value = 0x3 << LCD_DATA_OFFSET;
         else init_value = 0x3F;
 	
+  	
 	LCD_RS_DIR(OUTPUT_PIN);
 	LCD_EN_DIR(OUTPUT_PIN);
 	LCD_RW_DIR(OUTPUT_PIN);
-        LCD_DATA_DIR |= OUTPUT_DATA;
-        LCD_RS(0);
+    LCD_DATA_DIR |= OUTPUT_DATA;
+	LCD_C_SEL &= ~0xE0;
+	LCD_D_SEL &= ~0xF0;
+    LCD_RS(0);
 	LCD_EN(0);
 	LCD_RW(0);
         

@@ -26,7 +26,7 @@ extern unsigned long int frequency;
 #define LCD_RW(a)	(!a ? (P1OUT&=~0X80) : (P1OUT|=0X80)) // P1.7 is lcd RW pin
 #define LCD_RW_DIR(a)	(!a ? (P1DIR&=~0X80) : (P1DIR|=0X80)) // P1.7 pin direction
 
-#define LCD_DATA_OFFSET 0x00 //data pin selection offset for 4 bit mode, variable range is 0-4, default 0 - Px.0-3, no offset
+#define LCD_DATA_OFFSET 0x04 //data pin selection offset for 4 bit mode, variable range is 0-4, default 0 - Px.0-3, no offset
    
 #define LCD_DATA_WRITE	P1OUT
 #define LCD_DATA_DIR	P1DIR
