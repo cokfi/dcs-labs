@@ -16,7 +16,8 @@ void configState1(void){
         TA0CCTL0 &= ~CCIE;
         TA1CCTL2 |= CCIE; // enable interupts Timer1
 	lcd_clear();
-	lcd_puts(finStr);
+        char finS[] = "Fin = ";
+	lcd_puts(finS);
         
 
 }

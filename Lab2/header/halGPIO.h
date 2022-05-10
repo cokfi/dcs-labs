@@ -7,6 +7,9 @@
 extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
 extern unsigned long int frequency;
+//extern char finStr[];
+//extern char frequencyStr[];
+//extern char hzStr[];
 /*----------------------------------------------------------
   CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/
