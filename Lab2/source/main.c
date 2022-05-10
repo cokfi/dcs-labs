@@ -4,7 +4,6 @@
 enum FSMstate state;
 enum SYSmode lpm_mode;
 //boolean initState = true;
-unsigned long int frequency=0;
 void main(void){
   
   state = state0;  // start in idle state on RESET

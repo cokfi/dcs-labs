@@ -1,5 +1,6 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
 unsigned int REdge1, REdge2;
+unsigned long int frequency=0;
 int isFirstEdge = 0; // active low
 //--------------------------------------------------------------------
 //             System Configuration  
@@ -8,7 +9,7 @@ void sysConfig(void){
 	GPIOconfig();
 	TIMERconfig();
 	ADCconfig();
-	LCDconfig();
+	lcd_init();
 }
 void configState1(void){
 	//state1TimerConfig();
@@ -21,7 +22,7 @@ void configState1(void){
 //******************************************************************
 // initialize the LCD
 //******************************************************************
-void LCDconfig(void){
+void lcd_init(void){
   
 	char init_value;
 
@@ -97,7 +98,56 @@ void DelayMs(unsigned int cnt){
 	unsigned char i;
         for(i=cnt ; i>0 ; i--) DelayUs(1000); // tha command asm("nop") takes raphly 1usec
 	
-}         
+}    
+//******************************************************************
+// send a command to the LCD
+//******************************************************************
+void lcd_cmd(unsigned char c){
+  
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+		LCD_DATA_WRITE &= ~OUTPUT_DATA;// clear bits before new write
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;
+		lcd_strobe();
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    		LCD_DATA_WRITE |= (c & (0x0F)) << LCD_DATA_OFFSET;
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+}
+//******************************************************************
+// send data to the LCD
+//******************************************************************
+void lcd_data(unsigned char c){
+        
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	LCD_DATA_WRITE &= ~OUTPUT_DATA;       
+	LCD_RS(1);
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+    		LCD_DATA_WRITE &= ~OUTPUT_DATA;
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;  
+		lcd_strobe();		
+                LCD_DATA_WRITE &= (0xF0 << LCD_DATA_OFFSET) | (0xF0 >> 8 - LCD_DATA_OFFSET);
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE |= (c & 0x0F) << LCD_DATA_OFFSET; 
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+          
+	LCD_RS(0);   
+}
 //--------------------------------------------------------------------
 // 				Print Byte to 8-bit LEDs array 
 //--------------------------------------------------------------------

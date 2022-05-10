@@ -6,7 +6,7 @@
 #include  "../header/app.h"    		// private library - APP layer
 extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
-//extern unsigned long int frequency;
+extern unsigned long int frequency;
 /*----------------------------------------------------------
   CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/
@@ -76,12 +76,11 @@ extern void enable_interrupts();
 extern void disable_interrupts();
 extern __interrupt void PBs_handler(void);
 //LCD
-extern void LCDconfig(void);
 extern void lcd_cmd(unsigned char);
 extern void lcd_data(unsigned char);
 extern void lcd_puts(const char * s);
-extern void lcd_init();
-extern void lcd_strobe();
+extern void lcd_init(void);
+extern void lcd_strobe(void);
 extern void DelayMs(unsigned int);
 extern void DelayUs(unsigned int);
 /*

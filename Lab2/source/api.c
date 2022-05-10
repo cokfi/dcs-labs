@@ -24,12 +24,12 @@ void printArr2SWs(char Arr[], int size, unsigned int rate){
 		delay(rate);
 	}
 }
-void displayFin(void){
+void displayFin(){
 	lcd_puts(finStr);
 	int i;
-	int asistFrequency = frequency;
+	int asistFrequency =frequency;
 	for(i=4; i>=0; i--){
-		frequencyStr(i) = asistFrequency%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
+		frequencyStr[i] = asistFrequency%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
 		asistFrequency = asistFrequency/10;
 	lcd_puts(frequencyStr);
 	lcd_puts(hzStr);
