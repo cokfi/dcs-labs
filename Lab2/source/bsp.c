@@ -7,7 +7,11 @@ void GPIOconfig(void){
  // volatile unsigned int i; // in case of while loop usage
   
   WDTCTL = WDTHOLD | WDTPW;		// Stop WDT
-   
+    ADCArrPortSel &= ~0x08;
+    ADCArrPortDir &= ~0x08; //input dir
+    GeneratorDir &= ~0x10;//p2.4 
+    GeneratorSel |=  0x10;
+    ADCArrPortSel |=0x08;
   // LEDs 8-bit Array Port configuration
   //LEDsArrPortSel &= ~0xFF;            // GPIO capability
   //LEDsArrPortDir |= 0xFF;             // output dir
@@ -32,11 +36,12 @@ void GPIOconfig(void){
 //            Timers congiguration 
 //-------------------------------------------------------------------------------------
 void TIMERconfig(void){
-  //timer 0
-  TA0CTL = TASSEL_2 + MC_2 + TACLR;        // SMCLK, Cont Mode: the timer counts up to 0FFFFh, reset TAR
+  
 	//timer 1
   TA1CTL = TASSEL_2 + MC_2 + TACLR;        // SMCLK, Cont Mode: the timer counts up to 0FFFFh, reset TAR
   TA1CCTL2 = CAP + CM_1 + SCS + CCIS_0; // TA0CCR1 Capture mode; CCI1A; rising edge,Synnchronous capture, interrupt enable, CCIA (pin P2.4)
+ //timer 0
+  TA0CTL = TASSEL_2 + MC_2 + TACLR;        // SMCLK, Cont Mode: the timer counts up to 0FFFFh, reset TAR
   TA1CCTL2 &= ~CCIE;
 
 } 
@@ -44,7 +49,8 @@ void TIMERconfig(void){
 //            ADC congiguration 
 //-------------------------------------------------------------------------------------
 void ADCconfig(void){
-	
+	 //ADCArrPortSel &= ~0x08;
+          //ADCArrPortDir &= ~0x08; //input dir
 	//write here ADC congiguration code
 }
 

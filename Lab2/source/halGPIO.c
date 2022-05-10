@@ -283,10 +283,10 @@ void disable_interrupts(){
 // TA1 Interrupt vector, the code is based on ta_21.c (hanan reference code)
 //---------------------------------------------------------------------
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-#pragma vector = TIMER0_A1_VECTOR
-__interrupt void TIMER0_A1_ISR (void)
+#pragma vector = TIMER1_A1_VECTOR
+__interrupt void TIMER1_A1_ISR (void)
 #elif defined(__GNUC__)
-void __attribute__ ((interrupt(TIMER0_A1_VECTOR))) TIMER0_A1_ISR (void)
+void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER0_A1_ISR (void)
 #else
 #error Compiler not supported!
 #endif
@@ -308,7 +308,8 @@ void __attribute__ ((interrupt(TIMER0_A1_VECTOR))) TIMER0_A1_ISR (void)
 				if (REdge2>REdge1){ // make sure overflow doesn't ruin calculation
 					frequency = SMCLK_FREQUENCY/(REdge2-REdge1);
 				}
-                __bic_SR_register_on_exit(LPM0_bits + GIE);  // Exit LPM0 on return to main
+                LPM0_EXIT
+				//__bic_SR_register_on_exit(LPM0_bits + GIE);  // Exit LPM0 on return to main
             }
 	default: 	break;
   }
