@@ -16,6 +16,7 @@ void configState1(void){
         TA0CCTL0 &= ~CCIE;
         TA1CCTL2 |= CCIE; // enable interupts Timer1
 	lcd_clear();
+	lcd_puts(finStr);
         
 
 }
@@ -41,15 +42,15 @@ void lcd_init(void){
 	LCD_RW(0);
         
 	DelayMs(15);
-        LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
 	LCD_DATA_WRITE |= init_value;
 	lcd_strobe();
 	DelayMs(5);
-        LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
 	LCD_DATA_WRITE |= init_value;
 	lcd_strobe();
 	DelayUs(200);
-        LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
 	LCD_DATA_WRITE |= init_value;
 	lcd_strobe();
 	
@@ -232,7 +233,7 @@ void disable_interrupts(){
 //*********************************************************************
 //            Port2 Interrupt Service Rotine
 //*********************************************************************
-#pragma vector=PORT2_VECTOR
+#pragma vector=PORT1_VECTOR
   __interrupt void PBs_handler(void){
    
 	delay(debounceVal);
