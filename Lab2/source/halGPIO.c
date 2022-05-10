@@ -7,6 +7,20 @@ void sysConfig(void){
 	GPIOconfig();
 	TIMERconfig();
 	ADCconfig();
+	LCDconfig();
+}
+void configState1(void){
+	state1TimerConfig();
+	lcd_clear()
+
+}
+//******************************************************************
+// write a string of chars to the LCD
+//******************************************************************
+void lcd_puts(const char * s){
+  
+	while(*s)
+		lcd_data(*s++);
 }
 //--------------------------------------------------------------------
 // 				Print Byte to 8-bit LEDs array 
@@ -102,7 +116,7 @@ void disable_interrupts(){
 	  PBsArrIntPend &= ~PB1; 
         }
 	else if(PBsArrIntPend & PB2){ 
-	  state = state0;
+	  state = state3;
 	  PBsArrIntPend &= ~PB2;
         }
 //---------------------------------------------------------------------
@@ -121,11 +135,11 @@ void disable_interrupts(){
 		 LPM2_EXIT; // must be called from ISR only
 		 break;
                  
-                case mode3:
+         case mode3:
 		 LPM3_EXIT; // must be called from ISR only
 		 break;
                  
-                case mode4:
+         case mode4:
 		 LPM4_EXIT; // must be called from ISR only
 		 break;
 	}

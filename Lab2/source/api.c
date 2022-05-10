@@ -1,6 +1,9 @@
 #include  "../header/api.h"    		// private library - API layer
 #include  "../header/halGPIO.h"     // private library - HAL layer
 
+char finStr = "Fin = ";
+char frequency[10]; // 20 to 20K Hz up to 10 chars
+char hzStr[] = " Hz";
 //-------------------------------------------------------------
 //            Print SWs value onto LEDs
 //-------------------------------------------------------------
@@ -20,6 +23,9 @@ void printArr2SWs(char Arr[], int size, unsigned int rate){
 		print2LEDs(Arr[i]);
 		delay(rate);
 	}
+}
+void displayFin(void){
+	lcd_puts(finStr)
 }
 
 
