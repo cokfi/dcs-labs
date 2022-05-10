@@ -3,9 +3,7 @@
 
 enum FSMstate state;
 enum SYSmode lpm_mode;
-char finStr[] = "Fin = ";
-char frequencyStr[] ="00000"; // 20 to 20K Hz up to 5 chars
-char hzStr[] = " Hz";
+
 int initState = 0; // active low
 void main(void){
   
