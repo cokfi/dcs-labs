@@ -3,7 +3,10 @@
 
 enum FSMstate state;
 enum SYSmode lpm_mode;
-//boolean initState = true;
+char finStr[] = "Fin = ";
+char frequencyStr[] ="00000"; // 20 to 20K Hz up to 5 chars
+char hzStr[] = " Hz";
+int initState = 0; // active low
 void main(void){
   
   state = state0;  // start in idle state on RESET
@@ -13,16 +16,15 @@ void main(void){
   while(1){
 	switch(state){
 	  case state0: // frquency counter
-                enable_interrupts();
 		enterLPM(lpm_mode);
 		break;
 		 
 	  case state1:
-	//  	if (initState){
-        //          initState = false;
-	//		configState1();
-	//	  }
-                enable_interrupts();
+	 	if (!initState){
+            initState = 1;
+		    configState1();
+			
+	  }
 		enterLPM(lpm_mode);
 	//	calculateFin();
 		displayFin();
