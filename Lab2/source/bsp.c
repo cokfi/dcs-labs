@@ -9,21 +9,21 @@ void GPIOconfig(void){
   WDTCTL = WDTHOLD | WDTPW;		// Stop WDT
    
   // LEDs 8-bit Array Port configuration
-  LEDsArrPortSel &= ~0xFF;            // GPIO capability
-  LEDsArrPortDir |= 0xFF;             // output dir
-  LEDsArrPort = 0x00;				  // clear all LEDs
+  //LEDsArrPortSel &= ~0xFF;            // GPIO capability
+  //LEDsArrPortDir |= 0xFF;             // output dir
+  //LEDsArrPort = 0x00;				  // clear all LEDs
   
   // Switches Setup
-  SWsArrPortSel &= ~0x0F;
-  SWsArrPortDir &= ~0x0F;
+  //SWsArrPortSel &= ~0x0F;
+  //SWsArrPortDir &= ~0x0F;
   
   // PushButtons Setup
-  PBsArrPortSel &= ~0xF0;
-  PBsArrPortDir &= ~0xF0;
-  PBsArrIntEdgeSel |= 0x30;  	     // pull-up mode
-  PBsArrIntEdgeSel &= ~0xC0;         // pull-down mode
-  PBsArrIntEn |= 0x70;
-  PBsArrIntPend &= ~0xF0;            // clear pending interrupts 
+  PBsArrPortSel &= ~0x07; // 3 PB : 0-2
+  PBsArrPortDir &= ~0x07;
+  PBsArrIntEdgeSel |= 0x03;  	     // pull-up mode
+  PBsArrIntEdgeSel &= ~0x04;         // pull-down mode
+  PBsArrIntEn |= 0x07;
+  PBsArrIntPend &= ~0xFF;            // clear pending interrupts 
   
   _BIS_SR(GIE);                     // enable interrupts globally
 }                             

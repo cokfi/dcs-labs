@@ -13,6 +13,7 @@ void main(void){
   while(1){
 	switch(state){
 	  case state0: // frquency counter
+                enable_interrupts();
 		enterLPM(lpm_mode);
 		break;
 		 
