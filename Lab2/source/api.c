@@ -24,7 +24,8 @@ void printArr2SWs(char Arr[], int size, unsigned int rate){
 		delay(rate);
 	}
 }
-void displayFin(){
+void 
+displayFin(){
 	lcd_puts(finStr);
 	int i;
 	int asistFrequency =frequency;

@@ -31,7 +31,7 @@
 #define PB2                0x04
 
 #define LCD_C_SEL          P2SEL
-#define LCD_D_SEL	   P1SEL
+#define LCD_D_SEL	        P1SEL
 #define GeneratorDir       P2DIR
 #define GeneratorSel       P2SEL
 
