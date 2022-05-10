@@ -299,7 +299,7 @@ void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER0_A1_ISR (void)
             if (!isFirstEdge)
             {
                 REdge1 = TA1CCR2;
-                isFirstEdge +=1;
+                isFirstEdge++;
             }
             else //second edge
             {
