@@ -2,13 +2,20 @@
 unsigned int REdge1, REdge2;
 unsigned long int frequency=0;
 int isFirstEdge = 0; // active low
+unsigned char count=0x00;
+char timePrint[2];
+int analog1;
+int analog2;
+int analog3;
+int analog4;
+int analogFlag = 0;
+int analogAvg = 0;
 //--------------------------------------------------------------------
 //             System Configuration  
 //--------------------------------------------------------------------
 void sysConfig(void){ 
 	GPIOconfig();
 	TIMERconfig();
-	ADCconfig();
 	lcd_init();
 }
 void configState1(void){
@@ -19,26 +26,23 @@ void configState1(void){
 	lcd_puts(finS);
         
 }
-void configState3(void){
-  WDTCTL = WDT_MDLY_32;                     // WDT ~45ms interval timer
-  IE1 |= WDTIE;                             // Enable WDT interrupt
-  ADC10CTL0 = ADC10SHT_2 + ADC10ON;
-  ADC10AE0 |= 0x01;                         // P1.0 ADC option select
-  ADC10DTC1 = 0x001;                        // 1 conversion
-  P1DIR |= 0x04;                            // P1.2 = output
-  P1SEL |= 0x04;                            // P1.2 = TA1 output
-  TACCR0 = 1024 - 1;                        // PWM Period
-  TACCTL1 = OUTMOD_7;                       // TACCR1 reset/set
-  TACCR1 = 512;                             // TACCR1 PWM Duty Cycle
-  TACTL = TASSEL_2 + MC_1;                  // SMCLK, upmode
 
-}
 void configState2(void){
         TA0CCTL0 |= CCIE;//overflow only
         TA1CCTL2 &= ~CCIE;; // disable interupts Timer1
 	lcd_clear();
         char timeElapsedS[] = "01:00";
 	lcd_puts(timeElapsedS);
+}
+void configState3(void){
+        ADCconfig();
+	TA1CTL= TASSEL_2+ MC_1 ;
+	TA1CCTL1 = OUTMOD_4; //toggle
+	TA0CTL = TASSEL_2+MC_1; 
+        TA0CCR0 = 0x4000;
+	TA0CCR1 = 	0x5;
+	TA0CCTL1 = OUTMOD_4;
+
 }
 void sing(void){
 	
@@ -349,7 +353,8 @@ void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER1_A1_ISR (void)
 #else
 #error Compiler not supported!
 #endif
-{
+{ 
+
   switch(__even_in_range(TA1IV,0x0A))
   {
     case  TA1IV_NONE: break;              // Vector  0:  No interrupt
@@ -373,6 +378,7 @@ void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER1_A1_ISR (void)
 	default: 	break;
   }
 }
+
 //---------------------------------------------------------------------	
 // TA0 Interrupt vector, the code is based on ta_21.c (hanan reference code)
 //---------------------------------------------------------------------
@@ -386,7 +392,12 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
 #endif
 {
   //if (TA0IV>0x0){
-    LPM0_EXIT;
+  if (P2OUT&0x04){
+    P2OUT &= ~0x04; // PWM
+  }
+  else{
+     P2OUT |= 0x04;} // PWM 
+	LPM0_EXIT;
   //}
   /*switch(__even_in_range(TA0IV,0x0F))
   {
@@ -396,6 +407,32 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
 	default: 	break;
   }*/
 }
+//adc Interrupt vector
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR(void){
+
+  switch(analogFlag){
+    case 0:
+        analog1 = ADC10MEM;
+        analogFlag++;
+        break;
+    case 1:
+        analog2 = ADC10MEM;
+        analogFlag++;
+        break;
+    case 2:
+        analog3 = ADC10MEM;
+        analogFlag++;
+        break;
+    case 3:
+        analog4 = ADC10MEM;
+        analogAvg = (analog1 + analog2 + analog3 + analog4)/4;
+        analogFlag = 0;
+        TA1CCR0 = -analogAvg/3+500;
+        break;
+  }
+ LPM0_EXIT;
+} 
 /*
 //---------------------------------------------------------------------	
 //WD Interrupt vector

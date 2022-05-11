@@ -69,7 +69,7 @@ int calcFrequency3(int originFreq){
         if (asistFrequency>0){ // make sure overflow doesn't ruin calculation
 					asistFrequency = (long int)((SMCLK_FREQUENCY/(asistFrequency))*1.095);
 					return asistFrequency;}
-else return originFreq; 
+else return originFreq;
 }
 
 

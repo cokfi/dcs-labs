@@ -10,7 +10,7 @@ void main(void){
   state = state0;  // start in idle state on RESET
   lpm_mode = mode0;     // start in idle state on RESET
   int isSecPassed=0;//active ==10
-  int elapsed_counter = 60; //secs
+  int elapsed_counter ; //secs
   int state3FrequencyIn =10; // Hz
   int state3FrequencyOut; // Hz
   sysConfig();
@@ -32,8 +32,8 @@ void main(void){
 		 
 	  case state2: // 1 minute time elapsed
 	  	if (!initState){
+			elapsed_counter = 60;
             initState = 1;
-                    elapsed_counter = 60;
 		    configState2();
 	  	}
 		enterLPM(lpm_mode);
@@ -58,11 +58,8 @@ void main(void){
 		state3FrequencyIn =calcFrequency3(state3FrequencyIn);
 		state3FrequencyOut = (int)(BUZZER_FACTOR*state3FrequencyIn);
 		sing(state3FrequencyOut);
-		break;
-		 
-	  case state1:
-	 	
-		break;	*/
+		break;*/
+
 	}
   }
 }

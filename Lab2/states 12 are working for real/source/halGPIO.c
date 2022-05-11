@@ -20,17 +20,20 @@ void configState1(void){
         
 }
 void configState3(void){
-        TA0CCTL0 &= ~CCIE;
-        TA1CTL |=ID_2; // divide frequency by 8 
-        TA1CCTL2 |= CCIS_1+CCIE; // input P2.2 , enable interupts Timer1
-	lcd_clear();
-        char finS[] = "state 3 buzzer";
-	lcd_puts(finS);
-        
+  WDTCTL = WDT_MDLY_32;                     // WDT ~45ms interval timer
+  IE1 |= WDTIE;                             // Enable WDT interrupt
+  ADC10CTL0 = ADC10SHT_2 + ADC10ON;
+  ADC10AE0 |= 0x01;                         // P1.0 ADC option select
+  ADC10DTC1 = 0x001;                        // 1 conversion
+  P1DIR |= 0x04;                            // P1.2 = output
+  P1SEL |= 0x04;                            // P1.2 = TA1 output
+  TACCR0 = 1024 - 1;                        // PWM Period
+  TACCTL1 = OUTMOD_7;                       // TACCR1 reset/set
+  TACCR1 = 512;                             // TACCR1 PWM Duty Cycle
+  TACTL = TASSEL_2 + MC_1;                  // SMCLK, upmode
 
 }
 void configState2(void){
-	//state1TimerConfig();
         TA0CCTL0 |= CCIE;//overflow only
         TA1CCTL2 &= ~CCIE;; // disable interupts Timer1
 	lcd_clear();
@@ -393,5 +396,20 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
 	default: 	break;
   }*/
 }
- 
- 
+/*
+//---------------------------------------------------------------------	
+//WD Interrupt vector
+//---------------------------------------------------------------------
+
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector = WDT_VECTOR
+__interrupt void WDT_ISR(void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(WDT_VECTOR))) WDT_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+  __bic_SR_register_on_exit(LPM0_bits);     // Exit LPM0
+} 
+*/

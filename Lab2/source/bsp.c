@@ -9,9 +9,10 @@ void GPIOconfig(void){
   WDTCTL = WDTHOLD | WDTPW;		// Stop WDT
     ADCArrPortSel &= ~0x08;
     ADCArrPortDir &= ~0x08; //input dir
-    GeneratorDir &= ~0x10;//p2.4 
-    GeneratorSel |=  0x10;
-    ADCArrPortSel |=0x08;
+    GeneratorDir &= ~0x10;//p2.4
+    GeneratorDir|= 0x04;//p2.2
+    GeneratorSel |=  0x14;//p2.4 P2.2
+    ADCArrPortSel |=0x08;//INPUT
   // LEDs 8-bit Array Port configuration
   //LEDsArrPortSel &= ~0xFF;            // GPIO capability
   //LEDsArrPortDir |= 0xFF;             // output dir
@@ -54,9 +55,10 @@ void TIMERconfig(void){
 //            ADC congiguration 
 //-------------------------------------------------------------------------------------
 void ADCconfig(void){
-	 //ADCArrPortSel &= ~0x08;
-          //ADCArrPortDir &= ~0x08; //input dir
-	//write here ADC congiguration code
+  ADC10CTL0 = ADC10SHT_1 + ADC10ON + ADC10IE;
+  ADC10CTL1 = INCH_3;  
+  ADC10CTL1 |= CONSEQ_2+ADC10SSEL_3+SHS_1; // input from  P1.3 (A3)
+  ADC10AE0 |= 0x08;                     // P1.3 ADC on
 }
 
 //------------------------------------------------------------------------------------- 

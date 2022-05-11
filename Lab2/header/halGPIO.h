@@ -91,6 +91,7 @@ extern void DelayMs(unsigned int);
 extern void DelayUs(unsigned int);
 extern void configState1(void);
 extern void configState2(void);
+extern void configState3(void);
 /*
  *	Delay functions for HI-TECH C on the PIC18
  *
