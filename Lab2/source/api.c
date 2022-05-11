@@ -55,12 +55,21 @@ displayFin(){
 	
 }*/
 }
-displayTimeElapsed(int timeElapsed){
-	for(i=4; i>=3; i--){
+void displayTimeElapsed(int timeElapsed){
+        lcd_clear();
+	for(int i=4; i>=3; i--){
 		timeElapsedStr[i] = timeElapsed%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
 		timeElapsed = timeElapsed/10;
 	}
 	lcd_puts(timeElapsedStr);
+}
+
+int calcFrequency3(int originFreq){
+	long int asistFrequency = REdge2-REdge1;
+        if (asistFrequency>0){ // make sure overflow doesn't ruin calculation
+					asistFrequency = (long int)((SMCLK_FREQUENCY/(asistFrequency))*1.095);
+					return asistFrequency;}
+else originFreq 
 }
 
 

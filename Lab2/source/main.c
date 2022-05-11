@@ -9,8 +9,10 @@ void main(void){
   
   state = state0;  // start in idle state on RESET
   lpm_mode = mode0;     // start in idle state on RESET
-  int isSecPassed=0;//active high
+  int isSecPassed=0;//active ==10
   int elapsed_counter = 60; //secs
+  int state3FrequencyIn =10; // Hz
+  int state3FrequencyOut; // Hz
   sysConfig();
   
   while(1){
@@ -34,7 +36,7 @@ void main(void){
 		    configState2();
 	  	}
 		enterLPM(lpm_mode);
-		if(isSecPassed && elapsed_counter>=0){
+		if(isSecPassed>=SEC_SCALE && elapsed_counter>0){
 			elapsed_counter--;
 			displayTimeElapsed(elapsed_counter);
 			isSecPassed=0;
@@ -46,7 +48,20 @@ void main(void){
 			state = state0;
 		}	
 		break;
-		
+	case state3: // buzzer ADC
+		if (!initState){
+            initState = 1;
+		    configState3();	
+	  	}
+		enterLPM(lpm_mode);
+		state3FrequencyIn =calcFrequency3(state3FrequencyIn);
+		state3FrequencyOut = (int)(BUZZER_FACTOR*state3FrequencyIn);
+		sing(state3FrequencyOut);
+		break;
+		 
+	  case state1:
+	 	
+		break;	
 	}
   }
 }

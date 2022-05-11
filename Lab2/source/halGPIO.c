@@ -12,24 +12,33 @@ void sysConfig(void){
 	lcd_init();
 }
 void configState1(void){
-	//state1TimerConfig();
         TA0CCTL0 &= ~CCIE;
         TA1CCTL2 |= CCIE; // enable interupts Timer1
 	lcd_clear();
         char finS[] = "Fin = ";
 	lcd_puts(finS);
         
+}
+void configState3(void){
+        TA0CCTL0 &= ~CCIE;
+        TA1CTL |=ID_2; // divide frequency by 8 
+        TA1CCTL2 |= CCIS_1+CCIE; // input P2.2 , enable interupts Timer1
+	lcd_clear();
+        char finS[] = "state 3 buzzer";
+	lcd_puts(finS);
+        
 
 }
 void configState2(void){
 	//state1TimerConfig();
-        TA0CCTL0 |= ~CCIE;
-        TA0CCTL2 &= ~CCIE;; // disable interupts Timer1
+        TA0CCTL0 |= CCIE;//overflow only
+        TA1CCTL2 &= ~CCIE;; // disable interupts Timer1
 	lcd_clear();
         char timeElapsedS[] = "01:00";
 	lcd_puts(timeElapsedS);
-        
-
+}
+void sing(void){
+	
 }
 //******************************************************************
 // initialize the LCD
@@ -292,6 +301,7 @@ void disable_interrupts(){
 	}
         
 }
+/*
 //---------------------------------------------------------------------	
 // TA1 Interrupt vector, the code is based on ta_21.c (hanan reference code)
 //---------------------------------------------------------------------
@@ -300,6 +310,39 @@ void disable_interrupts(){
 __interrupt void TIMER1_A1_ISR (void)
 #elif defined(__GNUC__)
 void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER0_A1_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+  switch(__even_in_range(TA1IV,0x0A))
+  {
+    case  TA1IV_NONE: break;              // Vector  0:  No interrupt
+    case  TA1IV_TACCR2:                   // Vector  2:  TACCR2 CCIFG
+            // Rising Edge was captured
+            if (!isFirstEdge)
+            {
+                REdge1 = TA1CCR2;
+                isFirstEdge++;
+            }
+            else //second edge
+            {
+                REdge2 = TA1CCR2;
+                isFirstEdge=0;
+				
+                LPM0_EXIT;
+				//__bic_SR_register_on_exit(LPM0_bits + GIE);  // Exit LPM0 on return to main
+            }
+	default: 	break;
+  }
+}*/
+//---------------------------------------------------------------------	
+// TA1 Interrupt vector, the code is based on ta_21.c (hanan reference code)
+//---------------------------------------------------------------------
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector = TIMER1_A1_VECTOR
+__interrupt void TIMER1_A1_ISR (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER1_A1_ISR (void)
 #else
 #error Compiler not supported!
 #endif
@@ -327,4 +370,28 @@ void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER0_A1_ISR (void)
 	default: 	break;
   }
 }
+//---------------------------------------------------------------------	
+// TA0 Interrupt vector, the code is based on ta_21.c (hanan reference code)
+//---------------------------------------------------------------------
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void TIMER0_A0_ISR (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+  //if (TA0IV>0x0){
+    LPM0_EXIT;
+  //}
+  /*switch(__even_in_range(TA0IV,0x0F))
+  {
+    case  0xA:                   // Vector  2:  Timer overflow
+             LPM0_EXIT;
+            
+	default: 	break;
+  }*/
+}
+ 
  
