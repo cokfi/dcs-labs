@@ -65,6 +65,18 @@ void main(void){
                 
 		break;
 
+		case state4:
+			if (!initState){
+            initState = 1;
+		    configState3();	
+	  	}
+                 ADC10CTL0 |= ENC;
+                TA1CCR1 = 0x0001;
+		enterLPM(lpm_mode);
+		
+                
+		break;
+
 	}
   }
 }
