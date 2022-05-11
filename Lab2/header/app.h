@@ -4,9 +4,7 @@
 
 enum FSMstate{state0,state1,state2,state3,state4}; // global variable
 enum SYSmode{mode0,mode1,mode2,mode3,mode4}; // global variable
-//char finStr[];
-//char frequencyStr[]; // 20 to 20K Hz up to 5 chars
-//char hzStr[];
+#define SEC_SCALE 4// shuold be 2 , because((2^16)/((2^12)*8))=2
 #endif
 
 
