@@ -21,6 +21,16 @@ void configState1(void){
         
 
 }
+void configState2(void){
+	//state1TimerConfig();
+        TA0CCTL0 |= ~CCIE;
+        TA0CCTL2 &= ~CCIE;; // disable interupts Timer1
+	lcd_clear();
+        char timeElapsedS[] = "01:00";
+	lcd_puts(timeElapsedS);
+        
+
+}
 //******************************************************************
 // initialize the LCD
 //******************************************************************
@@ -244,14 +254,17 @@ void disable_interrupts(){
 	if(PBsArrIntPend & PB0){
 	  state = state1;
 	  PBsArrIntPend &= ~PB0;
+	  initState = 0; 
         }
         else if(PBsArrIntPend & PB1){
 	  state = state2;
 	  PBsArrIntPend &= ~PB1; 
+	  initState = 0; 
         }
 	else if(PBsArrIntPend & PB2){ 
 	  state = state3;
 	  PBsArrIntPend &= ~PB2;
+	  initState = 0; 
         }
 //---------------------------------------------------------------------
 //            Exit from a given LPM 

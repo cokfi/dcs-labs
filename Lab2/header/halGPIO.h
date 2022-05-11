@@ -8,6 +8,7 @@ extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
 extern unsigned long int frequency;
 extern unsigned int REdge1, REdge2;
+extern int initState;
 //extern char finStr[];
 //extern char frequencyStr[];
 //extern char hzStr[];
@@ -89,6 +90,7 @@ extern void lcd_strobe(void);
 extern void DelayMs(unsigned int);
 extern void DelayUs(unsigned int);
 extern void configState1(void);
+extern void configState2(void);
 /*
  *	Delay functions for HI-TECH C on the PIC18
  *

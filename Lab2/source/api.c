@@ -3,6 +3,7 @@
 char finStr[] = "Fin = ";
 char frequencyStr[] ="00000"; // 20 to 20K Hz up to 5 chars
 char hzStr[] = " Hz";
+char timeElapsedStr[] = "00:00";
 
 //-------------------------------------------------------------
 //            Print SWs value onto LEDs
@@ -53,6 +54,13 @@ displayFin(){
 				
 	
 }*/
+}
+displayTimeElapsed(int timeElapsed){
+	for(i=4; i>=3; i--){
+		timeElapsedStr[i] = timeElapsed%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
+		timeElapsed = timeElapsed/10;
+	}
+	lcd_puts(timeElapsedStr);
 }
 
 

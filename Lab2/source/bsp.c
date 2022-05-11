@@ -41,7 +41,7 @@ void TIMERconfig(void){
   TA1CTL = TASSEL_2 + MC_2 + TACLR;        // SMCLK, Cont Mode: the timer counts up to 0FFFFh, reset TAR
   TA1CCTL2 = CAP + CM_2 + SCS + CCIS_0; // TA0CCR1 Capture mode; CCI1A; rising edge,Synnchronous capture, interrupt enable, CCIA (pin P2.4)
  //timer 0
-  TA0CTL = TASSEL_2 + MC_2 + TACLR;        // SMCLK, Cont Mode: the timer counts up to 0FFFFh, reset TAR
+  TA0CTL = TASSEL_2+ID_2 + MC_2 + TACLR;        // SMCLK,divide frequency by 8, Cont Mode: the timer counts up to 0FFFFh, reset TAR
 
   TA1CCTL2 &= ~CCIE;
 
