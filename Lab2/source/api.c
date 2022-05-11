@@ -28,14 +28,31 @@ void
 displayFin(){
 	//lcd_puts(finStr);
 	int i;
-	int asistFrequency =(int)(frequency*1.095);
+        long int asistFrequency = REdge2-REdge1;
+        if (asistFrequency>0){ // make sure overflow doesn't ruin calculation
+					asistFrequency = (long int)((SMCLK_FREQUENCY/(asistFrequency))*1.095);
+                                        //asistFrequency = frequency;
 	for(i=4; i>=0; i--){
 		frequencyStr[i] = asistFrequency%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
 		asistFrequency = asistFrequency/10;
         lcd_goto(6);
 	lcd_puts(frequencyStr);
-	lcd_puts(hzStr);
-}
+        lcd_puts(hzStr);
+        }
+        }
+        /*else if (REdge2>0){
+          frequency = (int)((SMCLK_FREQUENCY/(asistFrequency+0xffff))*1.085);
+                                        asistFrequency =frequency;
+	for(i=4; i>=0; i--){
+		frequencyStr[i] = asistFrequency%10 + 48 ;// assci values 48 = 0, 49 = 1 ...
+		asistFrequency = asistFrequency/10;
+        lcd_goto(6);
+	lcd_puts(frequencyStr);
+        lcd_puts(hzStr);
+        }
+				
+	
+}*/
 }
 
 

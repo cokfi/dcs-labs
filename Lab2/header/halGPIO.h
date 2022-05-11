@@ -7,10 +7,11 @@
 extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
 extern unsigned long int frequency;
+extern unsigned int REdge1, REdge2;
 //extern char finStr[];
 //extern char frequencyStr[];
 //extern char hzStr[];
-#define SMCLK_FREQUENCY 0x100000
+#define SMCLK_FREQUENCY 0x100000 // 2^16 (a bit more than 1MHz)
 /*----------------------------------------------------------
   CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/

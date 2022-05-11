@@ -305,9 +305,9 @@ void __attribute__ ((interrupt(TIMER1_A1_VECTOR))) TIMER0_A1_ISR (void)
             {
                 REdge2 = TA1CCR2;
                 isFirstEdge=0;
-				if (REdge2>REdge1){ // make sure overflow doesn't ruin calculation
+				/*if (REdge2>REdge1){ // make sure overflow doesn't ruin calculation
 					frequency = SMCLK_FREQUENCY/(REdge2-REdge1);
-				}
+				}*/
                 LPM0_EXIT;
 				//__bic_SR_register_on_exit(LPM0_bits + GIE);  // Exit LPM0 on return to main
             }
