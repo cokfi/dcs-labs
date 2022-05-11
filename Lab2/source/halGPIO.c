@@ -10,6 +10,8 @@ int analog3;
 int analog4;
 int analogFlag = 0;
 int analogAvg = 0;
+int sampleIdx = 0;
+int sample1,sample2,sample3,sample4;
 //--------------------------------------------------------------------
 //             System Configuration  
 //--------------------------------------------------------------------
@@ -410,8 +412,38 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
 //adc Interrupt vector
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void){
+	if (state == state3){
+		switch(sampleIdx){
+    case 0:
+        sample1 = ADC10MEM;
+        sampleIdx++;
+        break;
+    case 1:
+        sample2 = ADC10MEM;
+        sampleIdx++;
+        break;
+    case 2:
+        sample3 = ADC10MEM;
+        sampleIdx++;
+        break;
+    case 3:
+        sample4 = ADC10MEM;
 
-  switch(analogFlag){
+		//if(sample2>=sample1 && sample3>=sample2 && sample4 >= sample3){
+			int diff1 = sample2-sample1;
+			int diff2 = sample4-sample3;
+		//	}
+		if(diff1 <= TOL){
+			lcd_goto(1);
+			lcd_puts("PWM");
+		}
+        sampleIdx = 0;
+        TA1CCR0 = -analogAvg/3+500;
+        break;
+  }
+	}
+	if (state == state2){
+		switch(analogFlag){
     case 0:
         analog1 = ADC10MEM;
         analogFlag++;
@@ -431,6 +463,8 @@ __interrupt void ADC10_ISR(void){
         TA1CCR0 = -analogAvg/3+500;
         break;
   }
+	}
+  
  LPM0_EXIT;
 } 
 /*

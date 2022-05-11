@@ -30,6 +30,14 @@
 #define PB1                0x02
 #define PB2                0x04
 
+#define PB3ArrPort	       P2IN 
+#define PB3ArrIntPend	   P2IFG 
+#define PB3ArrIntEn	       P2IE
+#define PB3ArrIntEdgeSel   P2IES
+#define PB3ArrPortSel      P2SEL 
+#define PB3ArrPortDir      P2DIR 
+#define PB3                0x01
+
 #define LCD_C_SEL          P2SEL
 #define LCD_D_SEL	        P1SEL
 #define GeneratorDir       P2DIR

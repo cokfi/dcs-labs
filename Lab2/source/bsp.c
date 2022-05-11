@@ -13,24 +13,22 @@ void GPIOconfig(void){
     GeneratorDir|= 0x04;//p2.2
     GeneratorSel |=  0x14;//p2.4 P2.2
     ADCArrPortSel |=0x08;//INPUT
-  // LEDs 8-bit Array Port configuration
-  //LEDsArrPortSel &= ~0xFF;            // GPIO capability
-  //LEDsArrPortDir |= 0xFF;             // output dir
-  //LEDsArrPort = 0x00;				  // clear all LEDs
-  
-  // Switches Setup
-  //SWsArrPortSel &= ~0x0F;
-  //SWsArrPortDir &= ~0x0F;
+
   
   // PushButtons Setup
-  PBsArrPortSel &= ~0x07; // 3 PB : 0-2
+  PBsArrPortSel &= ~0x07; //  PB : 0-2
   PBsArrPortDir &= ~0x07;
   PBsArrIntEdgeSel |= 0x03;  	     // pull-up mode
   PBsArrIntEdgeSel &= ~0x04;         // pull-down mode
   PBsArrIntEn = 0x07;
   PBsArrIntPend &= ~0xFF;            // clear pending interrupts 
 
-  
+  PB3ArrPortSel &= ~0x01; //  PB : 0-2
+  PB3ArrPortDir &= ~0x01;
+  PB3ArrIntEdgeSel &= ~0x01;         // pull-down mode
+  PB3ArrIntEn |= 0x01;
+  PB3ArrIntPend &= ~0xFF;            // clear pending interrupts 
+
   _BIS_SR(GIE);                     // enable interrupts globally
 }                             
 //------------------------------------------------------------------------------------- 

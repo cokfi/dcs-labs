@@ -67,7 +67,7 @@ extern int initState;
 #define cursor_on               lcd_cmd(0x0F) 
 #define lcd_function_set        lcd_cmd(0x3C) // 8bit,two lines,5x10 dots 
 #define lcd_new_line            lcd_cmd(0xC0)                                  
-
+#define TOL 					1
 
 extern void sysConfig(void);
 extern void print2LEDs(unsigned char);
