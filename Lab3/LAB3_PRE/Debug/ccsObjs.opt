@@ -1,0 +1,1 @@
+"./source/LCD.obj" "./source/api.obj" "./source/bsp.obj" "./source/halGPIO.obj" "./source/main.obj" "../lnk_msp430fg4619.cmd" -llibc.a 

@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "api.h": "c",
+    "halgpio.h": "c"
+  }
+}

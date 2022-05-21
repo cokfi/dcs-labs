@@ -2,27 +2,39 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
 
 //-------------------------------------------------------------
-//            Print SWs value onto LEDs
+//            Record Notes From KeyPad
 //-------------------------------------------------------------
-void printSWs2LEDs(void){
-	unsigned char ch;
-	
-	ch = readSWs();
-	print2LEDs(ch);
-}
-//--------------------------------------------------------------------
-//            Print array to LEDs array with rate of LEDs_SHOW_RATE
-//--------------------------------------------------------------------            
-void printArr2SWs(char Arr[], int size, unsigned int rate){
-	unsigned int i;
-	
-	for(i=0; i<size; i++){
-		print2LEDs(Arr[i]);
-		delay(rate);
+
+void record(char* recorder){
+	recordConfig();
+
+	for (int i = 0; i < 32; i++)
+	{
+		recorder[i] = recordNote();
+		playNote(recorder[i]);
 	}
 }
 
+//-------------------------------------------------------------
+//            Play Songs
+//-------------------------------------------------------------
 
- 
-  
+void play(){
+	int choice = getSongChoice();
 
+	switch (choice)
+	{
+	case 1:
+		playSong(song1, SONG1_SIZE);
+		break;
+	case /* constant-expression */:
+		playSong(song2, SONG2_SIZE);
+		break;
+	case /* constant-expression */:
+		playSong(song3, SONG3_SIZE);
+		break;
+		
+	default:
+		break;
+	}
+}
