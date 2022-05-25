@@ -39,6 +39,11 @@ void DMAConfig(){
   DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
   DMA0CTL |= DMADT_4 + DMASRCINCR_3 + DMADSTBYTE + DMASRCBYTE;
 
+  /* DMADT_4: Tranfer Mode = Repeated single transfer,
+   * DMASRCINC_3: Increase source address for each transfer,
+   * DMADSTBYTE: ,
+   * DMASRCBYTE: */
+
 }
 // Timers congiguration 
 void TIMERconfig(void){
@@ -56,7 +61,9 @@ void TIMERconfig(void){
 void enableTransfersDMA(){
   TACTL |= MC_1;
   TBCTL |= MC_1;
-  DMA0CTL |= DMAIE + DMAREQ;
+  DMA0CTL |= DMAIE + DMAEN;
+
+
 }
 
 

@@ -9,8 +9,8 @@ void record(int recorder[]){
 	//recordConfig();
 	unsigned int i;
 	for (i = 32; i > 0; i--){
-		recorder[i] = recordNote();
-		playNote(recorder[i]);
+		recorder[32-i] = recordNote();
+		playNote(recorder[32-i]);
 	}
 }
 
