@@ -1,7 +1,8 @@
 #include  "../header/bsp.h"    // private library - BSP layer
 
 // GPIO congiguration
-void GPIOconfig(void){
+void GPIOconfig(void)
+{
  // volatile unsigned int i; // in case of while loop usage
   
   WDTCTL = WDTHOLD | WDTPW;		// Stop WDT
@@ -30,12 +31,9 @@ void GPIOconfig(void){
 }                             
 
 // DMA Configuration
-void DMAConfig(){
-
+void DMAConfig()
+{
   DMACTL0 |= DMA1TSEL_7;
-  
-
-
   DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
   DMA0CTL |= DMADT_4 + DMASRCINCR_3 + DMADSTBYTE + DMASRCBYTE;
 
@@ -43,11 +41,10 @@ void DMAConfig(){
    * DMASRCINC_3: Increase source address for each transfer,
    * DMADSTBYTE: ,
    * DMASRCBYTE: */
-
 }
 // Timers congiguration 
-void TIMERconfig(void){
-
+void TIMERconfig(void)
+{
   // TimerA Configuration
   TACTL |= TASSEL_2 + TACLR;          // SMCLK, clear TBR, up mode
   TACCR2 = 0x115; // Count to 325ms
@@ -55,29 +52,27 @@ void TIMERconfig(void){
   // TimerB Configuration
   TBCTL |= TBSSEL_1 + TBCLR;
   TBCCTL0 |= CCIE;
-
 } 
 
-void enableTransfersDMA(){
+void enableTransfersDMA()
+{
   TACTL |= MC_1;
   TBCTL |= MC_1;
   DMA0CTL |= DMAIE + DMAEN;
-
-
 }
 
 
 
-void KeypadConfig(void){
+void KeypadConfig(void)
+{
   KeypadIntSel |= 0x02;
 }
 
 // Start DMA Transfers
-void startDMATransfers(void){
-
+void startDMATransfers(void)
+{
   TACCR2 = 0x155;
   TACCTL2 = OUTMOD_6;                       // TACCR2 toggle/set
-
 }
 
 // DMA Configurations

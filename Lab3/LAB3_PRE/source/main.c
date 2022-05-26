@@ -23,32 +23,29 @@ const int song3[SONG3_SIZE] ={4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0,4,7,4,4,
 
 
 
-void main(void){
-
+void main(void)
+{
 	static int recorder[RECORD_SIZE];
-
 	state = state0;				// start in idle state on RESET
 	lpm_mode = mode0;     // start in idle state on RESET
   sysConfig();
-  
-  while(1){
-		switch(state){
+  while(1)
+	{
+		switch(state)
+		{
 	  	case state0:
     		enterLPM(lpm_mode);
 			break;
-		 
 	  	case state1:
 				disable_interrupts();
 				record(recorder);
 				enable_interrupts();
 				break;
-		 
 	  	case state2:
 				disable_interrupts();
 				play();
 				enable_interrupts();
 				break;
-		
 		} // Switch
   } // While
 } // Main

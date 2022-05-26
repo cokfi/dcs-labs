@@ -9,8 +9,8 @@
 
 
 // send a command to the LCD
-void lcd_cmd(unsigned char c){
-  
+void lcd_cmd(unsigned char c)
+{
 	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
 
 	if (LCD_MODE == FOURBIT_MODE)
@@ -30,7 +30,8 @@ void lcd_cmd(unsigned char c){
 }
 
 // send data to the LCD
-void lcd_data(unsigned char c){
+void lcd_data(unsigned char c)
+{
         
 	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
 
@@ -38,11 +39,11 @@ void lcd_data(unsigned char c){
 	LCD_RS(1);
 	if (LCD_MODE == FOURBIT_MODE)
 	{
-    		LCD_DATA_WRITE &= ~OUTPUT_DATA;
-                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;  
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;  
 		lcd_strobe();		
-                LCD_DATA_WRITE &= (0xF0 << LCD_DATA_OFFSET) | (0xF0 >> 8 - LCD_DATA_OFFSET);
-                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE &= (0xF0 << LCD_DATA_OFFSET) | (0xF0 >> 8 - LCD_DATA_OFFSET);
+		LCD_DATA_WRITE &= ~OUTPUT_DATA;
 		LCD_DATA_WRITE |= (c & 0x0F) << LCD_DATA_OFFSET; 
 		lcd_strobe();
 	}
@@ -56,15 +57,15 @@ void lcd_data(unsigned char c){
 }
 
 // write a string of chars to the LCD
-void lcd_puts(const char * s){
-  
+void lcd_puts(const char * s)
+{
 	while(*s)
 		lcd_data(*s++);
 }
 
 // initialize the LCD
-void lcd_init(){
-  
+void lcd_init()
+{
 	char init_value;
 
 	if (LCD_MODE == FOURBIT_MODE) init_value = 0x3 << LCD_DATA_OFFSET;
@@ -107,23 +108,22 @@ void lcd_init(){
 }
 
 // Delay usec functions
-void DelayUs(unsigned int cnt){
-  
+void DelayUs(unsigned int cnt)
+{  
 	unsigned char i;
         for(i=cnt ; i>0 ; i--) asm("nop"); // tha command asm("nop") takes raphly 1usec
-	
 }
 
 // Delay msec functions
-void DelayMs(unsigned int cnt){
-  
+void DelayMs(unsigned int cnt)
+{
 	unsigned char i;
         for(i=cnt ; i>0 ; i--) DelayUs(1000); // tha command asm("nop") takes raphly 1usec
-	
 }
 
 // lcd strobe functions
-void lcd_strobe(){
+void lcd_strobe()
+{
   LCD_EN(1);
   //asm("nop");
   //asm("nop");
@@ -131,53 +131,61 @@ void lcd_strobe(){
 }
 
 // Bring Cursor to start of a row
-void startRowLCD(int row){
-	if(row == 0){
+void startRowLCD(int row)
+{
+	if(row == 0)
+	{
 		lcd_cmd(0x02);
 	}
-	if(row == 1){
+	else if(row == 1)
+	{
 		lcd_cmd(0xC0);
 	}
-	
 }
 
 // Hide Cursor
-void hideCursor(){
+void hideCursor()
+{
 	lcd_cmd(0x0C);
 }
 
 // Reveal Cursor
-void showCursor(){
+void showCursor()
+{
 	lcd_cmd(0x0F);
 }
 
 // Move Cursor Right
-void cursorRightLCD(int steps){
+void cursorRightLCD(int steps)
+{
     int i;
-    for (i = steps; i > 0;i--){
+    for (i = steps; i > 0;i--)
+		{
         lcd_cmd(0x14);
     }
 }
 
 // Move Cursor Left
-void cursorLeftLCD(int steps){
+void cursorLeftLCD(int steps)
+{
     int i;
-    for (i = steps; i > 0;i--){
+    for (i = steps; i > 0;i--)
+		{
         lcd_cmd(0x10);
     }
 }
 
 // Set Cursor position
-void setCursorPos(int row, int pos){
+void setCursorPos(int row, int pos)
+{
 	showCursor();
 	startRowLCD(row);
 	cursorRightLCD(pos);
 }
 
-
-
 // Clear LCD
-void clearLCD(){
+void clearLCD()
+{
 	lcd_cmd(0x01);
 }
 
