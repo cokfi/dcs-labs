@@ -9,17 +9,18 @@
 #define   LEDs_SHOW_RATE   0xFFFF  // 62_5ms
 
 // LEDs abstraction
-//#define LEDsArrPort        P1OUT
-//#define LEDsArrPortDir     P1DIR
-//#define LEDsArrPortSel     P1SEL
+#define LEDsArrPort        P1OUT
+#define LEDsArrPortDir     P1DIR
+#define LEDsArrPortSel     P1SEL
 
 // Switches abstraction
-//#define SWsArrPort         P2IN
-//#define SWsArrPortDir      P2DIR
-//#define SWsArrPortSel      P2SEL
-//#define SWmask             0xF0
+#define SWsArrPort         P2IN
+#define SWsArrPortDir      P2DIR
+#define SWsArrPortSel      P2SEL
+#define SWmask             0x0F
 
 // PushButtons abstraction
+<<<<<<< HEAD
 #define PBsArrPort	   P1IN 
 #define PBsArrIntPend	   P1IFG 
 #define PBsArrIntEn	   P1IE
@@ -45,10 +46,24 @@
 
 #define ADCArrPortSel     P1SEL
 #define ADCArrPortDir     P1DIR
+=======
+#define PBsArrPort	   P2IN 
+#define PBsArrIntPend	   P2IFG 
+#define PBsArrIntEn	   P2IE
+#define PBsArrIntEdgeSel   P2IES
+#define PBsArrPortSel      P2SEL 
+#define PBsArrPortDir      P2DIR 
+#define PB0                0x10
+#define PB1                0x20
+#define PB2                0x40
+#define PB3                0x80
+
+>>>>>>> d65fd191b344dff7b6d5022cfe36123d84261ea7
 
 extern void GPIOconfig(void);
 extern void TIMERconfig(void);
 extern void ADCconfig(void);
+
 #endif
 
 
