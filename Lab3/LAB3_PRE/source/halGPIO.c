@@ -6,7 +6,7 @@ void sysConfig(void)
     GPIOconfig();
     TIMERconfig();
     DMAConfig();
-    KeypadConfig();
+ 
 }
 
 // Polling based Delay function
@@ -120,6 +120,8 @@ int getSongChoice()
     while (!chosen)
     {
         showMenu();
+        enableKeypad();
+        enable_interrupts();
         enterLPM(lpm_mode); // Enter LPM and wait for keypad interrupt (User Choice)
         showMenu();
         switch (keypadButton)
@@ -280,44 +282,44 @@ __interrupt void Keypad_handler(void)
     P10OUT = 0x0E;
     if ((P10IN & 0x10 == 0))
         keypadButton = 'D';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x20 == 0))
         keypadButton = 'E';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x40 == 0))
         keypadButton = '0';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x80 == 0))
         keypadButton = 'F';
 
     // Check Second Row
     P10OUT = 0x0D;
     if ((P10IN & 0x10 == 0))
         keypadButton = 'C';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x20 == 0))
         keypadButton = '9';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x40 == 0))
         keypadButton = '8';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x80 == 0))
         keypadButton = '7';
 
     // Check Third Row
     P10OUT = 0x0B;
     if ((P10IN & 0x10 == 0))
         keypadButton = 'B';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x20 == 0))
         keypadButton = '6';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x40 == 0))
         keypadButton = '5';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x80 == 0))
         keypadButton = '4';
 
     // Check Fourth Row
     P10OUT = 0x07;
     if ((P10IN & 0x10 == 0))
         keypadButton = 'A';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x20 == 0))
         keypadButton = '3';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x40 == 0))
         keypadButton = '2';
-    else if ((P10IN & 0x10 == 0))
+    else if ((P10IN & 0x80 == 0))
         keypadButton = '1';
 
     delay(debounceVal);

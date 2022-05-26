@@ -12,16 +12,16 @@
 /*----------------------------------------------------------
   CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/
-#define LCD_EN(a)	(!a ? (P1OUT&=~0X20) : (P1OUT|=0X20)) // P1.5 is lcd enable pin
-#define LCD_EN_DIR(a)	(!a ? (P1DIR&=~0X20) : (P1DIR|=0X20)) // P1.5 pin direction 
+#define LCD_EN(a)	(!a ? (P2OUT&=~0X20) : (P2OUT|=0X20)) // P2.5 is lcd enable pin
+#define LCD_EN_DIR(a)	(!a ? (P2DIR&=~0X20) : (P2DIR|=0X20)) // P2.5 pin direction 
 
-#define LCD_RS(a)	(!a ? (P1OUT&=~0X40) : (P1OUT|=0X40)) // P1.6 is lcd RS pin
-#define LCD_RS_DIR(a)	(!a ? (P1DIR&=~0X40) : (P1DIR|=0X40)) // P1.6 pin direction  
+#define LCD_RS(a)	(!a ? (P2OUT&=~0X40) : (P2OUT|=0X40)) // P2.6 is lcd RS pin
+#define LCD_RS_DIR(a)	(!a ? (P2DIR&=~0X40) : (P2DIR|=0X40)) // P2.6 pin direction  
   
-#define LCD_RW(a)	(!a ? (P1OUT&=~0X80) : (P1OUT|=0X80)) // P1.7 is lcd RW pin
-#define LCD_RW_DIR(a)	(!a ? (P1DIR&=~0X80) : (P1DIR|=0X80)) // P1.7 pin direction
+#define LCD_RW(a)	(!a ? (P2OUT&=~0X80) : (P2OUT|=0X80)) // P2.7 is lcd RW pin
+#define LCD_RW_DIR(a)	(!a ? (P2DIR&=~0X80) : (P2DIR|=0X80)) // P2.7 pin direction
 
-#define LCD_DATA_OFFSET 0x00 //(TODO check if need to change) data pin selection offset for 4 bit mode, variable range is 0-4, default 0 - Px.0-3, no offset
+#define LCD_DATA_OFFSET 0x04 //(TODO check if need to change) data pin selection offset for 4 bit mode, variable range is 0-4, default 0 - Px.0-3, no offset
    
 #define LCD_DATA_WRITE	P1OUT
 #define LCD_DATA_DIR	P1DIR

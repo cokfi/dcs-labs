@@ -30,36 +30,40 @@
 #define SWmask             0x0F
 
 // PushButtons abstraction
-#define PBsArrPort	       P1IN 
+#define PBsArrPort	   P1IN 
 #define PBsArrIntPend	   P1IFG
-#define PBsArrIntEn	       P1IE
+#define PBsArrIntEn	   P1IE
 #define PBsArrIntEdgeSel   P1IES
 #define PBsArrPortSel      P1SEL 
 #define PBsArrPortDir      P1DIR 
-#define PB0                0x10
-#define PB1                0x20
-#define PB2                0x40
-#define PB3                0x80
+#define PB0                0x01
+#define PB1                0x02
+#define PB2                0x04
+
 
 // Keypad abstraction
 //    Keypad Interrupt
 #define KeypadIntPort     P2IN
-#define KeypadIntPend	    P2IFG 
-#define KeypadIntEn	      P2IE
+#define KeypadIntPend	  P2IFG 
+#define KeypadIntEn	  P2IE
 #define KeypadIntEdgeSel  P2IES
 #define KeypadIntSel      P2SEL 
 #define KeypadIntDir      P2DIR
-#define IRQ               0x01
+#define IRQ               0x02
 
-#define KeypadArrPort   P10IN
-#define KeypadArr       P10IN
+#define KeypadIn        P10IN
+#define KeypadOut       P10OUT
+#define KeypadSel       P10SEL
+#define KeypadDir       P10DIR
+
+
 
 // Buzzer Abstraction
 #define BuzzerArrPort   P2OUT
 #define BuzzerSel       P2SEL
 #define BuzzerDir       P2DIR
 
-#define Buzzer          0x02
+#define Buzzer          0x04
 
 
 
@@ -67,8 +71,8 @@ extern void GPIOconfig(void);
 extern void TIMERconfig(void);
 extern void DMAConfig(void);
 extern void enableTransfersDMA(void);
-extern void KeypadConfig(void);
 extern void startDMATransfers(void);
+extern void enableKeypad();
 //extern void recordConfig(void);
 #endif
 

@@ -16,17 +16,27 @@ void GPIOconfig(void)
   
   // PushButtons Setup
   // TODO Check if good
-  PBsArrPortSel &= ~0xF0;            // P1.
-  PBsArrPortDir &= ~0xF0;            //
-  PBsArrIntEdgeSel |= 0x30;  	     // pull-up mode
-  PBsArrIntEdgeSel &= ~0xC0;         // pull-down mode
-  PBsArrIntEn |= 0x70;
-  PBsArrIntPend &= ~0xF0;            // clear pending interrupts 
+  PBsArrPortSel &= ~0x07;            // P1.
+  PBsArrPortDir &= ~0x07;            //
+  PBsArrIntEdgeSel |= 0x03;  	     // pull-up mode PB1-0
+  PBsArrIntEdgeSel &= ~0x04;         // pull-down mode PB2
+  PBsArrIntEn |= 0x07;
+  PBsArrIntPend &= ~0x07;            // clear pending interrupts 
   
   // Buzzer Setup
   BuzzerSel |= Buzzer; // Set P2.2/Buzzer to TimerB output
   BuzzerDir |= Buzzer;
 
+  // Keypad Setup
+  KeypadIntSel &= ~IRQ;
+  KeypadIntDir &= ~IRQ;
+  
+  KeypadSel = 0x00; // IO mode = 0
+  KeypadDir = 0x0F; // input = 0, output = 1
+  
+  P2IFG = 0x00;
+  
+  
   _BIS_SR(GIE); // enable interrupts globally 
   // TODO - Delete
 }                             
@@ -63,11 +73,11 @@ void enableTransfersDMA()
 }
 
 
-
-void KeypadConfig(void)
+void enableKeypad()
 {
-  KeypadIntSel |= 0x02;
+  P2IE |= IRQ;
 }
+
 
 // Start DMA Transfers
 void startDMATransfers(void)
