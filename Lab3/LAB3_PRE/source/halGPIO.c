@@ -104,8 +104,8 @@ void playNote(char note)
 char recordNote()
 {
     KeypadIntEn |= IRQ; // Enable Keypad Interrupts
-    enterLPM(lpm_mode); // Enter LPM0, wait for keypadInterrupt
-
+    enterLPM(lpm_mode); // Enter LPM0
+    // Wait for keypadInterrupt...
     return keypadButton;
 }
 
@@ -192,7 +192,6 @@ void showInvalidChoiceMsg()
 // Play Song
 void playSong(int song[], int size)
 {
-
     DMA0SZ = size;
     __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) song); // Ignore
     __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &outNote); // Ignore
@@ -208,11 +207,11 @@ void playSong(int song[], int size)
         playNote(outNote);
     }
 }
+
 // Port1 Interrupt Service Routine
 #pragma vector=PORT1_VECTOR
 __interrupt void PBs_handler(void)
 {
-
     delay(debounceVal);
 
     if (PBsArrIntPend & PB0)

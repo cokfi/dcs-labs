@@ -4,6 +4,16 @@
 //#include  <msp430g2553.h>          // MSP430x2xx
 #include  <msp430xG46x.h>  // MSP430x4xx
 
+/*
+  Ports and Connections:
+
+  1. PB0-PB2        => P1.0-P1.2 
+  2. LCD D4-D7      => P1.4-P1.7
+  3. LCD Ctl Lines  => P2.5-P2.7
+  4. Buzzer         => P2.2
+  5. Keypad         => P10
+  6. Keypad Int     => P2.1
+*/
 
 #define   debounceVal      250
 #define   LEDs_SHOW_RATE   0xFFFF  // 62_5ms
