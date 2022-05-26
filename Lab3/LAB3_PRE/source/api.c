@@ -1,5 +1,5 @@
 #include  "../header/api.h"    		// private library - API layer
-#include  "../header/halGPIO.h"     // private library - HAL layer
+
 
 //-------------------------------------------------------------
 //            Record Notes From KeyPad

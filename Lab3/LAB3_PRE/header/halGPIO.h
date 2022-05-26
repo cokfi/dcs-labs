@@ -28,9 +28,9 @@ extern void showMenu();
 extern void showInvalidChoiceMsg();
 extern void playSong(int song[], int size);
 
-extern const int song1[SONG1_SIZE];
-extern const int song2[SONG2_SIZE];
-extern const int song3[SONG3_SIZE];
+extern int song1[];
+extern int song2[];
+extern int song3[];
 
 extern __interrupt void PBs_handler(void);
 extern __interrupt void timerA_ISR(void);

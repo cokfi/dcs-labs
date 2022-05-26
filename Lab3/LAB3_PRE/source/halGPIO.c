@@ -323,7 +323,7 @@ __interrupt void Keypad_handler(void)
     delay(debounceVal);
 
     P10OUT = 0x00; // Reset rows to prepare for next interrupt
-    KeypadIntPort &= ~KeypadIntPend;
+    KeypadIntPend &= ~IRQ;
 
     __bic_SR_register_on_exit(LPM0_bits);     // Exit LPMx, interrupts enabled
 }
