@@ -5,11 +5,12 @@
 //            Record Notes From KeyPad
 //-------------------------------------------------------------
 
-void record(int recorder[]){
+void record(int recorder[])
+{
 	//recordConfig();
 	unsigned int i;
 	for (i = 32; i > 0; i--){
-		recorder[32-i] = recordNote();
+		recorder[32-i] = recordNote(); // TODO Fix char-int conflict
 		playNote(recorder[32-i]);
 	}
 }

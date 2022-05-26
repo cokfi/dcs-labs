@@ -95,6 +95,7 @@ void playNote(char note)
     TBCCTL2 |= OUTMOD_7;                       // CCR2 reset/set
 
     TBCTL |= MC_1; // Start Timer in up-mode
+    // TODO Check
     delay(300);
     TBCTL &= ~MC_1; // Stop Timer
     TBCTL |= TBCLR;

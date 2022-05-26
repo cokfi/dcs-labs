@@ -7,12 +7,12 @@
 /*
   Ports and Connections:
 
-  1. PB0-PB2        => P1.0-P1.2 
-  2. LCD D4-D7      => P1.4-P1.7
-  3. LCD Ctl Lines  => P2.5-P2.7
-  4. Buzzer         => P2.2
-  5. Keypad         => P10
-  6. Keypad Int     => P2.1
+  1. PB0-PB2        => P1.0-P1.2 v
+  2. LCD D4-D7      => P1.4-P1.7 
+  3. LCD Ctl Lines  => P2.5-P2.7 v
+  4. Buzzer         => P2.2      v
+  5. Keypad         => P10       v
+  6. Keypad Int     => P2.1      v
 */
 
 #define   debounceVal      250

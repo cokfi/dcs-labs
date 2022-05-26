@@ -24,10 +24,11 @@ void GPIOconfig(void)
   PBsArrIntPend &= ~0xF0;            // clear pending interrupts 
   
   // Buzzer Setup
-  BuzzerSel &= ~Buzzer;
+  BuzzerSel |= Buzzer; // Set P2.2/Buzzer to TimerB output
   BuzzerDir |= Buzzer;
 
-  _BIS_SR(GIE); // enable interrupts globally
+  _BIS_SR(GIE); // enable interrupts globally 
+  // TODO - Delete
 }                             
 
 // DMA Configuration
