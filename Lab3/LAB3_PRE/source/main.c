@@ -1,6 +1,11 @@
 #include  "../header/api.h"    		// private library - API layer
 #include  "../header/app.h"    		// private library - APP layer
 
+/* Follow This Link for Code flow Diagrams: 
+	https://www.figma.com/file/aG8p1A8kZobp6yjx4eOLuu/Untitled?node-id=5%3A157 
+*/
+
+
 //#define SONG1_SIZE 54
 //#define SONG2_SIZE 47
 //#define SONG3_SIZE 40
