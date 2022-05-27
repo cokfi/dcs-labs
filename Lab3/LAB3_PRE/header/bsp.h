@@ -73,6 +73,7 @@ extern void TIMERconfig(void);
 extern void DMAConfig(void);
 extern void enableTransfersDMA(void);
 extern void startDMATransfers(void);
+extern void stopTransfersDMA(void);
 extern void enableKeypad();
 //extern void recordConfig(void);
 #endif

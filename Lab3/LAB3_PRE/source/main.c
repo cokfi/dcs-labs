@@ -16,9 +16,9 @@ enum FSMstate state;
 enum SYSmode lpm_mode;
 
 // Note: song sizes are defined in halGPIO.h
-char keypadButton;
+int keypadButton;
 int song1[] ={2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,7,7,7,7,7,7,2,7,7,7,2,7,7,7,2,4,4,2,11,11,9,9,7}; // Uncle Moshe
-int song2[] ={0, 5,9,0,5,9,9, 7,7,7,7,9, 10,10,10,12,10,9,7, 9,9,9,9,5,7,9, 10,10,10,12,10,10, 9,5,9,12,12, 0,4,7,10,9,7, 5,5,5,5}; // Our Auto
+int song2[] ={0,5,9,0,5,9,9, 7,7,7,7,9,10,10,10,12,10,9,7,9,9,9,9,5,7,9, 10,10,10,12,10,10, 9,5,9,12,12, 0,4,7,10,9,7,5,5,5,5}; // Our Auto
 int song3[] ={4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0,4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0}; // Hands Up!
 
 
@@ -37,14 +37,14 @@ void main(void)
     		enterLPM(lpm_mode);
 			break;
 	  	case state1:
-				disable_interrupts();
+				//disable_interrupts();
 				record(recorder);
-				enable_interrupts();
+				//enable_interrupts();
 				break;
 	  	case state2:
-				disable_interrupts();
+				//disable_interrupts();
 				play();
-				enable_interrupts();
+				//enable_interrupts();
 				break;
 		} // Switch
   } // While

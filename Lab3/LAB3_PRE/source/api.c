@@ -7,11 +7,22 @@
 
 void record(int recorder[])
 {
+        clearLCD();
 	//recordConfig();
-	unsigned int i;
-	for (i = 32; i > 0; i--){
-		recorder[32-i] = recordNote(); // TODO Fix char-int conflict
-		playNote(recorder[32-i]);
+	unsigned int i = 32;
+	while(i){
+                int newNote = recordNote(); 
+                
+                if(newNote == -1)
+                {
+                  continue;
+                }
+                playNote(newNote);
+		recorder[32-i] = newNote;
+                
+                i--;
+                //playNote(recorder[32-i]);
+                
 	}
 }
 

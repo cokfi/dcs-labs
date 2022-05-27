@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1945699512</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\Debug\Obj\main.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\halGPIO.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\LCD.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\api.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\LCD.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\IARproject.d43</file>
+      <file>$PROJ_DIR$\Debug\Obj\IARproject.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\api.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\halGPIO.r43</file>
+      <file>$PROJ_DIR$\header\bsp.h</file>
+      <file>$PROJ_DIR$\header\halGPIO.h</file>
+      <file>$PROJ_DIR$\header\LCD.h</file>
+      <file>$PROJ_DIR$\header\api.h</file>
+      <file>$PROJ_DIR$\header\app.h</file>
+      <file>$PROJ_DIR$\source\halGPIO.c</file>
+      <file>$PROJ_DIR$\source\LCD.c</file>
+      <file>$PROJ_DIR$\source\main.c</file>
+      <file>$PROJ_DIR$\source\api.c</file>
+      <file>$PROJ_DIR$\source\bsp.c</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\IARproject.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 5 4 1 2 6</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\halGPIO.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 2</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\LCD.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 6</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 7</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\api.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\bsp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1</file>
+        </tool>
+      </outputs>
+    </file>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

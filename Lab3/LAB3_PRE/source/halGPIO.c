@@ -3,6 +3,7 @@
 // System Configuration  
 void sysConfig(void)
 {
+
     GPIOconfig();
     TIMERconfig();
     DMAConfig();
@@ -44,65 +45,76 @@ void disable_interrupts()
     _BIC_SR(GIE);
 }
 
-void playNote(char note)
+void playNote(int note)
 {
-    switch (note)
+   static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x233,0x212,0x1F5};
+  /*switch (note)
     {
-    case '0':
-        TBCCR0 = 32;
+      
+    case 0:
+        TBCCR0 = 0x3EA; // 1046[Hz]
         break;
-    case '1':
-        TBCCR0 = 30;
+    case 1:
+        TBCCR0 = 0x3B2; // 1108[Hz]
         break;
-    case '2':
-        TBCCR0 = 28;
+    case 2:
+        TBCCR0 = 0x37D; // 1174
         break;
-    case '3':
-        TBCCR0 = 26;
+    case 3:
+        TBCCR0 = 0x34B; // 1244
         break;
-    case '4':
-        TBCCR0 = 25;
+    case 4:
+        TBCCR0 = 0x31C; // 1318
         break;
-    case '5':
-        TBCCR0 = 23;
+    case 5:
+        TBCCR0 = 0x2EF; // 1397
         break;
-    case '6':
-        TBCCR0 = 22;
+    case 6:
+        TBCCR0 = 0x2C4; // 1480
         break;
-    case '7':
-        TBCCR0 = 21;
+    case 7:
+        TBCCR0 = 0x29D; // 1567
         break;
-    case '8':
-        TBCCR0 = 20;
+    case 8:
+        TBCCR0 = 0x277; // 1661
         break;
-    case '9':
-        TBCCR0 = 19;
+    case 9:
+        TBCCR0 = 0x254; // 1760
         break;
-    case 'A':
-        TBCCR0 = 18;
+    case 0xA:
+        TBCCR0 = 0x233; // 1864
         break;
-    case 'B':
-        TBCCR0 = 17;
+    case 0xB:
+        TBCCR0 = 0x212; // 1975
         break;
-    case 'C':
-        TBCCR0 = 16;
+    case 0xC:
+        TBCCR0 = 0x1F5; // 2093
         break;
     default:
-        break;
+        return;
     }  // Switch
+      */
+   if((note<0) || (note>0xC))
+    {
+    return;
+    }
+    TBCCR0 = tbNoteVals[note];
+    TBCCR1 = TBCCR0 >> 1; // TBCCR2 = TBCCR0/2 for 50% Duty Cycle
+    TBCCTL1 = OUTMOD_7;                       // CCR2 reset/set
 
-    TBCCR2 = TBCCR0 << 1; // TBCCR2 = TBCCR0/2 for 50% Duty Cycle
-    TBCCTL2 |= OUTMOD_7;                       // CCR2 reset/set
-
-    TBCTL |= MC_1; // Start Timer in up-mode
-    // TODO Check
-    delay(300);
-    TBCTL &= ~MC_1; // Stop Timer
     TBCTL |= TBCLR;
+    TBCTL |= TBSSEL_2 + MC_1; // Start Timer in up-mode
+    // TODO Check
+    delay(65000);
+    //TACTL |= TAIE + TACLR + MC_1;
+    //enterLPM(lpm_mode);
+    //TACTL &= ~TAIE; 
+    TBCTL &= ~MC_1; // Stop Timer
+    //
 }
 
 // Record SingleNote and Play to buzzer
-char recordNote()
+int recordNote()
 {
     KeypadIntEn |= IRQ; // Enable Keypad Interrupts
     enterLPM(lpm_mode); // Enter LPM0
@@ -116,9 +128,10 @@ int getSongChoice()
     int ret;
     int chosen = 0;
     lcd_init();
-
+    keypadButton = -1;
     while (!chosen)
     {
+        
         showMenu();
         enableKeypad();
         enable_interrupts();
@@ -126,17 +139,19 @@ int getSongChoice()
         showMenu();
         switch (keypadButton)
         {
-        case '1':
+        case 1:
             chosen = 1;
             ret = 1;
             break;
-        case '2':
+        case 2:
             chosen = 1;
             ret = 2;
             break;
-        case '3':
+        case 3:
             chosen = 1;
             ret = 3;
+            break;
+        case -1:
             break;
         default:
             showInvalidChoiceMsg();
@@ -156,7 +171,7 @@ void showMenu()
     switch (menuIndex)
     {
     case 0:
-        row1 = "Please choose an option:";
+      row1 = "Choose Song:";
         row2 = "1. Song1";
         break;
 
@@ -178,7 +193,7 @@ void showMenu()
     }
     startRowLCD(0);
     lcd_puts(row1);
-    startRowLCD(0);
+    startRowLCD(1);
     lcd_puts(row2);
 
 }
@@ -196,20 +211,61 @@ void showInvalidChoiceMsg()
 void playSong(int song[], int size)
 {
     DMA0SZ = size;
-    __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) song); // Ignore
-    __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &outNote); // Ignore
-    //DMA0SA = song;
-    //DMA0DA = outNote;
+    //__data16_write_addr((unsigned short) &DMA0SA, (unsigned short) song); // Ignore
+    //__data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &outNote); // Ignore
+    DMA0SA = (int)song;
+    DMA0DA = (int)&outNote;
 
     // Start DMA
     int i = size;
     enableTransfersDMA();
-    while (i--)
+    while (DMA0SZ)
     {
+        
+        //playNote(outNote);
         enterLPM(lpm_mode);
-        playNote(outNote);
+        i--;
     }
+    stopTransfersDMA();
+    return;
 }
+
+
+/*void playSong(int song[], int size)
+{
+  static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x233,0x212,0x1F5};
+  int tbccr0Vals[100];
+  int tbccr1Vals[100];
+  
+  DMA0SZ = size;
+  DMA1SZ = size;
+  
+  __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) tbccr0Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA1SA, (unsigned short) tbccr1Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &TBCCR0); // Ignore
+   __data16_write_addr((unsigned short) &DMA1DA, (unsigned int) &TBCCR1); // Ignore
+  //DMA0SA = (int)tbccr0Vals;
+  //DMA1SA = (int)tbccr1Vals;
+  int i;
+  for(i=0;i<size;i++)
+  {
+    tbccr0Vals[i]= tbNoteVals[i];
+    
+    tbccr1Vals[i]= tbNoteVals[i]>>1;
+  }
+  //DMA0DA = (int)&TBCCR0;
+  //DMA1DA = (int)&TBCCR1;
+  
+  TBCTL |= TBCLR;
+  TBCTL |= TBSSEL_2 + MC_1; 
+  enableTransfersDMA();
+  while(DMA0SZ)
+  {
+    enterLPM(lpm_mode);
+  }
+  
+}
+*/
 
 // Port1 Interrupt Service Routine
 #pragma vector=PORT1_VECTOR
@@ -270,7 +326,7 @@ __interrupt void PBs_handler(void)
 #pragma vector = PORT2_VECTOR
 __interrupt void Keypad_handler(void)
 {
-    keypadButton = 'K';
+    keypadButton = -1;
 
     /* Search for pushed button row-by-row using running zero method:
      E(1110)
@@ -280,47 +336,47 @@ __interrupt void Keypad_handler(void)
      */
     // Check first Row
     P10OUT = 0x0E;
-    if ((P10IN & 0x10 == 0))
-        keypadButton = 'D';
-    else if ((P10IN & 0x20 == 0))
-        keypadButton = 'E';
-    else if ((P10IN & 0x40 == 0))
-        keypadButton = '0';
-    else if ((P10IN & 0x80 == 0))
-        keypadButton = 'F';
+    if ((P10IN & 0x10) == 0)
+        keypadButton = 0xD;
+    else if ((P10IN & 0x20) == 0)
+        keypadButton = 0xE;
+    else if ((P10IN & 0x40) == 0)
+        keypadButton = 0;
+    else if ((P10IN & 0x80) == 0)
+        keypadButton = 0xF;
 
     // Check Second Row
     P10OUT = 0x0D;
-    if ((P10IN & 0x10 == 0))
-        keypadButton = 'C';
-    else if ((P10IN & 0x20 == 0))
-        keypadButton = '9';
-    else if ((P10IN & 0x40 == 0))
-        keypadButton = '8';
-    else if ((P10IN & 0x80 == 0))
-        keypadButton = '7';
+    if ((P10IN & 0x10) == 0)
+        keypadButton = 0xC;
+    else if ((P10IN & 0x20) == 0)
+        keypadButton = 9;
+    else if ((P10IN & 0x40) == 0)
+        keypadButton = 8;
+    else if ((P10IN & 0x80) == 0)
+        keypadButton = 7;
 
     // Check Third Row
     P10OUT = 0x0B;
-    if ((P10IN & 0x10 == 0))
-        keypadButton = 'B';
-    else if ((P10IN & 0x20 == 0))
-        keypadButton = '6';
-    else if ((P10IN & 0x40 == 0))
-        keypadButton = '5';
-    else if ((P10IN & 0x80 == 0))
-        keypadButton = '4';
+    if ((P10IN & 0x10) == 0)
+        keypadButton = 0xB;
+    else if ((P10IN & 0x20) == 0)
+        keypadButton = 6;
+    else if ((P10IN & 0x40) == 0)
+        keypadButton = 5;
+    else if ((P10IN & 0x80) == 0)
+        keypadButton = 4;
 
     // Check Fourth Row
     P10OUT = 0x07;
-    if ((P10IN & 0x10 == 0))
-        keypadButton = 'A';
-    else if ((P10IN & 0x20 == 0))
-        keypadButton = '3';
-    else if ((P10IN & 0x40 == 0))
-        keypadButton = '2';
-    else if ((P10IN & 0x80 == 0))
-        keypadButton = '1';
+    if ((P10IN & 0x10) == 0)
+        keypadButton = 0xA;
+    else if ((P10IN & 0x20) == 0)
+        keypadButton = 3;
+    else if ((P10IN & 0x40) == 0)
+        keypadButton = 2;
+    else if ((P10IN & 0x80) == 0)
+        keypadButton = 1;
 
     delay(debounceVal);
 
@@ -339,17 +395,28 @@ __interrupt void DMA_ISR(void)
 }
 
 // ISR to execute when reaching 325 ms
-#pragma vector = TIMERA0_VECTOR
+#pragma vector = TIMERA1_VECTOR
 __interrupt void timerA_ISR(void)
 {
-    TACTL &= ~TAIFG;
-    TACTL |= TACLR;          // clear TBR
+  if(state==state2){playNote(outNote);}
+  if(DMA0SZ == 0)
+  {
+    TBCTL &= ~MC_1; // Stop Timer
+    //TBCTL |= TBCLR;
+  }
+  else
+  {
+    DMA0CTL |= DMAREQ;
+    DMA1CTL |= DMAREQ;
+  }
+  TACTL &= ~TAIFG;
+   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
 }
 
 // ISR to execute when reaching 325 ms
 #pragma vector = TIMERB0_VECTOR
 __interrupt void timerB_ISR(void)
 {
-    TACTL &= ~TBIFG; // Clear interrupt flag
+    TBCTL &= ~TBIFG; // Clear interrupt flag
     BuzzerArrPort ^= Buzzer; //TODO Check if good
 }

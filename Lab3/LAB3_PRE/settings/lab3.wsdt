@@ -16,6 +16,12 @@
           <Column3>27</Column3>
         </ColumnWidths>
       </Workspace>
+      <Build>
+        <ColumnWidth0>20</ColumnWidth0>
+        <ColumnWidth1>915</ColumnWidth1>
+        <ColumnWidth2>244</ColumnWidth2>
+        <ColumnWidth3>61</ColumnWidth3>
+      </Build>
     </Static>
     <Windows>
       <Wnd1>
@@ -27,6 +33,8 @@
             <Session>
               <NodeDict>
                 <ExpandedNode>IARproject</ExpandedNode>
+                <ExpandedNode>IARproject/Output</ExpandedNode>
+                <ExpandedNode>IARproject/Output/IARproject.d43</ExpandedNode>
                 <ExpandedNode>IARproject/header</ExpandedNode>
               </NodeDict>
             </Session>
@@ -34,6 +42,17 @@
         </Tabs>
         <SelectedTab>0</SelectedTab>
       </Wnd1>
+      <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-31294-14729</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        <SelectedTab>0</SelectedTab>
+      </Wnd0>
     </Windows>
     <Editor>
       <Pane>
@@ -42,10 +61,90 @@
           <Filename>$WS_DIR$\header\api.h</Filename>
           <XPos>0</XPos>
           <YPos>0</YPos>
+          <SelStart>54</SelStart>
+          <SelEnd>61</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\header\halGPIO.h</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>152</SelStart>
+          <SelEnd>155</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\header\bsp.h</Filename>
+          <XPos>0</XPos>
+          <YPos>45</YPos>
+          <SelStart>1791</SelStart>
+          <SelEnd>1791</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.0 Kickstart\430\config\lnk430FG4619.xcl</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
           <SelStart>0</SelStart>
           <SelEnd>0</SelEnd>
         </Tab>
-        <ActiveTab>0</ActiveTab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\Debug\Obj\halGPIO.r43</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>8</SelStart>
+          <SelEnd>8</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\Debug\Obj\bsp.r43</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\Debug\Obj\LCD.r43</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>$WS_DIR$\Debug\Obj\main.r43</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.0 Kickstart\430\config\multiplier.xcl</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.0 Kickstart\430\config\MSP430FG4619.ddf</Filename>
+          <XPos>0</XPos>
+          <YPos>0</YPos>
+          <SelStart>0</SelStart>
+          <SelEnd>0</SelEnd>
+        </Tab>
+        <Tab>
+          <Factory>TextEditor</Factory>
+          <Filename>C:\Program Files (x86)\IAR Systems\Embedded Workbench 6.0 Kickstart\430\config\MSP430FG4619.SFR</Filename>
+          <XPos>0</XPos>
+          <YPos>60</YPos>
+          <SelStart>4096</SelStart>
+          <SelEnd>4096</SelEnd>
+        </Tab>
+        <ActiveTab>10</ActiveTab>
       </Pane>
       <ActivePane>0</ActivePane>
       <Sizes>
@@ -73,7 +172,7 @@
               <Rect>
                 <Top>-2</Top>
                 <Left>-2</Left>
-                <Bottom>896</Bottom>
+                <Bottom>698</Bottom>
                 <Right>198</Right>
                 <x>-2</x>
                 <y>-2</y>
@@ -82,7 +181,7 @@
                 <sizeHorzCX>156250</sizeHorzCX>
                 <sizeHorzCY>212540</sizeHorzCY>
                 <sizeVertCX>156250</sizeVertCX>
-                <sizeVertCY>954304</sizeVertCY>
+                <sizeVertCY>743889</sizeVertCY>
               </Rect>
             </Wnd1>
           </Sizes>
@@ -95,7 +194,24 @@
       </Right>
       <Bottom>
         <Row0>
-          <Sizes/>
+          <Sizes>
+            <Wnd0>
+              <Rect>
+                <Top>-2</Top>
+                <Left>-2</Left>
+                <Bottom>198</Bottom>
+                <Right>1282</Right>
+                <x>-2</x>
+                <y>-2</y>
+                <xscreen>1284</xscreen>
+                <yscreen>200</yscreen>
+                <sizeHorzCX>1003125</sizeHorzCX>
+                <sizeHorzCY>212540</sizeHorzCY>
+                <sizeVertCX>156250</sizeVertCX>
+                <sizeVertCY>212540</sizeVertCY>
+              </Rect>
+            </Wnd0>
+          </Sizes>
         </Row0>
       </Bottom>
       <Float>

@@ -31,13 +31,13 @@ void GPIOconfig(void)
   PBsArrIntPend &= ~0x07;            // clear pending interrupts 
   
   // Buzzer Setup
-  BuzzerSel |= Buzzer; // Set P2.2/Buzzer to TimerB output
+  BuzzerSel |= Buzzer; // Set P2.2/Buzzer to  output (not TimerB)
   BuzzerDir |= Buzzer;
 
   // Keypad Setup
   KeypadIntSel &= ~IRQ;
   KeypadIntDir &= ~IRQ;
-  
+  KeypadIntEdgeSel |= IRQ;
   KeypadSel = 0x00; // IO mode = 0
   KeypadDir = 0x0F; // input = 0, output = 1
   
@@ -48,37 +48,66 @@ void GPIOconfig(void)
   // TODO - Delete
 }                             
 
-// DMA Configuration
+/* 
+DMA Configuration 
+*/
 void DMAConfig()
 {
-  DMACTL0 |= DMA1TSEL_7;
-  DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
-  DMA0CTL |= DMADT_4 + DMASRCINCR_3 + DMADSTBYTE + DMASRCBYTE;
-
+  DMACTL0 &= ~DMAEN;
+  DMACTL0 |= DMA0TSEL_7;
+  //DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
+  DMA0CTL |= DMADT_4 + DMASRCINCR_3;
+  //DMA0CTL &= ~DMASRCBYTE + ~DMADSTBYTE;
+  DMA0CTL |= DMASRCBYTE + DMADSTBYTE;
+  
+  
   /* DMADT_4: Tranfer Mode = Repeated single transfer,
    * DMASRCINC_3: Increase source address for each transfer,
-   * DMADSTBYTE: ,
+   * DMADSTBYTE: 
    * DMASRCBYTE: */
 }
-// Timers congiguration 
+
+
+/*
+ Timers congiguration 
+*/
 void TIMERconfig(void)
 {
   // TimerA Configuration
-  TACTL |= TASSEL_2 + TACLR;          // SMCLK, clear TBR, up mode
-  TACCR2 = 0x115; // Count to 325ms
+  TACTL |= TASSEL_1 +TACLR;          // SMCLK, clear TBR, up mode
+  TACCR0 = 0x28A0; // Count to 325ms
   
   // TimerB Configuration
-  TBCTL |= TBSSEL_1 + TBCLR;
-  TBCCTL0 |= CCIE;
+  TBCTL |= TBSSEL_2 + TBCLR;
+  //TBCCTL0 |= CCIE;
 } 
+
 
 void enableTransfersDMA()
 {
-  TACTL |= MC_1;
-  TBCTL |= MC_1;
-  DMA0CTL |= DMAIE + DMAEN;
+  
+  DMACTL0 &= ~DMAEN;
+  DMACTL0 |= DMA0TSEL_7;
+  //DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
+  DMA0CTL |= DMADT_4 + DMASRCINCR_3;
+  DMA0CTL &= ~DMASRCBYTE + ~DMADSTBYTE;
+  //DMA0CTL |= DMASRCBYTE + DMADSTBYTE;
+  
+  DMA1CTL |= DMADT_4 + DMASRCINCR_3;
+  DMA1CTL &= ~DMASRCBYTE + ~DMADSTBYTE;
+  
+  //TBCTL |= MC_1;
+  DMA0CTL |= DMAEN;
+  DMA1CTL |= DMAEN;
+  
+  TACTL |= TAIE + TACLR + MC_1;
 }
 
+void stopTransfersDMA()
+{
+  TACTL &= ~TAIE;
+  DMA0CTL &= ~DMAEN;
+}
 
 void enableKeypad()
 {
@@ -89,33 +118,10 @@ void enableKeypad()
 // Start DMA Transfers
 void startDMATransfers(void)
 {
-  TACCR2 = 0x155;
+  TACCR2 = 0x5333;
   TACCTL2 = OUTMOD_6;                       // TACCR2 toggle/set
 }
 
-// DMA Configurations
-//void recordConfig(){
-//
-//  //int i = 0x03600;                              // Delay for needed ref start-up.
-//  //while(i--){                               // See datasheet for details.
-//  //TBCCR0 = 100;                             // Init TBCCR0 w/ sample prd
-//  //TBCCR1 = 70;                              // Trigger for ADC12 SC
-//  //TBCCTL1 = OUTMOD_7;                       // Reset OUT1 on EQU1, set on EQU0
-//  //DMA0SA = (void (*)())&ADC12MEM0;          // Src address = ADC12 module
-//  //DMA0DA = (void (*)())0x01500;             // Dst address = RAM memory
-//  //DMA0SZ = 0x020;                           // Size in words
-//  //DMACTL0 = DMA0TSEL_6;                     // ADC12IFGx triggers DMA0
-//  //DMA0CTL = DMADSTINCR_3 + DMAIE + DMAEN;   // Config
-//  //P5OUT |= 0x02;                            // Start recording and enter LPM0
-//  //TBCTL = TBSSEL_2 + TBCLR;          // SMCLK, clear TBR, up mode
-//  //__bis_SR_register(LPM0_bits + GIE);       // Enter LPM0, enable interrupts
-//  //TBCTL = 0;                                // Disable Timer_B
-//  //P5OUT &= ~0x02;                           // Clear P5.1 (LED Off)
-//  }
-//}
-//
-
- 
              
              
             
