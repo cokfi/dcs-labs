@@ -39,6 +39,7 @@
 #define PB0                0x01
 #define PB1                0x02
 #define PB2                0x04
+#define PB4                0x08
 
 
 // Keypad abstraction

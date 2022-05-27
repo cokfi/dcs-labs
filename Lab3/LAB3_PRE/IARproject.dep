@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1945699512</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\header\api.h</file>
+      <file>$PROJ_DIR$\source\api.c</file>
+      <file>$TOOLKIT_DIR$\config\multiplier.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\in430.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\msp430xG46x.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\halGPIO.r43</file>
+      <file>$PROJ_DIR$\header\halGPIO.h</file>
+      <file>$PROJ_DIR$\header\LCD.h</file>
+      <file>$PROJ_DIR$\source\LCD.c</file>
+      <file>$PROJ_DIR$\source\bsp.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\LCD.r43</file>
+      <file>$PROJ_DIR$\source\main.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\api.pbi</file>
+      <file>$PROJ_DIR$\header\app.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\LCD.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\IARproject.pbd</file>
+      <file>$PROJ_DIR$\Debug\Obj\halGPIO.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\IARproject.d43</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\header\bsp.h</file>
+      <file>$PROJ_DIR$\source\halGPIO.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\api.r43</file>
+      <file>$TOOLKIT_DIR$\config\lnk430FG4619.xcl</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.r43</file>
+      <file>$TOOLKIT_DIR$\doc\infocenter\index.ENU.html</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\api.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 24</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 15</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 0 8 22 5 3 21 16 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0 8 22 5 3 21 16 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\LCD.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 13</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 5 3 21 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5 3 21 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\bsp.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 6</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 22 5 3 21</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22 5 3 21</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\main.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 12</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 0 8 22 5 3 21 16 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0 8 22 5 3 21 16 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\IARproject.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 17 15 4 19 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\IARproject.d43</name>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 25 2 13 24 6 7 26</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\source\halGPIO.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 7</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 8 22 5 3 21 16 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8 22 5 3 21 16 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

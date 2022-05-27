@@ -18,8 +18,15 @@ void GPIOconfig(void)
   // TODO Check if good
   PBsArrPortSel &= ~0x07;            // P1.
   PBsArrPortDir &= ~0x07;            //
+  
+  
+  //PBsArrIntEdgeSel |= 0x01;  	     // pull-up mode PB1
+  //PBsArrIntEdgeSel &= ~0x06;         // pull-down mode PB2-3
+  
+  /* If PB0 Not Working
   PBsArrIntEdgeSel |= 0x03;  	     // pull-up mode PB1-0
   PBsArrIntEdgeSel &= ~0x04;         // pull-down mode PB2
+  */
   PBsArrIntEn |= 0x07;
   PBsArrIntPend &= ~0x07;            // clear pending interrupts 
   
