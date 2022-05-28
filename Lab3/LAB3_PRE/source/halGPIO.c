@@ -48,52 +48,7 @@ void disable_interrupts()
 void playNote(int note)
 {
    static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x233,0x212,0x1F5};
-  /*switch (note)
-    {
-      
-    case 0:
-        TBCCR0 = 0x3EA; // 1046[Hz]
-        break;
-    case 1:
-        TBCCR0 = 0x3B2; // 1108[Hz]
-        break;
-    case 2:
-        TBCCR0 = 0x37D; // 1174
-        break;
-    case 3:
-        TBCCR0 = 0x34B; // 1244
-        break;
-    case 4:
-        TBCCR0 = 0x31C; // 1318
-        break;
-    case 5:
-        TBCCR0 = 0x2EF; // 1397
-        break;
-    case 6:
-        TBCCR0 = 0x2C4; // 1480
-        break;
-    case 7:
-        TBCCR0 = 0x29D; // 1567
-        break;
-    case 8:
-        TBCCR0 = 0x277; // 1661
-        break;
-    case 9:
-        TBCCR0 = 0x254; // 1760
-        break;
-    case 0xA:
-        TBCCR0 = 0x233; // 1864
-        break;
-    case 0xB:
-        TBCCR0 = 0x212; // 1975
-        break;
-    case 0xC:
-        TBCCR0 = 0x1F5; // 2093
-        break;
-    default:
-        return;
-    }  // Switch
-      */
+  
    if((note<0) || (note>0xC))
     {
     return;
