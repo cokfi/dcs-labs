@@ -47,7 +47,7 @@ void disable_interrupts()
 
 void playNote(int note)
 {
-   static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x233,0x212,0x1F5};
+   static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x254,0x233,0x212,0x1F5};
   
    if((note<0) || (note>0xC))
     {
@@ -59,13 +59,11 @@ void playNote(int note)
 
     TBCTL |= TBCLR;
     TBCTL |= TBSSEL_2 + MC_1; // Start Timer in up-mode
-    // TODO Check
+    
     delay(65000);
-    //TACTL |= TAIE + TACLR + MC_1;
-    //enterLPM(lpm_mode);
-    //TACTL &= ~TAIE; 
+
     TBCTL &= ~MC_1; // Stop Timer
-    //
+    
 }
 
 // Record SingleNote and Play to buzzer
@@ -163,7 +161,7 @@ void showInvalidChoiceMsg()
 }
 
 // Play Song
-void playSong(int song[], int size)
+/*void playSong(int song[], int size)
 {
     DMA0SZ = size;
     //__data16_write_addr((unsigned short) &DMA0SA, (unsigned short) song); // Ignore
@@ -173,6 +171,10 @@ void playSong(int song[], int size)
 
     // Start DMA
     int i = size;
+    
+
+     //TESTING
+    
     enableTransfersDMA();
     while (DMA0SZ)
     {
@@ -183,12 +185,12 @@ void playSong(int song[], int size)
     }
     stopTransfersDMA();
     return;
-}
+}*/
 
 
-/*void playSong(int song[], int size)
+void playSong(int song[], int size)
 {
-  static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x233,0x212,0x1F5};
+  static const int tbNoteVals[] = {0x3EA,0x3B2,0x37D,0x34B,0x31C,0x2EF,0x2C4,0x29D,0x277,0x254,0x233,0x212,0x1F5,};
   int tbccr0Vals[100];
   int tbccr1Vals[100];
   
@@ -198,29 +200,43 @@ void playSong(int song[], int size)
   __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) tbccr0Vals); // Ignore
   __data16_write_addr((unsigned short) &DMA1SA, (unsigned short) tbccr1Vals); // Ignore
   __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &TBCCR0); // Ignore
-   __data16_write_addr((unsigned short) &DMA1DA, (unsigned int) &TBCCR1); // Ignore
+  __data16_write_addr((unsigned short) &DMA1DA, (unsigned int) &TBCCR1); // Ignore
   //DMA0SA = (int)tbccr0Vals;
   //DMA1SA = (int)tbccr1Vals;
   int i;
   for(i=0;i<size;i++)
   {
-    tbccr0Vals[i]= tbNoteVals[i];
+    tbccr0Vals[i]= tbNoteVals[song[i]];
     
-    tbccr1Vals[i]= tbNoteVals[i]>>1;
+    tbccr1Vals[i]= tbNoteVals[song[i]]>>1;
   }
   //DMA0DA = (int)&TBCCR0;
   //DMA1DA = (int)&TBCCR1;
   
+      //TESTING
+  TBCCTL1 = OUTMOD_7;                       // CCR2 reset/set
+
   TBCTL |= TBCLR;
-  TBCTL |= TBSSEL_2 + MC_1; 
+  TBCTL |= TBSSEL_2 + MC_1; // Start Timer in up-mode
+
   enableTransfersDMA();
+  DMA1CTL |= DMAREQ;
+  DMA0CTL |= DMAREQ;
   while(DMA0SZ)
-  {
+  { 
+    /*if(DMA0SZ == 1)
+    {
+      stopTransfersDMA();
+      return;
+    }*/
+    DMA1CTL |= DMAREQ;
+    DMA0CTL |= DMAREQ;
+   
     enterLPM(lpm_mode);
   }
   
 }
-*/
+
 
 // Port1 Interrupt Service Routine
 #pragma vector=PORT1_VECTOR
@@ -345,6 +361,9 @@ __interrupt void Keypad_handler(void)
 __interrupt void DMA_ISR(void)
 {
     DMA0CTL &= ~DMAIFG;                       // Clear DMA0 interrupt flag
+    DMA1CTL &= ~DMAIFG;                       
+    
+    TBCTL &= ~MC_1; // Stop Timer
     //outNote = DMA0DA;
     __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
 }
@@ -353,7 +372,12 @@ __interrupt void DMA_ISR(void)
 #pragma vector = TIMERA1_VECTOR
 __interrupt void timerA_ISR(void)
 {
-  if(state==state2){playNote(outNote);}
+  if(state==state2)
+  {
+    //playNote(outNote);
+    
+  }
+  
   if(DMA0SZ == 0)
   {
     TBCTL &= ~MC_1; // Stop Timer
@@ -361,13 +385,22 @@ __interrupt void timerA_ISR(void)
   }
   else
   {
-    DMA0CTL |= DMAREQ;
-    DMA1CTL |= DMAREQ;
+    //DMA0CTL |= DMAREQ;
+    //DMA1CTL |= DMAREQ;
   }
   TACTL &= ~TAIFG;
    __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
 }
 
+
+
+
+
+
+
+
+
+//TODO DELETE
 // ISR to execute when reaching 325 ms
 #pragma vector = TIMERB0_VECTOR
 __interrupt void timerB_ISR(void)

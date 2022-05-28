@@ -58,7 +58,7 @@ void DMAConfig()
   //DMACTL0 |= DMA0TSEL_1; // Use TACCR2 as Trigger
   DMA0CTL |= DMADT_4 + DMASRCINCR_3;
   //DMA0CTL &= ~DMASRCBYTE + ~DMADSTBYTE;
-  DMA0CTL |= DMASRCBYTE + DMADSTBYTE;
+  DMA0CTL |= DMASRCBYTE + DMADSTBYTE + DMAIE;
   
   
   /* DMADT_4: Tranfer Mode = Repeated single transfer,
