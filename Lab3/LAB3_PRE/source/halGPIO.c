@@ -7,6 +7,8 @@ void sysConfig(void)
     GPIOconfig();
     TIMERconfig();
     DMAConfig();
+    lcd_init();
+    clearLCD();
  
 }
 
@@ -104,6 +106,10 @@ int getSongChoice()
             chosen = 1;
             ret = 3;
             break;
+         case 4:
+            chosen = 1;
+            ret = 4;
+            break;
         case -1:
             break;
         default:
@@ -144,6 +150,7 @@ void showMenu()
     default:
         break;
     }
+    
     startRowLCD(0);
     lcd_puts(row1);
     startRowLCD(1);
@@ -308,46 +315,46 @@ __interrupt void Keypad_handler(void)
     // Check first Row
     P10OUT = 0x0E;
     if ((P10IN & 0x10) == 0)
-        keypadButton = 0xD;
+        keypadButton = 0x0D;
     else if ((P10IN & 0x20) == 0)
-        keypadButton = 0xE;
+        keypadButton = 0x0E;
     else if ((P10IN & 0x40) == 0)
-        keypadButton = 0;
+        keypadButton = 0x00;
     else if ((P10IN & 0x80) == 0)
-        keypadButton = 0xF;
+        keypadButton = 0x0F;
 
     // Check Second Row
     P10OUT = 0x0D;
     if ((P10IN & 0x10) == 0)
-        keypadButton = 0xC;
+        keypadButton = 0x0C;
     else if ((P10IN & 0x20) == 0)
-        keypadButton = 9;
+        keypadButton = 0x09;
     else if ((P10IN & 0x40) == 0)
-        keypadButton = 8;
+        keypadButton = 0x08;
     else if ((P10IN & 0x80) == 0)
-        keypadButton = 7;
+        keypadButton = 0x07;
 
     // Check Third Row
     P10OUT = 0x0B;
     if ((P10IN & 0x10) == 0)
-        keypadButton = 0xB;
+        keypadButton = 0x0B;
     else if ((P10IN & 0x20) == 0)
-        keypadButton = 6;
+        keypadButton = 0x06;
     else if ((P10IN & 0x40) == 0)
-        keypadButton = 5;
+        keypadButton = 0x05;
     else if ((P10IN & 0x80) == 0)
-        keypadButton = 4;
+        keypadButton = 0x04;
 
     // Check Fourth Row
     P10OUT = 0x07;
     if ((P10IN & 0x10) == 0)
-        keypadButton = 0xA;
+        keypadButton = 0x0A;
     else if ((P10IN & 0x20) == 0)
-        keypadButton = 3;
+        keypadButton = 0x03;
     else if ((P10IN & 0x40) == 0)
-        keypadButton = 2;
+        keypadButton = 0x02;
     else if ((P10IN & 0x80) == 0)
-        keypadButton = 1;
+        keypadButton = 0x01;
 
     delay(debounceVal);
 

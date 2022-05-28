@@ -30,7 +30,7 @@ void record(int recorder[])
 //            Play Songs
 //-------------------------------------------------------------
 
-void play(){
+void play(int recorder[]){
 	int choice = getSongChoice();
 
 	switch (choice)
@@ -44,7 +44,8 @@ void play(){
 	case 3:
 		playSong(song3, SONG3_SIZE);
 		break;
-		
+	case 4:	
+                playSong(recorder,RECORD_SIZE);
 	default:
 		break;
 	}

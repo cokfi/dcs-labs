@@ -39,12 +39,14 @@ void main(void)
 	  	case state1:
 				//disable_interrupts();
 				record(recorder);
+                                state = state0;
 				//enable_interrupts();
 				break;
 	  	case state2:
 				//disable_interrupts();
-				play();
-				//enable_interrupts();
+				play(recorder);
+				state = state0;
+                                //enable_interrupts();
 				break;
 		} // Switch
   } // While
