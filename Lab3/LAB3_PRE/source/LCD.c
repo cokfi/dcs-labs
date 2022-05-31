@@ -111,7 +111,7 @@ void lcd_init()
 void DelayUs(unsigned int cnt)
 {  
 	unsigned char i;
-        for(i=cnt ; i>0 ; i--) asm("nop"); // tha command asm("nop") takes raphly 1usec
+        for(i=cnt ; i>0 ; i--) asm(" nop"); // tha command asm("nop") takes raphly 1usec
 }
 
 // Delay msec functions

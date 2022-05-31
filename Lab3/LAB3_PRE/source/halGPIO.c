@@ -91,6 +91,7 @@ int getSongChoice()
         enableKeypad();
         enable_interrupts();
         enterLPM(lpm_mode); // Enter LPM and wait for keypad interrupt (User Choice)
+
         showMenu();
         switch (keypadButton)
         {

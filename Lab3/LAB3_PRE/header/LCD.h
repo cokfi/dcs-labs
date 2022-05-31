@@ -39,7 +39,7 @@
 #define INPUT_DATA      0x00	
 
 #define LCD_STROBE_READ(value)	LCD_EN(1), \
-				asm("nop"), asm("nop"), \
+				asm(" nop"), asm(" nop"), \
 				value=LCD_DATA_READ, \
 				LCD_EN(0) 
 
