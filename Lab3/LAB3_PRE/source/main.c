@@ -17,18 +17,17 @@ enum SYSmode lpm_mode;
 
 // Note: song sizes are defined in halGPIO.h
 int keypadButton;
-int song1[] ={2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,7,7,7,7,7,7,2,7,7,7,2,7,7,7,2,4,4,2,11,11,9,9,7}; // Uncle Moshe
-int song2[] ={0,5,9,0,5,9,9, 7,7,7,7,9,10,10,10,12,10,9,7,9,9,9,9,5,7,9, 10,10,10,12,10,10, 9,5,9,12,12, 0,4,7,10,9,7,5,5,5,5}; // Our Auto
-int song3[] ={4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0,4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0}; // Hands Up!
-
-
+int song1[SONG1_SIZE] ={2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,7,7,7,7,7,7,2,7,7,7,2,7,7,7,2,4,4,2,11,11,9,9,7}; // Uncle Moshe
+int song2[SONG2_SIZE] ={0,5,9,0,5,9,9, 7,7,7,7,9,10,10,10,12,10,9,7,9,9,9,9,5,7,9, 10,10,10,12,10,10, 9,5,9,12,12, 0,4,7,10,9,7,5,5,5,5}; // Our Auto
+int song3[SONG3_SIZE] ={4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0,4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0}; // Hands Up!
+int recorder[RECORD_SIZE];
+unsigned int countingIndexRecord = 32; //32 notes to play
 
 void main(void)
 {
-	static int recorder[RECORD_SIZE];
 	state = state0;				// start in idle state on RESET
 	lpm_mode = mode0;     // start in idle state on RESET
-  sysConfig();
+	sysConfig();
   while(1)
 	{
 		switch(state)
@@ -38,8 +37,12 @@ void main(void)
 			break;
 	  	case state1:
 				//disable_interrupts();
-				record(recorder);
-                                state = state0;
+	  	        enableKeypad();
+	  	        enterLPM(lpm_mode);
+	  	        if (countingIndexRecord< 1){
+	  	          state = state0;
+	  	          //disableKeypadInterupts();
+	  	        }
 				//enable_interrupts();
 				break;
 	  	case state2:

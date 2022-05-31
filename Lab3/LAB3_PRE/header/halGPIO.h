@@ -12,7 +12,6 @@
 
 extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
-extern int keypadButton;
 static int menuIndex;
 static int outNote;
 extern void sysConfig(void);
@@ -28,9 +27,7 @@ extern void showMenu();
 extern void showInvalidChoiceMsg();
 extern void playSong(int song[], int size);
 
-extern int song1[];
-extern int song2[];
-extern int song3[];
+
 
 
 

@@ -9,21 +9,20 @@ void record(int recorder[])
 {
         clearLCD();
 	//recordConfig();
-	unsigned int i = 32;
-	while(i){
-                int newNote = recordNote(); 
+
+//                int newNote = recordNote();
+//
+//                if(newNote == -1)
+//                {
+//                  continue;
+//                }
+//                playNote(newNote);
+//		recorder[32-i] = newNote;
+//
+//                i--;
+//                //playNote(recorder[32-i]);
                 
-                if(newNote == -1)
-                {
-                  continue;
-                }
-                playNote(newNote);
-		recorder[32-i] = newNote;
-                
-                i--;
-                //playNote(recorder[32-i]);
-                
-	}
+//	}
 }
 
 //-------------------------------------------------------------

@@ -24,15 +24,15 @@ void delay(unsigned int t)
 void enterLPM(unsigned char LPM_level)
 {
     if (LPM_level == 0x00)
-        _BIS_SR(LPM0_bits); /* Enter Low Power Mode 0 */
+        __bis_SR_register(LPM0_bits + GIE); /* Enter Low Power Mode 0 */
     else if (LPM_level == 0x01)
-        _BIS_SR(LPM1_bits); /* Enter Low Power Mode 1 */
+        __bis_SR_register(LPM1_bits + GIE) ; /* Enter Low Power Mode 1 */
     else if (LPM_level == 0x02)
-        _BIS_SR(LPM2_bits); /* Enter Low Power Mode 2 */
+        __bis_SR_register(LPM2_bits + GIE); /* Enter Low Power Mode 2 */
     else if (LPM_level == 0x03)
-        _BIS_SR(LPM3_bits); /* Enter Low Power Mode 3 */
+        __bis_SR_register(LPM3_bits + GIE); /* Enter Low Power Mode 3 */
     else if (LPM_level == 0x04)
-        _BIS_SR(LPM4_bits); /* Enter Low Power Mode 4 */
+        __bis_SR_register(LPM4_bits + GIE); /* Enter Low Power Mode 4 */
 }
 
 // Enable interrupts
@@ -71,7 +71,7 @@ void playNote(int note)
 // Record SingleNote and Play to buzzer
 int recordNote()
 {
-    KeypadIntEn |= IRQ; // Enable Keypad Interrupts
+    //KeypadIntEn |= IRQ; // Enable Keypad Interrupts
     enterLPM(lpm_mode); // Enter LPM0
     // Wait for keypadInterrupt...
     return keypadButton;
@@ -205,10 +205,10 @@ void playSong(int song[], int size)
   DMA0SZ = size;
   DMA1SZ = size;
   
-  __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) tbccr0Vals); // Ignore
-  __data16_write_addr((unsigned short) &DMA1SA, (unsigned short) tbccr1Vals); // Ignore
-  __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &TBCCR0); // Ignore
-  __data16_write_addr((unsigned short) &DMA1DA, (unsigned int) &TBCCR1); // Ignore
+  __data16_write_addr((unsigned short) &DMA0SA, (unsigned short)(void (*)()) tbccr0Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA1SA, (unsigned short)(void (*)()) tbccr1Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA0DA, (unsigned int)(void (*)()) &TBCCR0); // Ignore
+  __data16_write_addr((unsigned short) &DMA1DA, (unsigned int)(void (*)()) &TBCCR1); // Ignore
   //DMA0SA = (int)tbccr0Vals;
   //DMA1SA = (int)tbccr1Vals;
   int i;
@@ -216,7 +216,7 @@ void playSong(int song[], int size)
   {
     tbccr0Vals[i]= tbNoteVals[song[i]];
     
-    tbccr1Vals[i]= tbNoteVals[song[i]]>>1;
+    tbccr1Vals[i]= tbNoteVals[song[i]]>>1; // divided by 2
   }
   //DMA0DA = (int)&TBCCR0;
   //DMA1DA = (int)&TBCCR1;
@@ -241,6 +241,11 @@ void playSong(int song[], int size)
     DMA0CTL |= DMAREQ;
    
     enterLPM(lpm_mode);
+    if(DMA0SZ == 1)
+        {
+          stopTransfersDMA();
+          return;
+        }
   }
   
 }
@@ -358,7 +363,19 @@ __interrupt void Keypad_handler(void)
         keypadButton = 0x01;
 
     delay(debounceVal);
+    if (state == state1){
+        //int newNote = recordNote();
 
+        if(keypadButton != -1)
+        {
+            playNote(keypadButton);
+            recorder[32-countingIndexRecord] = keypadButton;
+            countingIndexRecord--;
+        }
+
+
+
+    }
     P10OUT = 0x00; // Reset rows to prepare for next interrupt
     KeypadIntPend &= ~IRQ;
 

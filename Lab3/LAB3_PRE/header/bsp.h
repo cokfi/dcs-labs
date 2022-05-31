@@ -75,6 +75,8 @@ extern void enableTransfersDMA(void);
 extern void startDMATransfers(void);
 extern void stopTransfersDMA(void);
 extern void enableKeypad();
+extern void disableKeypadInterupts;
+extern void enableKeypadInterupts;
 //extern void recordConfig(void);
 #endif
 

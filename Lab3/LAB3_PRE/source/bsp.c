@@ -122,7 +122,12 @@ void startDMATransfers(void)
   TACCTL2 = OUTMOD_6;                       // TACCR2 toggle/set
 }
 
-             
+//void enableKeypadInterupts() {
+//    KeypadIntEn |= IRQ; // Enable Keypad Interrupts
+//}
+//void disableKeypadInterupts() {
+//    KeypadIntEn &= ~IRQ; // disable Keypad Interrupts
+//}
              
             
   
