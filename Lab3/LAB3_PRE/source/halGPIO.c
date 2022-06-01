@@ -11,6 +11,12 @@ void sysConfig(void)
     clearLCD();
  
 }
+void sysConfigState1(void)
+{
+    TIMERconfig();
+    DMAConfig();
+
+}
 
 // Polling based Delay function
 void delay(unsigned int t)

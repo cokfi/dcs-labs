@@ -15,6 +15,7 @@ extern enum SYSmode lpm_mode; // global variable
 static int menuIndex;
 static int outNote;
 extern void sysConfig(void);
+extern void sysConfigState1(void);
 
 extern void delay(unsigned int);
 extern void enterLPM(unsigned char);
