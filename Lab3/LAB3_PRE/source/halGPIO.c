@@ -83,6 +83,7 @@ int getSongChoice()
     int ret;
     int chosen = 0;
     lcd_init();
+    clearLCD();
     keypadButton = -1;
     while (!chosen)
     {
@@ -205,10 +206,10 @@ void playSong(int song[], int size)
   DMA0SZ = size;
   DMA1SZ = size;
   
-  __data16_write_addr((unsigned short) &DMA0SA, (unsigned short)(void (*)()) tbccr0Vals); // Ignore
-  __data16_write_addr((unsigned short) &DMA1SA, (unsigned short)(void (*)()) tbccr1Vals); // Ignore
-  __data16_write_addr((unsigned short) &DMA0DA, (unsigned int)(void (*)()) &TBCCR0); // Ignore
-  __data16_write_addr((unsigned short) &DMA1DA, (unsigned int)(void (*)()) &TBCCR1); // Ignore
+  __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) tbccr0Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA1SA, (unsigned short) tbccr1Vals); // Ignore
+  __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &TBCCR0); // Ignore
+  __data16_write_addr((unsigned short) &DMA1DA, (unsigned int) &TBCCR1); // Ignore
   //DMA0SA = (int)tbccr0Vals;
   //DMA1SA = (int)tbccr1Vals;
   int i;
@@ -241,7 +242,7 @@ void playSong(int song[], int size)
     DMA0CTL |= DMAREQ;
    
     enterLPM(lpm_mode);
-    if(DMA0SZ == 1)
+    if(DMA0SZ == 1 || state!=state2)
         {
           stopTransfersDMA();
           return;
@@ -400,19 +401,19 @@ __interrupt void timerA_ISR(void)
   if(state==state2)
   {
     //playNote(outNote);
-    
+      if(DMA0SZ <2)
+      {
+        TBCTL &= ~MC_1; // Stop Timer
+        //TBCTL |= TBCLR;
+      }
   }
   
-  if(DMA0SZ == 0)
-  {
-    TBCTL &= ~MC_1; // Stop Timer
-    //TBCTL |= TBCLR;
-  }
-  else
-  {
-    //DMA0CTL |= DMAREQ;
-    //DMA1CTL |= DMAREQ;
-  }
+
+//  else
+//  {
+//    //DMA0CTL |= DMAREQ;
+//    //DMA1CTL |= DMAREQ;
+//  }
   TACTL &= ~TAIFG;
    __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
 }
