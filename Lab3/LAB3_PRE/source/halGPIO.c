@@ -244,7 +244,7 @@ void playSong(int song[], int size)
     enterLPM(lpm_mode);
     if(DMA0SZ == 1 || state!=state2)
         {
-          stopTransfersDMA();
+          //stopTransfersDMA();
           return;
         }
   }

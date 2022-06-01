@@ -39,6 +39,7 @@ void main(void)
 	  	case state1:
 				//disable_interrupts();
 	  	        if (initState >0){
+	  	            clearConfig();
 	  	            sysConfig();
 	  	            initState = 0;
 	  	        }
@@ -56,6 +57,7 @@ void main(void)
 	  	case state2:
 				//disable_interrupts();
 	  	        if (initState >0){
+	  	            clearConfig();
 	  	            sysConfig();
                     initState = 0;
 	  	        }

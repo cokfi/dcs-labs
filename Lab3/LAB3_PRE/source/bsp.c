@@ -108,6 +108,18 @@ void stopTransfersDMA()
   TACTL &= ~TAIE;
   DMA0CTL &= ~DMAEN;
 }
+void clearConfig(){
+    TBCTL = 0x00;
+    TBCCTL1 = 0x00;
+    TBCCR0 = 0x00;
+    TBCCR1 = 0x00;
+    TACTL = 0x00;
+    TACCTL2= 0x00;
+    TACCR0= 0x00;
+    TACCR2= 0x00;
+    DMACTL0= 0x00;
+    DMA0CTL= 0x00;
+}
 
 void enableKeypad()
 {
