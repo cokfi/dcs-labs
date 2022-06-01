@@ -43,6 +43,8 @@ void main(void)
 	  	            sysConfigState1();
 	  	            initState = 0;
 	  	        }
+//	            startRowLCD(1);
+//	            lcd_puts(countingIndexRecord);
 	  	        enableKeypad();
 	  	        enterLPM(lpm_mode);
 	  	        if (countingIndexRecord< 1){ //go to sleep
@@ -59,7 +61,7 @@ void main(void)
 				//disable_interrupts();
 	  	        if (initState >0){
 	  	            clearConfig();
-	  	          sysConfigState1();
+	  	          sysConfigState2();
                     initState = 0;
 	  	        }
 				play(recorder);

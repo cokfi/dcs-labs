@@ -16,7 +16,7 @@ static int menuIndex;
 static int outNote;
 extern void sysConfig(void);
 extern void sysConfigState1(void);
-
+extern void sysConfigState2(void);
 extern void delay(unsigned int);
 extern void enterLPM(unsigned char);
 extern void playNote(int);

@@ -15,9 +15,14 @@ void sysConfigState1(void)
 {
     TIMERconfig();
     DMAConfig();
-
+    startRowLCD(0);
+    lcd_puts("Recording...");
 }
-
+void sysConfigState2(void)
+{
+    TIMERconfig();
+    DMAConfig();
+}
 // Polling based Delay function
 void delay(unsigned int t)
 {  // t[msec]
@@ -88,7 +93,7 @@ int getSongChoice()
 {
     int ret;
     int chosen = 0;
-    lcd_init();
+    //lcd_init();
     clearLCD();
     keypadButton = -1;
     while (!chosen)
