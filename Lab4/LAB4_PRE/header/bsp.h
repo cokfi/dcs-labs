@@ -5,12 +5,16 @@
 /*
   Ports and Connections:
 
-  1. PB0-PB2        => P1.0-P1.2 v
-  2. LCD D4-D7      => P1.4-P1.7 v
-  3. LCD Ctl Lines  => P2.5-P2.7 v
-  4. Buzzer         => P2.2      v
-  5. Keypad         => P10       v
-  6. Keypad Int     => P2.1      v
+
+  Potentiometer     => P1.3
+  2. LCD D4-D7      => P1.4-P1.7
+  RGB L.E.Ds        => P2.0-P2.2 
+  3. LCD Ctl Lines  => P2.5-P2.7 
+
+  not connected but in use:
+  uart Rx at pin P1.1
+  uart Tx at pin P1.2
+  
 */
 #define TXLED BIT0
 #define RXLED BIT6

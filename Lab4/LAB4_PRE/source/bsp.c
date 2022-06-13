@@ -33,12 +33,21 @@ void GPIOconfig(void)
   IE2 |= UCA0RXIE;                          // Enable USCI_A0 RX interrupt
   __bis_SR_register(LPM0_bits + GIE);       // Enter LPM3 w/ int until Byte RXed
 
-}                             
+}
+void clearConfig(){
+     TACTL = 0x00;
+     CCTL0 = 0x00; 
+     updateRGB(0x00);
+    // TACCTL2= 0x00;
+    // TACCR0= 0x00;
+    // TACCR2= 0x00;
+}
 //-------------------------------------------------------------
 //           update RGB value
 //-------------------------------------------------------------
 void updateRGB(int RGB){
-    P2OUT |= RGB;
+    P2OUT &= ~0x7; // shut down RGB
+    P2OUT |= RGB;  // power up RGB
 }
 
 //-------------------------------------------------------------
@@ -47,8 +56,11 @@ void updateRGB(int RGB){
 void TIMERconfig(void)
 {
   // TimerA Configuration
-  TACTL |= TASSEL_1 +TACLR;          // SMCLK, clear TBR, up mode
-  TACCR0 = timerDelayMs*30; // Count to 325ms
+  
+  CCR0 = timerDelayMs*5;
+  TACTL = TASSEL_1 + MC_1;                  // ACLK, upmode
+  //TACCR0 = timerDelayMs*30; // Count to timerDelayMs [ms]
+  CCTL0 = CCIE;                             // CCR0 interrupt enabled
   
   // TimerB Configuration
   //TBCTL |= TBSSEL_2 + TBCLR;

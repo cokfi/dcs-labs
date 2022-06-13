@@ -11,7 +11,7 @@ void sysConfig(void)
 {
 
     GPIOconfig();
-    TIMERconfig();
+    //TIMERconfig();
     lcd_init();
     clearLCD();
  
@@ -30,7 +30,6 @@ void sysConfigState2(void)
     TIMERconfig();
     startRowLCD(0);
     lcd_puts("Recording...");
-    DMAConfig();
 }
 // Polling based Delay function
 void delay(unsigned int t)
@@ -132,13 +131,20 @@ __interrupt void PBs_handler(void)
 
 
 //-------------------------------------------------------------
-//           interrupt vector TIMERA1
+// Timer A0 interrupt service routine
 //-------------------------------------------------------------
-#pragma vector = TIMERA1_VECTOR
-__interrupt void timerA_ISR(void)
+
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void Timer_A (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) Timer_A (void)
+#else
+#error Compiler not supported!
+#endif
 {
   TACTL &= ~TAIFG;
-   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
+  __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx
 }
 //TODO DELETE
 // ISR to execute when reaching 325 ms
@@ -182,6 +188,7 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCI0RX_ISR (void)
 #error Compiler not supported!
 #endif
 {
+
   if (UCA0RXBUF == '1')                     // 'u' received?
   {
     state = state1;
@@ -205,6 +212,7 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCI0RX_ISR (void)
   }
   else if (UCA0RXBUF == '4')                     // 'u' received?
   {
+    isTimerDelayUartInput = 1; // use uart input to get the Delay 
     state = state4;
     i = 0;
     IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt

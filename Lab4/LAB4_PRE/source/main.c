@@ -60,12 +60,13 @@ void main(void)
                     initState = 0;
 	  	        }
 				break;
-		case state4:
+		case state4:// get timerDelayMs from PC (UART)
 	  	        if (initState >0){
 	  	            clearConfig();
 	  	          	sysConfigState2();
                     initState = 0;
 	  	        }
+				getDelayTime();
 				break;
 		case state5:
 	  	        if (initState >0){

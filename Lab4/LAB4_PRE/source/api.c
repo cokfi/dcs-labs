@@ -12,6 +12,7 @@ int incrementRgbLed(int RGB){
     if (RGB>=0x8){
         RGB = 0;
     }
+    return RGB;
 	
 
 }
