@@ -15,6 +15,7 @@ void main(void)
 	initState = 1;
 	state = state0;				// start in idle state on RESET
 	lpm_mode = mode0;     // start in idle state on RESET
+	int RGB = 0; // RGB L.E.D values are between 0 to 7
 	sysConfig();
   while(1)
 	{
@@ -23,12 +24,14 @@ void main(void)
 	  	case state0:
     		enterLPM(lpm_mode);
 			break;
-	  	case state1:
+	  	case state1: // blink RGB colors L.E.D
 	  	        if (initState >0){
 	  	            clearConfig();
 	  	            sysConfigState1();
 	  	            initState = 0;
+					RGB = 0;
 	  	        }
+				incrementRgbLed(RGB);
 
 				break;
 		case state2:

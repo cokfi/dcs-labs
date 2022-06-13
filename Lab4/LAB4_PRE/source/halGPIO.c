@@ -58,7 +58,7 @@ void disable_interrupts()
 }
 
 
-
+/*
 // Port1 Interrupt Service Routine
 #pragma vector=PORT1_VECTOR
 __interrupt void PBs_handler(void)
@@ -113,117 +113,7 @@ __interrupt void PBs_handler(void)
         break;
     }
 }
-
-// Port10/Keypad Interrupt Service Routine
-#pragma vector = PORT2_VECTOR
-__interrupt void Keypad_handler(void)
-{
-    keypadButton = -1;
-
-    /* Search for pushed button row-by-row using running zero method:
-     E(1110)
-     D(1101)
-     B(1011)
-     7(0111)
-     */
-    // Check first Row
-    P10OUT = 0x0E;
-    if ((P10IN & 0x10) == 0)
-        keypadButton = 0x0D;
-    else if ((P10IN & 0x20) == 0)
-        keypadButton = 0x0E;
-    else if ((P10IN & 0x40) == 0)
-        keypadButton = 0x00;
-    else if ((P10IN & 0x80) == 0)
-        keypadButton = 0x0F;
-
-    // Check Second Row
-    P10OUT = 0x0D;
-    if ((P10IN & 0x10) == 0)
-        keypadButton = 0x0C;
-    else if ((P10IN & 0x20) == 0)
-        keypadButton = 0x09;
-    else if ((P10IN & 0x40) == 0)
-        keypadButton = 0x08;
-    else if ((P10IN & 0x80) == 0)
-        keypadButton = 0x07;
-
-    // Check Third Row
-    P10OUT = 0x0B;
-    if ((P10IN & 0x10) == 0)
-        keypadButton = 0x0B;
-    else if ((P10IN & 0x20) == 0)
-        keypadButton = 0x06;
-    else if ((P10IN & 0x40) == 0)
-        keypadButton = 0x05;
-    else if ((P10IN & 0x80) == 0)
-        keypadButton = 0x04;
-
-    // Check Fourth Row
-    P10OUT = 0x07;
-    if ((P10IN & 0x10) == 0)
-        keypadButton = 0x0A;
-    else if ((P10IN & 0x20) == 0)
-        keypadButton = 0x03;
-    else if ((P10IN & 0x40) == 0)
-        keypadButton = 0x02;
-    else if ((P10IN & 0x80) == 0)
-        keypadButton = 0x01;
-
-    delay(debounceVal);
-    if (state == state1){
-        //int newNote = recordNote();
-
-        if(keypadButton != -1)
-        {
-            playNote(keypadButton);
-            recorder[32-countingIndexRecord] = keypadButton;
-            countingIndexRecord--;
-        }
-
-
-
-    }
-    P10OUT = 0x00; // Reset rows to prepare for next interrupt
-    KeypadIntPend &= ~IRQ;
-
-    __bic_SR_register_on_exit(LPM0_bits);     // Exit LPMx, interrupts enabled
-}
-
-#pragma vector = DMA_VECTOR
-__interrupt void DMA_ISR(void)
-{
-    DMA0CTL &= ~DMAIFG;                       // Clear DMA0 interrupt flag
-    DMA1CTL &= ~DMAIFG;                       
-    
-    TBCTL &= ~MC_1; // Stop Timer
-    //outNote = DMA0DA;
-    __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
-}
-
-// ISR to execute when reaching 325 ms
-#pragma vector = TIMERA1_VECTOR
-__interrupt void timerA_ISR(void)
-{
-  if(state==state2)
-  {
-    //playNote(outNote);
-      if(DMA0SZ <2)
-      {
-        TBCTL &= ~MC_1; // Stop Timer
-        //TBCTL |= TBCLR;
-      }
-  }
-  
-
-//  else
-//  {
-//    //DMA0CTL |= DMAREQ;
-//    //DMA1CTL |= DMAREQ;
-//  }
-  TACTL &= ~TAIFG;
-   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
-}
+*/
 
 
 //**************************************************************************************************
@@ -232,14 +122,19 @@ __interrupt void timerA_ISR(void)
 
 
 
-
+#pragma vector = TIMERA1_VECTOR
+__interrupt void timerA_ISR(void)
+{
+  TACTL &= ~TAIFG;
+   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
+}
 //TODO DELETE
 // ISR to execute when reaching 325 ms
 #pragma vector = TIMERB0_VECTOR
 __interrupt void timerB_ISR(void)
 {
     TBCTL &= ~TBIFG; // Clear interrupt flag
-    BuzzerArrPort ^= Buzzer; //TODO Check if good
+    
 }
 
 
