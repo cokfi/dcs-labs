@@ -1,9 +1,7 @@
 #ifndef _bsp_H_
 #define _bsp_H_
-
-//#include  <msp430g2553.h>          // MSP430x2xx
-#include  <msp430xG46x.h>  // MSP430x4xx
-
+#include  <msp430g2553.h>          // MSP430x2xx
+#include  "../header/app.h"    		// private library - APP layer
 /*
   Ports and Connections:
 
@@ -14,6 +12,10 @@
   5. Keypad         => P10       v
   6. Keypad Int     => P2.1      v
 */
+#define TXLED BIT0
+#define RXLED BIT6
+#define TXD BIT2
+#define RXD BIT1
 
 #define   debounceVal      250
 #define   LEDs_SHOW_RATE   0xFFFF  // 62_5ms
@@ -67,18 +69,10 @@
 #define Buzzer          0x04
 
 
-extern void void updateRGB(int RGB);
+extern void updateRGB(int RGB);
 extern void GPIOconfig(void);
 extern void TIMERconfig(void);
-extern void DMAConfig(void);
-extern void enableTransfersDMA(void);
-extern void startDMATransfers(void);
-extern void stopTransfersDMA(void);
-extern void enableKeypad();
 extern void clearConfig();
-extern void disableKeypadInterupts;
-extern void enableKeypadInterupts;
-//extern void recordConfig(void);
 #endif
 
 

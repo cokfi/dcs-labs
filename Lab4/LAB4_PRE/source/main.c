@@ -1,15 +1,27 @@
-#include  "../header/api.h"    		// private library - API layer
-#include  "../header/app.h"    		// private library - APP layer
-
-/* Follow This Link for Code flow Diagrams: 
+/*
+file description: C program for DCS lab4 - FSM with UART communication 
+spec: https://github.com/cokfi/dcs-labs/tree/main/Lab4/spec
+programmer: Kfir Cohen
+MCU: MSP430
+Date: 13/06/22
 */
 
 
+#include  "../header/api.h"    		// private library - API layer
+#include  "../header/app.h"    		// private library - APP layer
+
+
+//-------------------------------------------------------------
+//           global variables
+//-------------------------------------------------------------
 enum FSMstate state;
 enum SYSmode lpm_mode;
 int initState;// initState is 1 if state has changed
 int timerDelayMs = 500; // defult
 
+//-------------------------------------------------------------
+//           main
+//-------------------------------------------------------------
 void main(void)
 {
 	initState = 1;
@@ -31,8 +43,8 @@ void main(void)
 	  	            initState = 0;
 					RGB = 0;
 	  	        }
-				incrementRgbLed(RGB);
-
+				enterLPM(lpm_mode);
+				RGB = incrementRgbLed(RGB);
 				break;
 		case state2:
 	  	        if (initState >0){
@@ -76,20 +88,10 @@ void main(void)
                     initState = 0;
 	  	        }
 				break;
-		case state8:
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
+		case state8:		
+			state = state0;
 				break;
-		case state9:
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
-				break;					
+						
 		} // Switch
   } // While
 } // Main

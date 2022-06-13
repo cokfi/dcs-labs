@@ -1,6 +1,12 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
-
-// System Configuration  
+//-------------------------------------------------------------
+//           globals
+//-------------------------------------------------------------
+const char string1[] = { "Hello World\r\n" };
+unsigned int i;
+//-------------------------------------------------------------
+//           system configurations
+//-------------------------------------------------------------
 void sysConfig(void)
 {
 
@@ -10,6 +16,9 @@ void sysConfig(void)
     clearLCD();
  
 }
+//-------------------------------------------------------------
+//           state1 configurations
+//-------------------------------------------------------------
 void sysConfigState1(void)
 {
     TIMERconfig();
@@ -122,7 +131,9 @@ __interrupt void PBs_handler(void)
 
 
 
-
+//-------------------------------------------------------------
+//           interrupt vector TIMERA1
+//-------------------------------------------------------------
 #pragma vector = TIMERA1_VECTOR
 __interrupt void timerA_ISR(void)
 {
@@ -131,14 +142,19 @@ __interrupt void timerA_ISR(void)
 }
 //TODO DELETE
 // ISR to execute when reaching 325 ms
-#pragma vector = TIMERB0_VECTOR
-__interrupt void timerB_ISR(void)
-{
-    TBCTL &= ~TBIFG; // Clear interrupt flag
-    
-}
+//-------------------------------------------------------------
+//           interrupt vector TIMERA0
+//-------------------------------------------------------------
+//#pragma vector = TIMERB0_VECTOR
+//__interrupt void timerB_ISR(void)
+//{
+//    TBCTL &= ~TBIFG; // Clear interrupt flag
+//
+//}
 
-
+//-------------------------------------------------------------
+//           interrupt vector uartTx
+//-------------------------------------------------------------
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI0TX_ISR(void)
@@ -154,6 +170,9 @@ void __attribute__ ((interrupt(USCIAB0TX_VECTOR))) USCI0TX_ISR (void)
     IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
 }
 
+//-------------------------------------------------------------
+//           interrupt vector uartRx
+//-------------------------------------------------------------
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)

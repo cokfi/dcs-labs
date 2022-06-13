@@ -1,10 +1,55 @@
 #ifndef _halGPIO_H_
 #define _halGPIO_H_
 
+
 #include  "../header/bsp.h"    		// private library - BSP layer
 #include  "../header/app.h"    		// private library - APP layer
+extern enum FSMstate state;   // global variable
+extern enum SYSmode lpm_mode; // global variable
+extern unsigned long int frequency;
+extern unsigned int REdge1, REdge2;
+extern int initState;
+//extern char finStr[];
+//extern char frequencyStr[];
+//extern char hzStr[];
+#define SMCLK_FREQUENCY 0x100000 // 2^16 (a bit more than 1MHz)
+/*----------------------------------------------------------
+  CONFIG: change values according to your port pin selection
+------------------------------------------------------------*/
+// #define CHECKBUSY	1  // using this define, only if we want to read from LCD
 
-<<<<<<< HEAD
+#ifdef CHECKBUSY
+	#define	LCD_WAIT lcd_check_busy()
+#else
+	#define LCD_WAIT DelayMs(5)
+#endif
+#define LCD_EN(a)	(!a ? (P2OUT&=~0X20) : (P2OUT|=0X20)) // P2.5 is lcd enable pin
+#define LCD_EN_DIR(a)	(!a ? (P2DIR&=~0X20) : (P2DIR|=0X20)) // P2.5 pin direction 
+
+#define LCD_RS(a)	(!a ? (P2OUT&=~0X40) : (P2OUT|=0X40)) // P2.6 is lcd RS pin
+#define LCD_RS_DIR(a)	(!a ? (P2DIR&=~0X40) : (P2DIR|=0X40)) // P2.6 pin direction  
+  
+#define LCD_RW(a)	(!a ? (P2OUT&=~0X80) : (P2OUT|=0X80)) // P2.7 is lcd RW pin
+#define LCD_RW_DIR(a)	(!a ? (P2DIR&=~0X80) : (P2DIR|=0X80)) // P2.7 pin direction
+
+#define LCD_DATA_OFFSET 0x04 //data pin selection offset for 4 bit mode, variable range is 0-4, default 0 - Px.0-3, no offset
+   
+#define LCD_DATA_WRITE	P1OUT
+#define LCD_DATA_DIR	P1DIR
+#define LCD_DATA_READ	P1IN
+/*---------------------------------------------------------
+  END CONFIG
+-----------------------------------------------------------*/
+#define FOURBIT_MODE	0x0
+#define EIGHTBIT_MODE	0x1
+#define LCD_MODE        FOURBIT_MODE
+#define SMCLK_FREQUENCY 0x100000
+   
+#define OUTPUT_PIN      1	
+#define INPUT_PIN       0	
+#define OUTPUT_DATA     (LCD_MODE ? 0xFF : (0x0F << LCD_DATA_OFFSET))
+#define INPUT_DATA      0x00	
+
 #define LCD_STROBE_READ(value)	LCD_EN(1), \
 				asm("nop"), asm("nop"), \
 				value=LCD_DATA_READ, \
@@ -22,12 +67,7 @@
 #define cursor_on               lcd_cmd(0x0F) 
 #define lcd_function_set        lcd_cmd(0x3C) // 8bit,two lines,5x10 dots 
 #define lcd_new_line            lcd_cmd(0xC0)                                  
-#define TOL 					1
-=======
 
-extern enum FSMstate state;   // global variable
-extern enum SYSmode lpm_mode; // global variable
->>>>>>> d65fd191b344dff7b6d5022cfe36123d84261ea7
 
 extern void sysConfig(void);
 extern void print2LEDs(unsigned char);
@@ -40,8 +80,28 @@ extern void enterLPM(unsigned char);
 extern void incLEDs(char);
 extern void enable_interrupts();
 extern void disable_interrupts();
-
 extern __interrupt void PBs_handler(void);
+//LCD
+extern void lcd_cmd(unsigned char);
+extern void lcd_data(unsigned char);
+extern void lcd_puts(const char * s);
+extern void lcd_init(void);
+extern void lcd_strobe(void);
+extern void DelayMs(unsigned int);
+extern void DelayUs(unsigned int);
+extern void configState1(void);
+extern void configState2(void);
+extern void configState3(void);
+/*
+ *	Delay functions for HI-TECH C on the PIC18
+ *
+ *	Functions available:
+ *		DelayUs(x)	Delay specified number of microseconds
+ *		DelayMs(x)	Delay specified number of milliseconds
+*/
+
+
+
 
 #endif
 

@@ -6,8 +6,7 @@
 
 extern void printSWs2LEDs(void);
 extern void printArr2SWs(char Arr[], int size, unsigned int rate);
-extern void displayFin(void);
-extern void displayTimeElapsed(int timeElapsed);
+
 
 #endif
 

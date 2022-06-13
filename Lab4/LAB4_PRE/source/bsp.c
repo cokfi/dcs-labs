@@ -1,6 +1,11 @@
-#include  "../header/bsp.h"    // private library - BSP layer
 
-// GPIO congiguration
+
+
+
+#include  "../header/bsp.h"    // private library - BSP layer
+//-------------------------------------------------------------
+//           GPIO congiguration
+//-------------------------------------------------------------
 void GPIOconfig(void)
 {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
@@ -29,15 +34,16 @@ void GPIOconfig(void)
   __bis_SR_register(LPM0_bits + GIE);       // Enter LPM3 w/ int until Byte RXed
 
 }                             
-
-// update RGB value
+//-------------------------------------------------------------
+//           update RGB value
+//-------------------------------------------------------------
 void updateRGB(int RGB){
     P2OUT |= RGB;
 }
 
-/*
- Timers congiguration 
-*/
+//-------------------------------------------------------------
+//          Timers congiguration 
+//-------------------------------------------------------------
 void TIMERconfig(void)
 {
   // TimerA Configuration
@@ -45,22 +51,9 @@ void TIMERconfig(void)
   TACCR0 = timerDelayMs*30; // Count to 325ms
   
   // TimerB Configuration
-  TBCTL |= TBSSEL_2 + TBCLR;
+  //TBCTL |= TBSSEL_2 + TBCLR;
   //TBCCTL0 |= CCIE;
 } 
-
-
-
-
-
-
-
-//void enableKeypadInterupts() {
-//    KeypadIntEn |= IRQ; // Enable Keypad Interrupts
-//}
-//void disableKeypadInterupts() {
-//    KeypadIntEn &= ~IRQ; // disable Keypad Interrupts
-//}
              
             
   

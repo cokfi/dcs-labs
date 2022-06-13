@@ -7,10 +7,11 @@
 //-------------------------------------------------------------
 
 int incrementRgbLed(int RGB){
+    updateRGB(RGB);
 	RGB += 1; //TODO Check if good
     if (RGB>=0x8){
         RGB = 0;
     }
-	updateRGB(RGB);
+	
 
 }
