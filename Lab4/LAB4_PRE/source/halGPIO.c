@@ -13,13 +13,14 @@ void sysConfig(void)
 void sysConfigState1(void)
 {
     TIMERconfig();
-    DMAConfig();
-    startRowLCD(0);
-    lcd_puts("Recording...");
+    clearLCD();
+
 }
 void sysConfigState2(void)
 {
     TIMERconfig();
+    startRowLCD(0);
+    lcd_puts("Recording...");
     DMAConfig();
 }
 // Polling based Delay function
