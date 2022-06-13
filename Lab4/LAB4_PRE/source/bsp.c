@@ -56,15 +56,9 @@ void updateRGB(int RGB){
 void TIMERconfig(void)
 {
   // TimerA Configuration
-  
   CCR0 = timerDelayMs*5;
   TACTL = TASSEL_1 + MC_1;                  // ACLK, upmode
-  //TACCR0 = timerDelayMs*30; // Count to timerDelayMs [ms]
   CCTL0 = CCIE;                             // CCR0 interrupt enabled
-  
-  // TimerB Configuration
-  //TBCTL |= TBSSEL_2 + TBCLR;
-  //TBCCTL0 |= CCIE;
 } 
              
             
