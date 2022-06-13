@@ -1,51 +1,16 @@
 #include  "../header/api.h"    		// private library - API layer
 
 
-//-------------------------------------------------------------
-//            Record Notes From KeyPad
-//-------------------------------------------------------------
-
-void record(int recorder[])
-{
-        clearLCD();
-	//recordConfig();
-
-//                int newNote = recordNote();
-//
-//                if(newNote == -1)
-//                {
-//                  continue;
-//                }
-//                playNote(newNote);
-//		recorder[32-i] = newNote;
-//
-//                i--;
-//                //playNote(recorder[32-i]);
-                
-//	}
-}
 
 //-------------------------------------------------------------
-//            Play Songs
+//           increment RGB L.E.D color value
 //-------------------------------------------------------------
 
-void play(int recorder[]){
-	int choice = getSongChoice();
+int incrementRgbLed(int RGB){
+	RGB += 1; //TODO Check if good
+    if (RGB>=0x8){
+        RGB = 0;
+    }
+	updateRGB(RGB);
 
-	switch (choice)
-	{
-	case 1:
-		playSong(song1, SONG1_SIZE);
-		break;
-	case 2:
-		playSong(song2, SONG2_SIZE);
-		break;
-	case 3:
-		playSong(song3, SONG3_SIZE);
-		break;
-	case 4:	
-                playSong(recorder,RECORD_SIZE);
-	default:
-		break;
-	}
 }

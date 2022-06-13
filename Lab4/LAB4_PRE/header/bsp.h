@@ -67,7 +67,7 @@
 #define Buzzer          0x04
 
 
-
+extern void void updateRGB(int RGB);
 extern void GPIOconfig(void);
 extern void TIMERconfig(void);
 extern void DMAConfig(void);

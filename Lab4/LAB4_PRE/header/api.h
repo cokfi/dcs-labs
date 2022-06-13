@@ -4,10 +4,7 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
 
 
-extern void printSWs2LEDs(void);
-extern void printArr2SWs(char Arr[], int size, unsigned int rate);
-extern void record(int[]);
-extern void play(int[]);
+extern int incrementRgbLed(int RGB);
 
 #endif
 
