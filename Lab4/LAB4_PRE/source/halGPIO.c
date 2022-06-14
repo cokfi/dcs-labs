@@ -66,69 +66,36 @@ void disable_interrupts()
     _BIC_SR(GIE);
 }
 
-
-/*
-// Port1 Interrupt Service Routine
-#pragma vector=PORT1_VECTOR
-__interrupt void PBs_handler(void)
+void readVoltage()
 {
-    delay(debounceVal);
+    /* 
+        ADC10CTL1:
+        - INCH_1   to choose P1 as input to read from
+        - CONSEQ_2 Repeat single channel mode
+        
 
-    if (PBsArrIntPend & PB0)
+        ADC10CTL0:
+        - ADC10SHT_3 Sample&Hold Time (Not sure about it)
+        - ADC10ON    ADC is 'On' (Shocking!)
+        - MSC        ADC continous automatically after first trigger 
+        
+        -
+        Notes:
+        - ADC10 is disabled in clearConfig()
+        - To stop ADC reset the MSC
+
+    */
+
+    ADC10CTL1 = INCH_1  + CONSEQ_2;// P1 as input, repeat single channel
+    ADC10CTL0 = ADC10SHT_3 + ADC10ON + MSC + ADC10IE;
+    ADC10AE0 = 0x04;
+
+    for (;;)
     {
-        state = state1;
-        PBsArrIntPend &= ~PB0;
-    }
-    else if (PBsArrIntPend & PB1)
-    {
-        state = state2;
-        PBsArrIntPend &= ~PB1;
-    }
-    else if (PBsArrIntPend & PB2)
-    {
-        if (state == state2)
-        {
-            menuIndex = menuIndex + 1;
-            if(menuIndex>4){
-                menuIndex = 0;
-            }
-            //showMenu();
-        }
-
-        PBsArrIntPend &= ~PB2;
-    }
-
-    // Exit from a given LPM
-    switch (lpm_mode)
-    {
-    case mode0:
-        LPM0_EXIT; // must be called from ISR only
-        break;
-
-    case mode1:
-        LPM1_EXIT; // must be called from ISR only
-        break;
-
-    case mode2:
-        LPM2_EXIT; // must be called from ISR only
-        break;
-
-    case mode3:
-        LPM3_EXIT; // must be called from ISR only
-        break;
-
-    case mode4:
-        LPM4_EXIT; // must be called from ISR only
-        break;
+        ADC10CTL0 |= ENC + ADC10SC; // Enable and start conversions
+        __bis_SR_register(CPUOFF + GIE);   // LPM0, ADC10_ISR will force exit
     }
 }
-*/
-
-
-//**************************************************************************************************
-
-
-
 
 //-------------------------------------------------------------
 // Timer A0 interrupt service routine
@@ -146,17 +113,7 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) Timer_A (void)
   TACTL &= ~TAIFG;
   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx
 }
-//TODO DELETE
-// ISR to execute when reaching 325 ms
-//-------------------------------------------------------------
-//           interrupt vector TIMERA0
-//-------------------------------------------------------------
-//#pragma vector = TIMERB0_VECTOR
-//__interrupt void timerB_ISR(void)
-//{
-//    TBCTL &= ~TBIFG; // Clear interrupt flag
-//
-//}
+
 
 //-------------------------------------------------------------
 //           interrupt vector uartTx
@@ -279,4 +236,26 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCI0RX_ISR (void)
         LPM4_EXIT; // must be called from ISR only
         break;
     }
+}
+
+
+//-------------------------------------------------------------
+// ADC10 interrupt service routine
+//-------------------------------------------------------------
+
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+    volatge[2] = ADC10MEM[9] + '0';
+    volatge[1] = ADC10MEM[8] + '0';
+    volatge[0] = ADC10MEM[7] + '0';
+
+    lcd_puts(voltage);
+    __bic_SR_register_on_exit(CPUOFF); // Clear CPUOFF bit from 0(SR)
 }

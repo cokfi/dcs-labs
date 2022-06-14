@@ -14,6 +14,7 @@ extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
 static int menuIndex;
 static int outNote;
+static char volatge[3];
 extern void sysConfig(void);
 extern void sysConfigState1(void);
 extern void sysConfigState2(void);
