@@ -10,7 +10,7 @@ def main():
                    timeout=1)   # timeout of 1 sec so that the read and write operations are blocking,
                                 # after the timeout the program continues
     enableTX = True
-    isGetDelay = False # boolen that says if we are at state 4 waiting for the user to enter delay time
+    isGetDelay = False
     # clear buffers
     s.reset_input_buffer()
     s.reset_output_buffer()
@@ -30,21 +30,13 @@ def main():
             s.write(bytesChar)
             if (isGetDelay):
                 time.sleep(0.25)  # delay for accurate read/write operations on both ends
-            if s.out_waiting == 0:# or ('1' or '2' or '3' or '4'or '5' in inChar):
-                if ('4' in inChar): #and (inchar.length == 1):
-                    print(inChar+"new line?")
+            if s.out_waiting == 0 and ('1' or '2' or '4' or '3' or '0' in inChar):
+                if '4' in inChar:
                     isGetDelay = True
                 else:
-                    print(inChar.length)
                     isGetDelay = False
                 enableTX = False
 
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
