@@ -18,8 +18,8 @@ void GPIOconfig(void)
   BCSCTL1 = CALBC1_1MHZ;                    // Set DCO
   DCOCTL = CALDCO_1MHZ;
   
-  P2DIR = 0xFF;                             // All P2.x outputs
-  P2OUT = 0;                                // All P2.x reset
+  P2DIR |= 0x07;                             // All P2.0-2 outputs
+  P2OUT &= ~0x07;                                // P2.0-2 reset
   P1SEL = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
   P1SEL2 = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
   P1DIR |= RXLED + TXLED;

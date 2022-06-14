@@ -4,6 +4,16 @@ spec: https://github.com/cokfi/dcs-labs/tree/main/Lab4/spec
 programmers: Kfir Cohen and Ron Tal 
 MCU: MSP430
 comments: Board connectivity is in the header file bsp.h
+Menu:
+	1. Blink RGB LED, color by color with delay of X[ms]
+	2. Count up onto LCD screen with delay of X[ms]
+	3. Count down onto LCD screen with delay of X[ms]
+	4. Get delay time X[ms]:
+	5. Potentiometer 3-digit value [v]
+	6. Clear LCD screen
+	7. Show menu
+	8. Sleep
+
 Date: 13/06/22
 */
 
@@ -18,7 +28,7 @@ Date: 13/06/22
 enum FSMstate state;
 enum SYSmode lpm_mode;
 int initState;// initState is 1 if state has changed
-int timerDelayMs = 500; // defult
+int timerDelayMs = 500; // X[ms] from Menu, 500 [ms] is the defult
 
 //-------------------------------------------------------------
 //           main
