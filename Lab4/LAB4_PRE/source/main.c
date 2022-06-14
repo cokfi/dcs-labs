@@ -85,23 +85,17 @@ void main(void)
 	  	        }
 				break;
 		case state6:
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
+	  	        clearConfig();
+				clearLCD();
+				state = state0;
 				break;
 		case state7: // pc has printed menu
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
+				clearConfig();
 	  	        state = state0;
-	  	        initState = 1;
 				break;
-		case state8:		
-			state = state0;
+		case state8: // go to sleep
+				clearConfig();		
+				state = state0;
 				break;
 						
 		} // Switch

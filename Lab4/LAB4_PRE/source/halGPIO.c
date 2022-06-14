@@ -37,7 +37,7 @@ void sysConfigState2(void)
 {
     TIMERconfig();
     startRowLCD(0);
-    lcd_puts("Recording...");
+    lcd_puts("Enter Delay");
 }
 // Polling based Delay function
 void delay(unsigned int t)
