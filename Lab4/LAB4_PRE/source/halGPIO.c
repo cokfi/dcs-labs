@@ -4,10 +4,14 @@
 //-------------------------------------------------------------
 const char stringThanks[] = { "Thanks\r\n" };
 const char stringEnterDelay[] = { "Please enter the delay in ms\r\n" };
+char stringDelay[16];
+int isDelaySet;
+int delayLength;
 int  temporaryDelay=0; //a maximum of ??? seconds
 unsigned int i; // counter for output string 
 unsigned int j=0; // counter for input string/int identation 
 unsigned int isDelayExpected = 0; // is delay input is expected to be sent from pc now (part of state 4)
+int checkBug;
 //-------------------------------------------------------------
 //           system configurations
 //-------------------------------------------------------------
@@ -206,13 +210,13 @@ if (isDelayExpected != 1){ // expecting state to be chosen by the user
 }
 else {                                     // expecting Delay to be chosen by the user
   if (UCA0RXBUF != '\n'){
-    temporaryDelay += ((int)UCA0RXBUF)*(10*j); //  add 10*j times the entered digit 
+      stringDelay[j] = UCA0RXBUF; //  add 10^j times the entered digit
     j++;
   }
   else       // end of string
   {
-    timerDelayMs = temporaryDelay;
-    temporaryDelay = 0;    
+    delayLength = j;
+    isDelaySet = 1;
     isDelayExpected = 0;
     i = 0;
     j = 0;

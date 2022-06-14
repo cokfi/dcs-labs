@@ -69,6 +69,11 @@ void main(void)
                     initState = 0;
 	  	        }
 				enterLPM(lpm_mode); // sleep while hall uart ISR is getting the Delay
+				if (isDelaySet){ // if stringDelay is set at hall
+				    timerDelayMs = setDelay();
+				    state = state0;
+				    isDelaySet = 0;
+				}
 				if (state != state4)
 					initState = 1;
 				break;
