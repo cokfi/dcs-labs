@@ -45,6 +45,8 @@ void main(void)
 	  	        }
 				enterLPM(lpm_mode);
 				RGB = incrementRgbLed(RGB);
+				if (state != state1)
+					initState = 1;
 				break;
 		case state2:
 	  	        if (initState >0){
@@ -66,7 +68,9 @@ void main(void)
 	  	          	sysConfigState2();
                     initState = 0;
 	  	        }
-				getDelayTime();
+				enterLPM(lpm_mode); // sleep while hall uart ISR is getting the Delay
+				if (state != state4)
+					initState = 1;
 				break;
 		case state5:
 	  	        if (initState >0){

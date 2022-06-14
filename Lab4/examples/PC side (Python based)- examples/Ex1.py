@@ -22,7 +22,7 @@ def main():
             inChar = input("Enter char:")
             bytesChar = bytes(inChar, 'ascii')
             s.write(bytesChar)
-            if s.out_waiting == 0 and 'u' in inChar:
+            if s.out_waiting == 0 and (('1' or '4' or '5') in inChar):
                 enableTX = False
 
 if __name__ == '__main__':
