@@ -1,8 +1,9 @@
 /*
 file description: C program for DCS lab4 - FSM with UART communication 
 spec: https://github.com/cokfi/dcs-labs/tree/main/Lab4/spec
-programmer: Kfir Cohen
+programmers: Kfir Cohen and Ron Tal 
 MCU: MSP430
+comments: Board connectivity is in the header file bsp.h
 Date: 13/06/22
 */
 
