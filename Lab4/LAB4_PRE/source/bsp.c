@@ -47,7 +47,7 @@ void clearConfig(){
 //-------------------------------------------------------------
 void updateRGB(int RGB){
     P2OUT &= ~0x7; // shut down RGB
-    P2OUT |= RGB;  // power up RGB
+    P2OUT |= RGB & 0x7;  // power up RGB
 }
 
 //-------------------------------------------------------------
