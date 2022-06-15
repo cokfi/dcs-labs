@@ -97,7 +97,7 @@ void main(void)
 				break;
 		case state6:
 	  	        clearConfig();
-				clearLCD();
+				//clearLCD();
 				state = state0;
 				break;
 		case state7: // pc has printed menu

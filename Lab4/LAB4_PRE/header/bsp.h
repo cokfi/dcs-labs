@@ -23,6 +23,11 @@
 
 #define   debounceVal      250
 #define   LEDs_SHOW_RATE   0xFFFF  // 62_5ms
+//LCD
+
+#define LCD_C_SEL          P2SEL
+#define LCD_D_SEL           P1SEL
+
 
 // LEDs abstraction
 #define LEDsArrPort        P1OUT
