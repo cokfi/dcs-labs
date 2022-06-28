@@ -91,7 +91,7 @@ void main(void)
 		case state5:
 	  	        if (initState >0){
 	  	            clearConfig();
-	  	          	sysConfigState2();
+	  	          	sysConfigState5();
                     initState = 0;
 	  	        }
 				break;

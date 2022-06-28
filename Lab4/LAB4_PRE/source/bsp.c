@@ -38,9 +38,10 @@ void clearConfig(){
      TACTL = 0x00;
      CCTL0 = 0x00; 
      updateRGB(0x00);
-    // TACCTL2= 0x00;
-    // TACCR0= 0x00;
-    // TACCR2= 0x00;
+     ADC10CTL0 &= ~ENC;
+     // TACCTL2= 0x00;
+     // TACCR0= 0x00;
+     // TACCR2= 0x00;
 }
 //-------------------------------------------------------------
 //           update RGB value

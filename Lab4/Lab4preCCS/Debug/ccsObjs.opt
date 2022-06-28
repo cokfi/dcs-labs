@@ -1,0 +1,1 @@
+"./source/LCD.obj" "./source/api.obj" "./source/bsp.obj" "./source/halGPIO.obj" "./source/main.obj" "../lnk_cc430f5123.cmd" -llibmath.a -llibc.a 
