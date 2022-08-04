@@ -445,3 +445,9 @@ __interrupt void timerB_ISR(void)
     TBCTL &= ~TBIFG; // Clear interrupt flag
     BuzzerArrPort ^= Buzzer; //TODO Check if good
 }
+
+
+
+
+
+

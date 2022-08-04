@@ -1,26 +1,20 @@
 #ifndef _halGPIO_H_
 #define _halGPIO_H_
 
-#define SONG1_SIZE 54
-#define SONG2_SIZE 47
-#define SONG3_SIZE 40
-#define RECORD_SIZE 32
 
 #include  "../header/bsp.h"    		// private library - BSP layer
 #include  "../header/app.h"    		// private library - APP layer
-//#include "../header/LCD.h"
-
 extern enum FSMstate state;   // global variable
 extern enum SYSmode lpm_mode; // global variable
-static int menuIndex;
-static int outNote;
-extern char volatge[3];
-extern char stringDelay[16];
-extern  int isDelaySet;
-extern  int delayLength;
-
+extern unsigned long int frequency;
+extern unsigned int REdge1, REdge2;
+extern int initState;
+//extern char finStr[];
+//extern char frequencyStr[];
+//extern char hzStr[];
+#define SMCLK_FREQUENCY 0x100000 // 2^16 (a bit more than 1MHz)
 /*----------------------------------------------------------
-  LCD CONFIG: change values according to your port pin selection
+  CONFIG: change values according to your port pin selection
 ------------------------------------------------------------*/
 // #define CHECKBUSY	1  // using this define, only if we want to read from LCD
 
@@ -72,21 +66,21 @@ extern  int delayLength;
 #define cursor_off              lcd_cmd(0x0C)
 #define cursor_on               lcd_cmd(0x0F) 
 #define lcd_function_set        lcd_cmd(0x3C) // 8bit,two lines,5x10 dots 
-#define lcd_new_line            lcd_cmd(0xC0)
+#define lcd_new_line            lcd_cmd(0xC0)                                  
+
+
 extern void sysConfig(void);
-extern void sysConfigState1(void);
-extern void sysConfigState2(void);
+extern void print2LEDs(unsigned char);
+extern void clrLEDs(void);
+extern void toggleLEDs(char);
+extern void setLEDs(char);
+extern unsigned char readSWs(void);
 extern void delay(unsigned int);
 extern void enterLPM(unsigned char);
-extern void playNote(int);
+extern void incLEDs(char);
 extern void enable_interrupts();
 extern void disable_interrupts();
-extern int recordNote();
-extern int getSongChoice();
-extern void showMenu();
-extern void showInvalidChoiceMsg();
-extern void playSong(int song[], int size);
-
+extern __interrupt void PBs_handler(void);
 //LCD
 extern void lcd_cmd(unsigned char);
 extern void lcd_data(unsigned char);
@@ -95,15 +89,20 @@ extern void lcd_init(void);
 extern void lcd_strobe(void);
 extern void DelayMs(unsigned int);
 extern void DelayUs(unsigned int);
+extern void configState1(void);
+extern void configState2(void);
+extern void configState3(void);
+/*
+ *	Delay functions for HI-TECH C on the PIC18
+ *
+ *	Functions available:
+ *		DelayUs(x)	Delay specified number of microseconds
+ *		DelayMs(x)	Delay specified number of milliseconds
+*/
 
 
 
 
-extern __interrupt void PBs_handler(void);
-extern __interrupt void timerA_ISR(void);
-extern __interrupt void timerB_ISR(void);
-extern __interrupt void DMA_ISR(void);
-extern __interrupt void Keypad_handler(void);
 #endif
 
 
@@ -112,53 +111,3 @@ extern __interrupt void Keypad_handler(void);
 
 
 
-/*
-
- 0x254; // 1760
-        break;
-    case 0xA:
-        TBCCR0 = 0x233; // 1864
-        break;
-    case 0xB:
-        TBCCR0 = 0x212; // 1975
-        break;
-    case 0xC:
-        TBCCR0 = 0x1F5; //
- case 0:
-        TBCCR0 = 0x3EA; // 1046[Hz]
-        break;
-    case 1:
-        TBCCR0 = 0x3B2; // 1108[Hz]
-        break;
-    case 2:
-        TBCCR0 = 0x37D; // 1174
-        break;
-    case 3:
-        TBCCR0 = 0x34B; // 1244
-        break;
-    case 4:
-        TBCCR0 = 0x31C; // 1318
-        break;
-    case 5:
-        TBCCR0 = 0x2EF; // 1397
-        break;
-    case 6:
-        TBCCR0 = 0x2C4; // 1480
-        break;
-    case 7:
-        TBCCR0 = 0x29D; // 1567
-        break;
-    case 8:
-        TBCCR0 = 0x277; // 1661
-        break;
-    case 9:
-        TBCCR0 = 0x254; // 1760
-        break;
-    case 0xA:
-        TBCCR0 = 0x233; // 1864
-        break;
-    case 0xB:
-        TBCCR0 = 0x212; // 1975
-        break;
-    case 0xC:
-        TBCCR0 = 0x1F5; // 2093*/

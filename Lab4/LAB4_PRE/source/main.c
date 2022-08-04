@@ -1,8 +1,19 @@
 /*
 file description: C program for DCS lab4 - FSM with UART communication 
 spec: https://github.com/cokfi/dcs-labs/tree/main/Lab4/spec
-programmer: Kfir Cohen
+programmers: Kfir Cohen and Ron Tal 
 MCU: MSP430
+comments: Board connectivity is in the header file bsp.h
+Menu:
+	1. Blink RGB LED, color by color with delay of X[ms]
+	2. Count up onto LCD screen with delay of X[ms]
+	3. Count down onto LCD screen with delay of X[ms]
+	4. Get delay time X[ms]:
+	5. Potentiometer 3-digit value [v]
+	6. Clear LCD screen
+	7. Show menu
+	8. Sleep
+
 Date: 13/06/22
 */
 
@@ -17,7 +28,7 @@ Date: 13/06/22
 enum FSMstate state;
 enum SYSmode lpm_mode;
 int initState;// initState is 1 if state has changed
-int timerDelayMs = 500; // defult
+int timerDelayMs = 500; // X[ms] from Menu, 500 [ms] is the defult
 
 //-------------------------------------------------------------
 //           main
@@ -45,6 +56,8 @@ void main(void)
 	  	        }
 				enterLPM(lpm_mode);
 				RGB = incrementRgbLed(RGB);
+				if (state != state1)
+					initState = 1;
 				break;
 		case state2:
 	  	        if (initState >0){
@@ -66,7 +79,14 @@ void main(void)
 	  	          	sysConfigState2();
                     initState = 0;
 	  	        }
-				getDelayTime();
+				enterLPM(lpm_mode); // sleep while hall uart ISR is getting the Delay
+				if (isDelaySet){ // if stringDelay is set at hall
+				    timerDelayMs = setDelay();
+				    state = state0;
+				    isDelaySet = 0;
+				}
+				if (state != state4)
+					initState = 1;
 				break;
 		case state5:
 	  	        if (initState >0){
@@ -76,21 +96,17 @@ void main(void)
 	  	        }
 				break;
 		case state6:
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
+	  	        clearConfig();
+				//clearLCD();
+				state = state0;
 				break;
-		case state7:
-	  	        if (initState >0){
-	  	            clearConfig();
-	  	          	sysConfigState2();
-                    initState = 0;
-	  	        }
+		case state7: // pc has printed menu
+				clearConfig();
+	  	        state = state0;
 				break;
-		case state8:		
-			state = state0;
+		case state8: // go to sleep
+				clearConfig();		
+				state = state0;
 				break;
 						
 		} // Switch

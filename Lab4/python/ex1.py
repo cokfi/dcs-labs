@@ -1,4 +1,6 @@
+import sys
 import serial as ser
+import time
 
 #in this example we send a character, and receive a string in response only if the start character was 'u'
 
@@ -8,6 +10,7 @@ def main():
                    timeout=1)   # timeout of 1 sec so that the read and write operations are blocking,
                                 # after the timeout the program continues
     enableTX = True
+    isGetDelay = False
     # clear buffers
     s.reset_input_buffer()
     s.reset_output_buffer()
@@ -20,16 +23,20 @@ def main():
                 enableTX = True
         while (s.out_waiting > 0 or enableTX):  # while the output buffer isn't empty
             inChar = input("Enter char:")
-            bytesChar = bytes(inChar, 'ascii')
+            if (isGetDelay):
+                bytesChar = bytes(inChar + '\n', 'ascii')
+            else :
+                bytesChar = bytes(inChar, 'ascii')
             s.write(bytesChar)
-            if s.out_waiting == 0 and ('1' or '2' in inChar):
+            if (isGetDelay):
+                time.sleep(0.25)  # delay for accurate read/write operations on both ends
+            if s.out_waiting == 0 and ('1' or '2' or '4' or '3' or '0' in inChar):
+                if '4' in inChar:
+                    isGetDelay = True
+                else:
+                    isGetDelay = False
                 enableTX = False
+
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-

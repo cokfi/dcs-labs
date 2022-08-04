@@ -2,18 +2,23 @@
 //-------------------------------------------------------------
 //           globals
 //-------------------------------------------------------------
-const char string1[] = { "Hello World\r\n" };
-unsigned int i;
+const char stringThanks[] = { "Thanks\r\n" };
+const char stringEnterDelay[] = { "Please enter the delay in ms\r\n" };
+char stringDelay[16];
+int isDelaySet;
+int delayLength;
+int  temporaryDelay=0; //a maximum of ??? seconds
+unsigned int i; // counter for output string 
+unsigned int j=0; // counter for input string/int identation 
+unsigned int isDelayExpected = 0; // is delay input is expected to be sent from pc now (part of state 4)
+int checkBug;
 //-------------------------------------------------------------
 //           system configurations
 //-------------------------------------------------------------
 void sysConfig(void)
 {
-
     GPIOconfig();
-    //TIMERconfig();
     lcd_init();
-    clearLCD();
  
 }
 //-------------------------------------------------------------
@@ -22,14 +27,17 @@ void sysConfig(void)
 void sysConfigState1(void)
 {
     TIMERconfig();
-    clearLCD();
+    lcd_clear();
+    char finS[] = "Fin = ";
+    lcd_puts(finS);
 
 }
 void sysConfigState2(void)
 {
     TIMERconfig();
-    startRowLCD(0);
-    lcd_puts("Recording...");
+    lcd_clear();
+    char timeElapsedS[] = "01:00";
+	lcd_puts(timeElapsedS);
 }
 // Polling based Delay function
 void delay(unsigned int t)
@@ -38,6 +46,7 @@ void delay(unsigned int t)
 
     for (i = t; i > 0; i--);
 }
+
 
 // Enter from LPM0 mode
 void enterLPM(unsigned char LPM_level)
@@ -97,10 +106,151 @@ void readVoltage()
     }
 }
 
+
+//-------------------------------------------------------------
+// LCD
+//-------------------------------------------------------------
+
+//******************************************************************
+// initialize the LCD
+//******************************************************************
+void lcd_init(void){
+  
+	char init_value;
+
+	if (LCD_MODE == FOURBIT_MODE) init_value = 0x3 << LCD_DATA_OFFSET;
+        else init_value = 0x3F;
+	
+  	
+	LCD_RS_DIR(OUTPUT_PIN);
+	LCD_EN_DIR(OUTPUT_PIN);
+	LCD_RW_DIR(OUTPUT_PIN);
+    LCD_DATA_DIR |= OUTPUT_DATA;
+	LCD_C_SEL &= ~0xE0;
+	LCD_D_SEL &= ~0xF0;
+    LCD_RS(0);
+	LCD_EN(0);
+	LCD_RW(0);
+        
+	DelayMs(15);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	DelayMs(5);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	DelayUs(200);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	
+	if (LCD_MODE == FOURBIT_MODE){
+		LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE |= 0x2 << LCD_DATA_OFFSET; // Set 4-bit mode
+		lcd_strobe();
+		lcd_cmd(0x28); // Function Set
+	}
+        else lcd_cmd(0x3C); // 8bit,two lines,5x10 dots 
+	
+	lcd_cmd(0xF); //Display On, Cursor On, Cursor Blink
+	lcd_cmd(0x1); //Display Clear
+	lcd_cmd(0x6); //Entry Mode
+	lcd_cmd(0x80); //Initialize DDRAM address to zero
+}    
+//******************************************************************
+// write a string of chars to the LCD
+//******************************************************************
+void lcd_puts(const char * s){
+  
+	while(*s)
+		lcd_data(*s++);
+}
+//******************************************************************
+// lcd strobe functions
+//******************************************************************
+void lcd_strobe(){
+  LCD_EN(1);
+  asm(" nop");
+  asm(" nop");
+  LCD_EN(0);
+}
+//******************************************************************
+// Delay usec functions
+//******************************************************************
+void DelayUs(unsigned int cnt){
+  
+	unsigned char i;
+        for(i=cnt ; i>0 ; i--) asm(" nop"); // tha command asm("nop") takes raphly 1usec
+	
+} 
+//******************************************************************
+// Delay msec functions
+//******************************************************************
+void DelayMs(unsigned int cnt){
+  
+	unsigned char i;
+        for(i=cnt ; i>0 ; i--) DelayUs(1000); // tha command asm("nop") takes raphly 1usec
+	
+}    
+//******************************************************************
+// send a command to the LCD
+//******************************************************************
+void lcd_cmd(unsigned char c){
+  
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+		LCD_DATA_WRITE &= ~OUTPUT_DATA;// clear bits before new write
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;
+		lcd_strobe();
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    		LCD_DATA_WRITE |= (c & (0x0F)) << LCD_DATA_OFFSET;
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+}
+//******************************************************************
+// send data to the LCD
+//******************************************************************
+void lcd_data(unsigned char c){
+        
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	LCD_DATA_WRITE &= ~OUTPUT_DATA;       
+	LCD_RS(1);
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+    		LCD_DATA_WRITE &= ~OUTPUT_DATA;
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;  
+		lcd_strobe();		
+                LCD_DATA_WRITE &= (0xF0 << LCD_DATA_OFFSET) | (0xF0 >> 8 - LCD_DATA_OFFSET);
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE |= (c & 0x0F) << LCD_DATA_OFFSET; 
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+          
+	LCD_RS(0);   
+}
+
+
+
+
 //-------------------------------------------------------------
 // Timer A0 interrupt service routine
 //-------------------------------------------------------------
-
+//state1: every timerDelayMs [ms] clear flag and getting out of sleep mode
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void Timer_A (void)
@@ -110,7 +260,7 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) Timer_A (void)
 #error Compiler not supported!
 #endif
 {
-  TACTL &= ~TAIFG;
+  TACTL &= ~TAIFG; 
   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx
 }
 
@@ -127,10 +277,28 @@ void __attribute__ ((interrupt(USCIAB0TX_VECTOR))) USCI0TX_ISR (void)
 #error Compiler not supported!
 #endif
 {
-  UCA0TXBUF = string1[i++];                 // TX next character
+    switch (state)
+    {
+        case state4:
+            if (isDelayExpected!=0){ // waiting for delay input 
+                UCA0TXBUF = stringEnterDelay[i++];                 // TX next character
+                if (i == sizeof stringEnterDelay - 1){              // TX over?
+                    IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
+                }
+            }
+            else{                           // not waiting for delay input
+                UCA0TXBUF = stringThanks[i++];
+                if (i == sizeof stringThanks - 1)              // TX over?
+                    IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
+            }
 
-  if (i == sizeof string1 - 1)              // TX over?
-    IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
+            break;
+        default:
+            UCA0TXBUF = stringThanks[i++];                 // TX next character
+            if (i == sizeof stringThanks - 1)              // TX over?
+                IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
+
+    }
 }
 
 //-------------------------------------------------------------
@@ -145,72 +313,87 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCI0RX_ISR (void)
 #error Compiler not supported!
 #endif
 {
-
-  if (UCA0RXBUF == '1')                     // 'u' received?
-  {
-    state = state1;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
+if (isDelayExpected != 1){ // expecting state to be chosen by the user 
+    if (UCA0RXBUF == '1')                     // 'u' received?
+    {
+        state = state1;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '2')                     // 'u' received?
+    {
+        state = state2;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '3')                     // 'u' received?
+    {
+        state = state3;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '4')                     // 'u' received?
+    {
+        isDelayExpected = 1; // use uart input to get the Delay 
+        state = state4;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringEnterDelay[i++];
+    }
+    else if (UCA0RXBUF == '5')                     // 'u' received?
+    {
+        state = state5;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '6')                     // 'u' received?
+    {
+        state = state6;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '7')                     // 'u' received?
+    {
+        state = state7;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '8')                     // 'u' received?
+    {
+        state = state8;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+    else if (UCA0RXBUF == '9')                     // 'u' received?
+    {
+        state = state9;
+        i = 0;
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+        UCA0TXBUF = stringThanks[i++];
+    }
+}
+else {                                     // expecting Delay to be chosen by the user
+  if (UCA0RXBUF != '\n'){
+      stringDelay[j] = UCA0RXBUF; //  add 10^j times the entered digit
+    j++;
   }
-  else if (UCA0RXBUF == '2')                     // 'u' received?
+  else       // end of string
   {
-    state = state2;
+    delayLength = j;
+    isDelaySet = 1;
+    isDelayExpected = 0;
     i = 0;
+    j = 0;
     IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
   }
-  else if (UCA0RXBUF == '3')                     // 'u' received?
-  {
-    state = state3;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '4')                     // 'u' received?
-  {
-    isTimerDelayUartInput = 1; // use uart input to get the Delay 
-    state = state4;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '5')                     // 'u' received?
-  {
-    state = state5;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '6')                     // 'u' received?
-  {
-    state = state6;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '7')                     // 'u' received?
-  {
-    state = state7;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '8')                     // 'u' received?
-  {
-    state = state8;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-  else if (UCA0RXBUF == '9')                     // 'u' received?
-  {
-    state = state9;
-    i = 0;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-    UCA0TXBUF = string1[i++];
-  }
-
+}
 
 
       // Exit from a given LPM

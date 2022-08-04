@@ -5,6 +5,7 @@
 
 
 extern int incrementRgbLed(int RGB);
+extern int setDelay();
 
 #endif
 
