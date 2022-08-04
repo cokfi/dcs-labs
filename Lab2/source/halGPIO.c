@@ -1,5 +1,4 @@
 #include  "../header/halGPIO.h"     // private library - HAL layer
-<<<<<<< HEAD
 unsigned int REdge1, REdge2;
 unsigned long int frequency=0;
 int isFirstEdge = 0; // active low
@@ -11,42 +10,199 @@ int analog3;
 int analog4;
 int analogFlag = 0;
 int analogAvg = 0;
-int sampleIdx = 0;
-int sample1,sample2,sample3,sample4;
-=======
-
->>>>>>> d65fd191b344dff7b6d5022cfe36123d84261ea7
 //--------------------------------------------------------------------
 //             System Configuration  
 //--------------------------------------------------------------------
 void sysConfig(void){ 
 	GPIOconfig();
 	TIMERconfig();
-	ADCconfig();
+	lcd_init();
 }
+void configState1(void){
+        TA0CCTL0 &= ~CCIE;
+        TA1CCTL2 |= CCIE; // enable interupts Timer1
+	lcd_clear();
+        char finS[] = "Fin = ";
+	lcd_puts(finS);
+        
+}
+
+void configState2(void){
+        TA0CCTL0 |= CCIE;//overflow only
+        TA1CCTL2 &= ~CCIE;; // disable interupts Timer1
+	lcd_clear();
+        char timeElapsedS[] = "01:00";
+	lcd_puts(timeElapsedS);
+}
+void configState3(void){
+        ADCconfig();
+	TA1CTL= TASSEL_2+ MC_1 ;
+	TA1CCTL1 = OUTMOD_4; //toggle
+	TA0CTL = TASSEL_2+MC_1; 
+        TA0CCR0 = 0x4000;
+	TA0CCR1 = 	0x5;
+	TA0CCTL1 = OUTMOD_4;
+
+}
+void sing(void){
+	
+}
+//******************************************************************
+// initialize the LCD
+//******************************************************************
+void lcd_init(void){
+  
+	char init_value;
+
+	if (LCD_MODE == FOURBIT_MODE) init_value = 0x3 << LCD_DATA_OFFSET;
+        else init_value = 0x3F;
+	
+  	
+	LCD_RS_DIR(OUTPUT_PIN);
+	LCD_EN_DIR(OUTPUT_PIN);
+	LCD_RW_DIR(OUTPUT_PIN);
+    LCD_DATA_DIR |= OUTPUT_DATA;
+	LCD_C_SEL &= ~0xE0;
+	LCD_D_SEL &= ~0xF0;
+    LCD_RS(0);
+	LCD_EN(0);
+	LCD_RW(0);
+        
+	DelayMs(15);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	DelayMs(5);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	DelayUs(200);
+    LCD_DATA_WRITE &= ~OUTPUT_DATA;
+	LCD_DATA_WRITE |= init_value;
+	lcd_strobe();
+	
+	if (LCD_MODE == FOURBIT_MODE){
+		LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE |= 0x2 << LCD_DATA_OFFSET; // Set 4-bit mode
+		lcd_strobe();
+		lcd_cmd(0x28); // Function Set
+	}
+        else lcd_cmd(0x3C); // 8bit,two lines,5x10 dots 
+	
+	lcd_cmd(0xF); //Display On, Cursor On, Cursor Blink
+	lcd_cmd(0x1); //Display Clear
+	lcd_cmd(0x6); //Entry Mode
+	lcd_cmd(0x80); //Initialize DDRAM address to zero
+}    
+//******************************************************************
+// write a string of chars to the LCD
+//******************************************************************
+void lcd_puts(const char * s){
+  
+	while(*s)
+		lcd_data(*s++);
+}
+//******************************************************************
+// lcd strobe functions
+//******************************************************************
+void lcd_strobe(){
+  LCD_EN(1);
+  asm("nop");
+  asm("nop");
+  LCD_EN(0);
+}
+//******************************************************************
+// Delay usec functions
+//******************************************************************
+void DelayUs(unsigned int cnt){
+  
+	unsigned char i;
+        for(i=cnt ; i>0 ; i--) asm("nop"); // tha command asm("nop") takes raphly 1usec
+	
+} 
+//******************************************************************
+// Delay msec functions
+//******************************************************************
+void DelayMs(unsigned int cnt){
+  
+	unsigned char i;
+        for(i=cnt ; i>0 ; i--) DelayUs(1000); // tha command asm("nop") takes raphly 1usec
+	
+}    
+//******************************************************************
+// send a command to the LCD
+//******************************************************************
+void lcd_cmd(unsigned char c){
+  
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+		LCD_DATA_WRITE &= ~OUTPUT_DATA;// clear bits before new write
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;
+		lcd_strobe();
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+    		LCD_DATA_WRITE |= (c & (0x0F)) << LCD_DATA_OFFSET;
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+}
+//******************************************************************
+// send data to the LCD
+//******************************************************************
+void lcd_data(unsigned char c){
+        
+	LCD_WAIT; // may check LCD busy flag, or just delay a little, depending on lcd.h
+
+	LCD_DATA_WRITE &= ~OUTPUT_DATA;       
+	LCD_RS(1);
+	if (LCD_MODE == FOURBIT_MODE)
+	{
+    		LCD_DATA_WRITE &= ~OUTPUT_DATA;
+                LCD_DATA_WRITE |= ((c >> 4) & 0x0F) << LCD_DATA_OFFSET;  
+		lcd_strobe();		
+                LCD_DATA_WRITE &= (0xF0 << LCD_DATA_OFFSET) | (0xF0 >> 8 - LCD_DATA_OFFSET);
+                LCD_DATA_WRITE &= ~OUTPUT_DATA;
+		LCD_DATA_WRITE |= (c & 0x0F) << LCD_DATA_OFFSET; 
+		lcd_strobe();
+	}
+	else
+	{
+		LCD_DATA_WRITE = c;
+		lcd_strobe();
+	}
+          
+	LCD_RS(0);   
+}
+/*
 //--------------------------------------------------------------------
 // 				Print Byte to 8-bit LEDs array 
 //--------------------------------------------------------------------
 void print2LEDs(unsigned char ch){
-	LEDsArrPort = ch;
+	//LEDsArrPort = ch;
 }    
 //--------------------------------------------------------------------
 //				Clear 8-bit LEDs array 
 //--------------------------------------------------------------------
 void clrLEDs(void){
-	LEDsArrPort = 0x000;
+	//LEDsArrPort = 0x000;
 }  
 //--------------------------------------------------------------------
 //				Toggle 8-bit LEDs array 
 //--------------------------------------------------------------------
 void toggleLEDs(char ch){
-	LEDsArrPort ^= ch;
+	//LEDsArrPort ^= ch;
 }
 //--------------------------------------------------------------------
 //				Set 8-bit LEDs array 
 //--------------------------------------------------------------------
 void setLEDs(char ch){
-	LEDsArrPort |= ch;
+	//LEDsArrPort |= ch;
 }
 //--------------------------------------------------------------------
 //				Read value of 4-bit SWs array 
@@ -64,6 +220,7 @@ unsigned char readSWs(void){
 void incLEDs(char val){
 	LEDsArrPort += val;
 }
+*/
 //---------------------------------------------------------------------
 //            Polling based Delay function
 //---------------------------------------------------------------------
@@ -72,6 +229,7 @@ void delay(unsigned int t){  // t[msec]
 	
 	for(i=t; i>0; i--);
 }
+
 //---------------------------------------------------------------------
 //            Enter from LPM0 mode
 //---------------------------------------------------------------------
@@ -102,7 +260,7 @@ void disable_interrupts(){
 //*********************************************************************
 //            Port2 Interrupt Service Rotine
 //*********************************************************************
-#pragma vector=PORT2_VECTOR
+#pragma vector=PORT1_VECTOR
   __interrupt void PBs_handler(void){
    
 	delay(debounceVal);
@@ -112,14 +270,17 @@ void disable_interrupts(){
 	if(PBsArrIntPend & PB0){
 	  state = state1;
 	  PBsArrIntPend &= ~PB0;
+	  initState = 0; 
         }
         else if(PBsArrIntPend & PB1){
 	  state = state2;
 	  PBsArrIntPend &= ~PB1; 
+	  initState = 0; 
         }
 	else if(PBsArrIntPend & PB2){ 
-	  state = state0;
+	  state = state3;
 	  PBsArrIntPend &= ~PB2;
+	  initState = 0; 
         }
 //---------------------------------------------------------------------
 //            Exit from a given LPM 
@@ -137,17 +298,16 @@ void disable_interrupts(){
 		 LPM2_EXIT; // must be called from ISR only
 		 break;
                  
-                case mode3:
+         case mode3:
 		 LPM3_EXIT; // must be called from ISR only
 		 break;
                  
-                case mode4:
+         case mode4:
 		 LPM4_EXIT; // must be called from ISR only
 		 break;
 	}
         
 }
-<<<<<<< HEAD
 /*
 //---------------------------------------------------------------------	
 // TA1 Interrupt vector, the code is based on ta_21.c (hanan reference code)
@@ -250,38 +410,8 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) TIMER0_A0_ISR (void)
 //adc Interrupt vector
 #pragma vector=ADC10_VECTOR
 __interrupt void ADC10_ISR(void){
-	if (state == state3){
-		switch(sampleIdx){
-    case 0:
-        sample1 = ADC10MEM;
-        sampleIdx++;
-        break;
-    case 1:
-        sample2 = ADC10MEM;
-        sampleIdx++;
-        break;
-    case 2:
-        sample3 = ADC10MEM;
-        sampleIdx++;
-        break;
-    case 3:
-        sample4 = ADC10MEM;
 
-		//if(sample2>=sample1 && sample3>=sample2 && sample4 >= sample3){
-			int diff1 = sample2-sample1;
-			int diff2 = sample4-sample3;
-		//	}
-		if(diff1 <= TOL){
-			lcd_goto(1);
-			lcd_puts("PWM");
-		}
-        sampleIdx = 0;
-        TA1CCR0 = -analogAvg/3+500;
-        break;
-  }
-	}
-	if (state == state2){
-		switch(analogFlag){
+  switch(analogFlag){
     case 0:
         analog1 = ADC10MEM;
         analogFlag++;
@@ -301,8 +431,6 @@ __interrupt void ADC10_ISR(void){
         TA1CCR0 = -analogAvg/3+500;
         break;
   }
-	}
-  
  LPM0_EXIT;
 } 
 /*
@@ -322,6 +450,3 @@ void __attribute__ ((interrupt(WDT_VECTOR))) WDT_ISR (void)
   __bic_SR_register_on_exit(LPM0_bits);     // Exit LPM0
 } 
 */
-=======
- 
->>>>>>> d65fd191b344dff7b6d5022cfe36123d84261ea7

@@ -1,0 +1,1 @@
+"./main.obj" "./source/ADC/bspADC.obj" "./source/ADC/halADC.obj" "./source/DMA/bspDMA.obj" "./source/DMA/halDMA.obj" "./source/GPIO/bspGPIO.obj" "./source/GPIO/halGPIO.obj" "./source/Timers/bspTimers.obj" "./source/Timers/halTimers.obj" "./source/UART/bspUART.obj" "./source/UART/halUART.obj" "./source/Utilities/Conversions.obj" "../lnk_msp430g2553.cmd" -llibc.a 
