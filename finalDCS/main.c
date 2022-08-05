@@ -1,12 +1,11 @@
-#include <msp430.h> 
-
-
+//#include <msp430.h>
+#include "header/Timers/halTimers.h"
 /**
  * main.c
  */
 int main(void)
 {
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-	
-	return 0;
+
+    test(30);
+    return 0;
 }

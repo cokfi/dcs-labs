@@ -7,96 +7,70 @@
 
 #include  "../../header/Timers/halTimers.h"
 
+//static int timerIntCounter;
+//
+static unsigned int motorSequence = 0x10;
+//
+//void timerConfigForMotor()
+//{
+//    TACTL = 0;  // Reset Timer
+//    TACTL |= UP;
+//}
+//
+//void setCounter(int val)
+//{
+//    timerIntCounter = val;
+//}
+//
+//int getCount()
+//{
+//    return timerIntCounter;
+//}
 
-//  *** Structure ***
-//  Registers
-//      Fields
-volatile unsigned int * CTL = &TA0CTL;  // ConTroL register - for configuration
-
-    int const CLR = TACLR;  // CLeaR bit
-    int const IE = TAIE;    // Interrupt Enable
-    int const  IFG = TAIFG;  // Interrupt Flag
-    volatile unsigned int * R = &TA0R;   // counteR - count of Timer_A
-
-volatile unsigned int * CCTL = &TACCTL0;  // Capture Compare Control register - for configuration
-
-
-
-
-
-
-void timerResetCounter()
+void test(int steps)
 {
-    return;
-}
+    WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
-void timerStart()
-{
-    return;
-}
+    P1SEL = 0;
+    P1DIR = 0xF0;
 
-void timerStop()
-{
-    return;
-}
+    TACTL = 0;
+    TACTL |= ID_3;
+    TACCR0 = 82;
 
-void timerSetSourceSelect(const SourceSelect ssel)
-{
-    *CTL |= ssel;
-}
+    TACTL |= MC_1 + TAIE;
 
-void timerSetInputDivider(const InputDivider id)  {
-    *CTL |= id;
-}
+    int i;
+    for (i = 0; i < steps; i++)
+    {
 
-void timerSetModeControl(const ModeControl mc)  {
-    *CTL |= mc;
-}
+        if (motorSequence == 0x08)
+        {
+            motorSequence = 0x80;
+        }
+        else
+        {
+            motorSequence = motorSequence >> 1;
+        }
 
-void timerEnableInterrupt(void)  {
-    *CTL |= IE;
-}
-
-void timerDisableInterrupt(void)  {
-    *CTL &= ~IE;
-}
-
-void timerClearInterruptFlag(void)  {
-    *CTL &= ~IFG;
-}
-
-void timerSetCounter(const int counter) {
+        P1OUT = motorSequence;
+        _BIS_SR(LPM0_bits);
+    }
 
 }
-
-int timerGetCounter(void) {
-    return *R;
-}
-
-void timerSetUpperBound(const int upper_bound) {
-
-}
-
-int timerGetUpperBound(void) {
-    return 0;
-}
-
-void timerIncreaseCounter(void) {
-
-}
-
-void timerSetCaptureMode(const CaptureMode cm)
-{
-
-}
-
-
-
-
+//void setFreq(int hz)
+//{
+//
+//}
+//
+//void setPeriod(int ms)
+//{
+//
+//}
 
 #pragma vector = TIMER0_A0_VECTOR
-__interrupt void TIMER0_A0_ISR (void)
+__interrupt void TIMER0_A0_ISR(void)
 {
-
-    timerClearInterruptFlag();
+    TACTL &= ~TAIFG;
+    LPM0_EXIT;
 }

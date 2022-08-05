@@ -11,6 +11,7 @@ ORDERED_OBJS += \
 "./main.obj" \
 "./source/ADC/bspADC.obj" \
 "./source/ADC/halADC.obj" \
+"./source/API/motor.obj" \
 "./source/DMA/bspDMA.obj" \
 "./source/DMA/halDMA.obj" \
 "./source/GPIO/bspGPIO.obj" \
@@ -33,6 +34,7 @@ RMDIR := rm -rf
 -include sources.mk
 -include subdir_vars.mk
 -include source/ADC/subdir_vars.mk
+-include source/API/subdir_vars.mk
 -include source/DMA/subdir_vars.mk
 -include source/GPIO/subdir_vars.mk
 -include source/Timers/subdir_vars.mk
@@ -40,6 +42,7 @@ RMDIR := rm -rf
 -include source/Utilities/subdir_vars.mk
 -include subdir_rules.mk
 -include source/ADC/subdir_rules.mk
+-include source/API/subdir_rules.mk
 -include source/DMA/subdir_rules.mk
 -include source/GPIO/subdir_rules.mk
 -include source/Timers/subdir_rules.mk
@@ -175,8 +178,8 @@ finalDCS.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "source/ADC/bspADC.obj" "source/ADC/halADC.obj" "source/DMA/bspDMA.obj" "source/DMA/halDMA.obj" "source/GPIO/bspGPIO.obj" "source/GPIO/halGPIO.obj" "source/Timers/bspTimers.obj" "source/Timers/halTimers.obj" "source/UART/bspUART.obj" "source/UART/halUART.obj" "source/Utilities/Conversions.obj" 
-	-$(RM) "main.d" "source/ADC/bspADC.d" "source/ADC/halADC.d" "source/DMA/bspDMA.d" "source/DMA/halDMA.d" "source/GPIO/bspGPIO.d" "source/GPIO/halGPIO.d" "source/Timers/bspTimers.d" "source/Timers/halTimers.d" "source/UART/bspUART.d" "source/UART/halUART.d" "source/Utilities/Conversions.d" 
+	-$(RM) "main.obj" "source/ADC/bspADC.obj" "source/ADC/halADC.obj" "source/API/motor.obj" "source/DMA/bspDMA.obj" "source/DMA/halDMA.obj" "source/GPIO/bspGPIO.obj" "source/GPIO/halGPIO.obj" "source/Timers/bspTimers.obj" "source/Timers/halTimers.obj" "source/UART/bspUART.obj" "source/UART/halUART.obj" "source/Utilities/Conversions.obj" 
+	-$(RM) "main.d" "source/ADC/bspADC.d" "source/ADC/halADC.d" "source/API/motor.d" "source/DMA/bspDMA.d" "source/DMA/halDMA.d" "source/GPIO/bspGPIO.d" "source/GPIO/halGPIO.d" "source/Timers/bspTimers.d" "source/Timers/halTimers.d" "source/UART/bspUART.d" "source/UART/halUART.d" "source/Utilities/Conversions.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
