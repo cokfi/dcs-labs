@@ -68,9 +68,9 @@ void test(int steps)
 //
 //}
 
-#pragma vector = TIMER0_A0_VECTOR
-__interrupt void TIMER0_A0_ISR(void)
-{
-    TACTL &= ~TAIFG;
-    LPM0_EXIT;
-}
+//#pragma vector = TIMER0_A0_VECTOR
+//__interrupt void TIMER0_A0_ISR(void)
+//{
+//    TACTL &= ~TAIFG;
+//    LPM0_EXIT;
+//}
