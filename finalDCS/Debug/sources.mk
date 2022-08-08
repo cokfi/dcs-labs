@@ -113,6 +113,7 @@ PDE_DEPS__QUOTED :=
 SUBDIRS := \
 . \
 source/ADC \
+source/API \
 source/DMA \
 source/GPIO \
 source/Timers \

@@ -10,21 +10,5 @@
 
 #include  "bspTimers.h"
 
-typedef enum SourceSelect{
-    ACLK,SMCLK
-} SourceSelect;
-
-typedef enum ModeControl{
-    STOP,UP,CONT,UPDOWN
-} ModeControl;
-
-typedef enum InputDivider{
-    TIMER_ID1,TIMER_ID2,TIMER_ID4,TIMER_ID8
-}InputDivider;
-
-typedef enum CaptureMode{
-    NO_CAPTURE,RISING,FALLING,BOTH
-}CaptureMode;
-
-
+void test(int steps);
 #endif /* HEADER_TIMERS_HALTIMERS_H_ */
