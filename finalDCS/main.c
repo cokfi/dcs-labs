@@ -43,7 +43,8 @@ int main(void)
     while (1)
     {
 
-        __bis_SR_register_on_exit(CPUOFF + GIE);
+        __enable_interrupt();
+        __bis_SR_register(CPUOFF);
         int v_x_disp, v_y_disp;
         v_x_disp = v_x & 0x0F; // Keep right 4 bits
         v_y_disp = v_y << 4 & 0xF0; // Keep left 4 bits
