@@ -10,11 +10,15 @@ static unsigned int motorSequence = 0x10;
 static unsigned int v_x = 0x00;
 static int v_y;
 static int current_adc_channel = 0;
+static int steps_counter = 0;
+static int direction_right; // 1 - Spin Motor Right, 0 - Spin Motor Left
+static int motor_input = 0x01;
+static int ablolute_steps = 0;
 
 void configureADC()
 {
     ADC10CTL0 = 0;
-    ADC10CTL0 |= ADC10ON + MSC+ADC10SHT_2; // Turn Module On
+    ADC10CTL0 |= ADC10ON + MSC + ADC10SHT_2; // Turn Module On
     ADC10CTL1 |= CONSEQ_3; // Repeat Sequence of Channels Mode
     ADC10CTL1 |= SHS_0; // SH
     ADC10CTL1 |= INCH_1; // Highest Channel in the sequence is A1
@@ -29,6 +33,24 @@ void startADC()
     ADC10CTL0 |= ADC10SC; // Start Conversion
 }
 
+void configureTimer()
+{
+    TA0CTL = 0; // Make sure timer not working
+    TA0CTL = TASSEL_1 + TACLR + TAIE;
+
+    TA0CCR0 = 0x485; // for 5-50 Hz this values should be between 0x285(50 Hz) and 0x199A(5 Hz)
+}
+
+void startTimer()
+{
+    TA0CTL |= MC_1;
+}
+
+void stopTimer()
+{
+    TA0CTL &= ~MC_3;
+}
+
 int main(void)
 {
 
@@ -39,34 +61,56 @@ int main(void)
     P2DIR = 0xFF;
 
     configureADC();
+    configureTimer();
     startADC();
-    int v_x_disp, v_y_disp;
+    int steps_to_make = 10;
+    direction_right = 1;
+    startTimer();
     while (1)
     {
-        //ADC10CTL0 &= ~ADC10IE;
-        P2OUT = (unsigned int)ADC10MEM>>8;
-        //ADC10CTL0 |= ADC10IE;
-        //__bis_SR_register(CPUOFF + GIE);
-        //v_x_disp = v_x & 0x0F; // Keep right 4 bits
-        //v_y_disp = v_y << 4 & 0xF0; // Keep left 4 bits
+//        P2OUT = (unsigned int)ADC10MEM>>8;
 
+        if (steps_counter > steps_to_make)
+        {
+            stopTimer();
+        }
+        __bis_SR_register(CPUOFF + GIE);
     }
     return 0;
 }
 
-#pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR(void)
+#pragma vector=TA0IV_TAIFG
+__interrupt void timer0ISR(void)
 {
-
-    ADC10CTL0 &= ~ADC10IFG;
-    if (current_adc_channel == 0)
+    if (direction_right)
     {
-        v_x = (unsigned int)ADC10MEM;
+        P2OUT = (unsigned int) motor_input;
+        if (motor_input == 1)
+        {
+            motor_input = 8;
+            steps_counter++;
+            ablolute_steps++;
+        }
+        else
+        {
+            motor_input = motor_input >> 1;
+        }
     }
-    else
+    if (!direction_right)
     {
-        //v_y = ADC10MEM;
+        P2OUT = (unsigned int) motor_input;
+        if (motor_input == 8)
+        {
+            motor_input = 1;
+            steps_counter++;
+            ablolute_steps--;
+        }
+        else
+        {
+            motor_input = motor_input << 1;
+        }
     }
-    current_adc_channel ^= current_adc_channel;
     __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+
 }
+
