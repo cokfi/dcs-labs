@@ -5,6 +5,8 @@
 /**
  * main.c
  */
+#define DELAY_CONST 0x7D // 10^-3 * 10^6 / 8 (ms * MHz * ID , assuming 1MHz clock and input divider 8)
+
 static unsigned int motorSequence = 0x10;
 
 static unsigned int v_x = 0x00;
@@ -14,6 +16,30 @@ static int steps_counter = 0;
 static int direction_right; // 1 - Spin Motor Right, 0 - Spin Motor Left
 static int motor_input = 0x01;
 static int ablolute_steps = 0;
+static int scan;
+
+void delay()
+{
+    startDelayTimer();
+    __bic_SR_register(CPUOFF + GIE);
+}
+
+void configureLEDs()
+{
+    // Connect P2 to LEDs to see values
+    P2SEL = 0;
+    P2DIR = 0xFF;
+}
+
+void setLEDs(unsigned int val)
+{
+    P2OUT |= val;
+}
+
+void resetLEDs(unsigned int val)
+{
+    P2OUT &= ~val;
+}
 
 void configureADC()
 {
@@ -33,7 +59,7 @@ void startADC()
     ADC10CTL0 |= ADC10SC; // Start Conversion
 }
 
-void configureTimer()
+void configureMotorTimer()
 {
     TA0CTL = 0; // Make sure timer not working
     TA0CTL = TASSEL_2 + TACLR + TAIE;
@@ -43,14 +69,138 @@ void configureTimer()
     TA0CCTL0 |= CCIE;
 }
 
-void startTimer()
+void startMotorTimer()
 {
     TA0CTL |= MC_1;
 }
 
-void stopTimer()
+void stopMotorTimer()
 {
     TA0CTL &= ~MC_3;
+}
+
+void configureDelayTimer()
+{
+    TA1CTL = 0; // Make sure timer not working
+    TA1CTL = TASSEL_2 + TACLR + TAIE;
+    TA1CTL |= ID_3;
+}
+
+void startDelayTimer()
+{
+    TA0CTL |= MC_1;
+}
+
+void blinkRGB(int x)
+{
+    return;
+}
+
+void rlcLEDs(int x)
+{
+    int ledsVal;
+    int i;
+    for (i; i < x; i++)
+    {
+        ledsVal = P2OUT >> 1;
+        P2OUT = (unsigned int) ledsVal;
+        delay();
+    }
+}
+
+void rrcLEDs(int x)
+{
+    int ledsVal;
+    int i;
+    for (i; i < x; i++)
+    {
+        ledsVal = P2OUT << 1;
+        P2OUT = (unsigned int) ledsVal;
+        delay();
+    }
+}
+
+void setDelay(int d)
+{
+    TA1CCR0 = d << 7; // SHL(d,7) = d*2^7 = d*128 ~ d*125 = 0x7D (see explanation in define)
+}
+
+void clearAllLEDs()
+{
+    P2OUT = (unsigned int) 0;
+}
+
+void stepperDeg(int p)
+{
+    return;
+}
+
+void stepperScan(int left, int right)
+{
+    scan = 1;
+    startMotorTimer();
+    while (scan)
+    {
+        __bis_SR_register(CPUOFF + GIE);
+
+        /* The idea: Enable interrupts in the port connected to the joystick push-button.
+         * in the ISR for that button, reset the values of scan and stop the motorTimer.
+         *
+         * Note: not sure we really need the variable 'scan' and the while loop, it might work just with the ISR.
+         * we need to think about it  */
+    }
+}
+
+void sleep()
+{
+    __bic_SR_register(CPUOFF + GIE);
+}
+
+void executeCommand(int command)
+{
+    int opcode, operand, operandL, operandR;
+
+    if (command >> 16 != 0)
+    {
+        opcode = 7;
+        operandL = (command & 0x00FF00) >> 8;
+        operandR = command & 0x0000FF;
+    }
+    else
+    {
+        opcode = command >> 8; // Opcode is in 8 leftmost bits
+        operand = command && 0x0F; // Operand is in 8 rightmost bits
+    }
+
+    switch (opcode)
+    {
+    case 1:
+        blinkRGB(operand);
+        break;
+    case 2:
+        rlcLEDs(operand);
+        break;
+    case 3:
+        rrcLEDs(operand);
+        break;
+    case 4:
+        setDelay(operand);
+        break;
+    case 5:
+        clearAllLEDs();
+        break;
+    case 6:
+        stepperDeg(operand);
+        break;
+    case 7:
+        stepperScan(operandL, operandR);
+        break;
+    case 8:
+        sleep();
+        break;
+    default:
+        break;
+    }
 }
 
 int main(void)
@@ -58,10 +208,7 @@ int main(void)
 
     WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
 
-    // Connect P2 to LEDs to see values
-    P2SEL = 0;
-    P2DIR = 0xFF;
-
+    configureLEDs();
     configureADC();
     configureTimer();
     startADC();
@@ -82,7 +229,7 @@ int main(void)
 }
 
 #pragma vector=TIMER0_A0_VECTOR
-__interrupt void timer0ISR(void)
+__interrupt void motorTimerISR(void)
 {
     if (direction_right)
     {
@@ -117,3 +264,10 @@ __interrupt void timer0ISR(void)
 
 }
 
+#pragma vector=TIMER1_A0_VECTOR
+__interrupt void delayTimerISR(void)
+{
+    TA0CTL &= ~MC_3; // Stop Timer
+    TA0CTL &= ~TAIFG;
+    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+}
