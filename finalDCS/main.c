@@ -36,9 +36,11 @@ void startADC()
 void configureTimer()
 {
     TA0CTL = 0; // Make sure timer not working
-    TA0CTL = TASSEL_1 + TACLR + TAIE;
+    TA0CTL = TASSEL_2 + TACLR + TAIE;
+    TA0CTL |= ID_3;
 
-    TA0CCR0 = 0x485; // for 5-50 Hz this values should be between 0x285(50 Hz) and 0x199A(5 Hz)
+    TA0CCR0 = 0x61a8; // for 5-50 Hz this values should be between 0x285(50 Hz) and 0x199A(5 Hz)
+    TA0CCTL0 |= CCIE;
 }
 
 void startTimer()
@@ -79,7 +81,7 @@ int main(void)
     return 0;
 }
 
-#pragma vector=TA0IV_TAIFG
+#pragma vector=TIMER0_A0_VECTOR
 __interrupt void timer0ISR(void)
 {
     if (direction_right)
@@ -110,6 +112,7 @@ __interrupt void timer0ISR(void)
             motor_input = motor_input << 1;
         }
     }
+    TACTL &= ~TAIFG;
     __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
 
 }
