@@ -21,8 +21,8 @@
 //  BCSCTL1 = CALBC1_1MHZ;                    // Set DCO
 //  DCOCTL = CALDCO_1MHZ;
 //
-////  P2DIR = 0xFF;                             // All P2.x outputs
-////  P2OUT = 0;                                // All P2.x reset
+//  P2DIR = 0xFF;                             // All P2.x outputs
+//  P2OUT = 0;                                // All P2.x reset
 //  P1SEL = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
 //  P1SEL2 = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
 //  P1DIR |= RXLED + TXLED;
@@ -140,12 +140,13 @@ int main(void)
     P2SEL = 0;
     P2DIR = 0xFF;
     configureUart();
-    configureADC();
-    startADC();
+//    configureADC();
+//    startADC();
     enableUartInterrupt();
     while (1)
     {
-        P2OUT = (unsigned int)ADC10MEM>>8;
+//        P2OUT = (unsigned int)ADC10MEM>>8;
+        __bis_SR_register(LPM0_bits + GIE);
     }
 }
 
@@ -155,17 +156,11 @@ int main(void)
 //-------------------------------------------------------------
 //           interrupt vector uartTx
 //-------------------------------------------------------------
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI0TX_ISR(void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(USCIAB0TX_VECTOR))) USCI0TX_ISR (void)
-#else
-#error Compiler not supported!
-#endif
 {
 
-            UCA0TXBUF = ADC10MEM;                 // TX next sample
+            UCA0TXBUF = 2;                 // TX next sample
             if (counter >=1){
                 IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
                 counter = 0;
@@ -177,35 +172,12 @@ void __attribute__ ((interrupt(USCIAB0TX_VECTOR))) USCI0TX_ISR (void)
 //-------------------------------------------------------------
 //           interrupt vector uartRx
 //-------------------------------------------------------------
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)
-#elif defined(__GNUC__)
-void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCI0RX_ISR (void)
-#else
-#error Compiler not supported!
-#endif
 {
     if (UCA0RXBUF == 'u')                     // 'u' received?
     {
         IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-        UCA0TXBUF = ADC10MEM;
+        UCA0TXBUF = 1;
       }
 }
-
-//#pragma vector=ADC10_VECTOR
-//__interrupt void ADC10_ISR(void)
-//{
-//
-//    ADC10CTL0 &= ~ADC10IFG;
-//    if (current_adc_channel == 0)
-//    {
-//        v_x = (unsigned int)ADC10MEM;
-//    }
-//    else
-//    {
-//        //v_y = ADC10MEM;
-//    }
-//    current_adc_channel ^= current_adc_channel;
-//    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
-//}
