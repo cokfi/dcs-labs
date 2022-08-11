@@ -65,7 +65,7 @@ void configureMotorTimer()
     TA0CTL = TASSEL_2 + TACLR + TAIE;
     TA0CTL |= ID_3;
 
-    TA0CCR0 = 0x61a8; // for 5-50 Hz this values should be between 0x285(50 Hz) and 0x199A(5 Hz)
+    TA0CCR0 = 0x9c4; // for 5-50 Hz this values should be between 0x9c4(50 Hz) and 0x61a8(5 Hz)
     TA0CCTL0 |= CCIE;
 }
 
@@ -210,18 +210,18 @@ int main(void)
 
     configureLEDs();
     configureADC();
-    configureTimer();
+    configureMotorTimer();
     startADC();
-    int steps_to_make = 10;
+    int steps_to_make = 100;
     direction_right = 1;
-    startTimer();
+    startMotorTimer();
     while (1)
     {
 //        P2OUT = (unsigned int)ADC10MEM>>8;
 
         if (steps_counter > steps_to_make)
         {
-            stopTimer();
+            stopMotorTimer();
         }
         __bis_SR_register(CPUOFF + GIE);
     }
