@@ -9,14 +9,15 @@
 
 static unsigned int motorSequence = 0x10;
 
-static unsigned int v_x = 0x00;
-static int v_y;
+static int v_x = 0x00;
+static int v_y= 0x00;
 static int current_adc_channel = 0;
 static int steps_counter = 0;
 static int direction_right; // 1 - Spin Motor Right, 0 - Spin Motor Left
 static int motor_input = 0x01;
 static int ablolute_steps = 0;
 static int scan;
+static int adcChannel = 0;
 
 void delay()
 {
@@ -44,17 +45,17 @@ void resetLEDs(unsigned int val)
 void configureADC()
 {
     ADC10CTL0 = 0;
-    ADC10CTL0 |= ADC10ON + MSC + ADC10SHT_2; // Turn Module On
-    ADC10CTL1 |= CONSEQ_3; // Repeat Sequence of Channels Mode
-    ADC10CTL1 |= SHS_0; // SH
+    ADC10CTL0 |= ADC10ON + MSC + ADC10SHT_3; // Turn Module On
+    ADC10CTL1 |= CONSEQ_2; // Repeat Sequence of Channels Mode
+    ADC10CTL1 |= SHS_0 ; // SH
     ADC10CTL1 |= INCH_1; // Highest Channel in the sequence is A1
-    ADC10CTL1 |= ADC10DF + ADC10DIV_4; // 2's Complement format
+    ADC10CTL1 |= ADC10DF + ADC10DIV_7; // 2's Complement format
 //ADC10CTL1 &= ~ADC10DF;// Binary format
 }
 
 void startADC()
 {
-    //ADC10CTL0 |= ADC10IE;
+    ADC10CTL0 |= ADC10IE;
     ADC10CTL0 |= ENC; // Enable Conversions (Must be reset before changing configuration)
     ADC10CTL0 |= ADC10SC; // Start Conversion
 }
@@ -210,19 +211,18 @@ int main(void)
 
     configureLEDs();
     configureADC();
-    configureMotorTimer();
-    startADC();
+    //configureMotorTimer();
     int steps_to_make = 100;
     direction_right = 1;
     startMotorTimer();
     while (1)
     {
-//        P2OUT = (unsigned int)ADC10MEM>>8;
-
-        if (steps_counter > steps_to_make)
-        {
-            stopMotorTimer();
-        }
+        startADC();
+        //P2OUT = (unsigned int)ADC10MEM>>8;
+//        if (steps_counter > steps_to_make)
+//        {
+//            stopMotorTimer();
+//        }
         __bis_SR_register(CPUOFF + GIE);
     }
     return 0;
@@ -270,4 +270,20 @@ __interrupt void delayTimerISR(void)
     TA0CTL &= ~MC_3; // Stop Timer
     TA0CTL &= ~TAIFG;
     __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+}
+
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR (void)
+{
+    if (adcChannel==0)
+    {
+        v_y = ADC10MEM;
+    }
+    else
+    {
+        v_x = ADC10MEM;
+        __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+    }
+    adcChannel ^= 1;
+    ADC10CTL0 &= ~ADC10IFG;
 }
