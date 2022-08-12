@@ -27,7 +27,7 @@ def main():
             inChar = input("Enter char:")
             bytesChar = bytes(inChar, 'ascii')
             s.write(bytesChar)
-            if s.out_waiting == 0 and ('x' or 'y' in inChar):
+            if s.out_waiting == 0 and ('x' or 'y' or 's' in inChar):
                 enableTX = False
 
 if __name__ == '__main__':
