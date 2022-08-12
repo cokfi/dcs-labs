@@ -8,6 +8,11 @@
  * main.c
  */
 #define DELAY_CONST 0x7D // 10^-3 * 10^6 / 8 (ms * MHz * ID , assuming 1MHz clock and input divider 8)
+static int adcChannel=0;
+static int direction_right=1;
+static int motor_input=0;
+static int steps_counter = 0;
+static int ablolute_steps = 0;
 
 static unsigned int motorSequence = 0x10;
 static int scan = 0;
@@ -15,6 +20,8 @@ static int v_x = 0x00;
 static int v_y= 0x00;
 static int current_adc_channel = 0;
 static int counter =0;
+static int sendUartNumber=0;
+static int nop;
 
 void configureADC()
 {
@@ -211,15 +218,19 @@ int main(void)
     // Connect P2 to LEDs to see values
     P2SEL = 0;
     P2DIR = 0xFF;
-
-    configureADC();
+//    P1SEL &= ~BIT5;
+//    P1DIR &= ~BIT5;
+//    P1IE |= BIT5;
+    //configureADC();
     configureUart();
     enableUartInterrupt();
-    startADC();
-    
+    //startADC();
+
     while (1)
     {
-        __bis_SR_register(LPM0_bits + GIE);
+        __bis_SR_register(LPM0_bits + GIE);       // Enter LPM3 w/ int until Byte RXed
+        nop = 0;
+
     }
 }
 
@@ -233,7 +244,7 @@ int main(void)
 __interrupt void USCI0TX_ISR(void)
 {
 
-            UCA0TXBUF = 0x511&0xff;                 // TX next sample
+            UCA0TXBUF = sendUartNumber&0xff;                 // TX next sample, send LSB
             if (counter >=1){
                 IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
                 counter = 0;
@@ -250,9 +261,16 @@ __interrupt void USCI0RX_ISR(void)
 {
     if (UCA0RXBUF == 'u')                     // 'u' received?
     {
+        sendUartNumber = v_x;
         IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-        UCA0TXBUF =  0x511>>8;
+        UCA0TXBUF =  sendUartNumber>>8; //send MSB
     }
+    else if (UCA0RXBUF == 'y')                     // 'u' received?
+        {
+            sendUartNumber = v_y;
+            IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+            UCA0TXBUF =  sendUartNumber>>8;//MSB
+        }
 }
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void motorTimerISR(void)
@@ -299,7 +317,7 @@ __interrupt void delayTimerISR(void)
 }
 
 #pragma vector=ADC10_VECTOR
-__interrupt void ADC10_ISR (void)
+__interrupt void ADC10_ISR(void)
 {
     if (adcChannel==0)
     {
@@ -314,3 +332,14 @@ __interrupt void ADC10_ISR (void)
     adcChannel ^= 1;
     ADC10CTL0 &= ~ADC10IFG;
 }
+#pragma vector = PORT1_VECTOR
+__interrupt void port1ISR(void)
+{
+
+    UCA0TXBUF =  0x511>>8;
+    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+
+}
+
+
