@@ -10,7 +10,7 @@
 #define DELAY_CONST 0x7D // 10^-3 * 10^6 / 8 (ms * MHz * ID , assuming 1MHz clock and input divider 8)
 
 static unsigned int motorSequence = 0x10;
-
+static int scan = 0;
 static int v_x = 0x00;
 static int v_y= 0x00;
 static int current_adc_channel = 0;
@@ -22,7 +22,7 @@ void configureADC()
     ADC10CTL0 |= ADC10ON + MSC + ADC10SHT_3; // Turn Module On
     ADC10CTL1 |= CONSEQ_2; // Repeat Sequence of Channels Mode
     ADC10CTL1 |= SHS_0 ; // SH
-    ADC10CTL1 |= INCH_1; // Highest Channel in the sequence is A1
+    ADC10CTL1 |= INCH_4; // Highest Channel in the sequence is A4
     ADC10CTL1 |= ADC10DF + ADC10DIV_4; // 2's Complement format
 }
 
@@ -54,6 +54,7 @@ void enableUartInterrupt(){
 
 void startADC()
 {
+    ADC10CTL0 |= ADC10IE;
     ADC10CTL0 |= ENC; // Enable Conversions (Must be reset before changing configuration)
     ADC10CTL0 |= ADC10SC; // Start Conversion
 }
@@ -136,7 +137,7 @@ void stepperDeg(int p)
 
 void stepperScan(int left, int right)
 {
-    scan = 1;
+    //scan = 1;
     startMotorTimer();
     while (scan)
     {
@@ -210,13 +211,14 @@ int main(void)
     // Connect P2 to LEDs to see values
     P2SEL = 0;
     P2DIR = 0xFF;
+
+    configureADC();
     configureUart();
-//    configureADC();
-//    startADC();
     enableUartInterrupt();
+    startADC();
+    
     while (1)
     {
-//        P2OUT = (unsigned int)ADC10MEM>>8;
         __bis_SR_register(LPM0_bits + GIE);
     }
 }
@@ -250,5 +252,65 @@ __interrupt void USCI0RX_ISR(void)
     {
         IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
         UCA0TXBUF =  0x511>>8;
-      }
+    }
+}
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void motorTimerISR(void)
+{
+    if (direction_right)
+    {
+        P2OUT = (unsigned int) motor_input;
+        if (motor_input == 1)
+        {
+            motor_input = 8;
+            steps_counter++;
+            ablolute_steps++;
+        }
+        else
+        {
+            motor_input = motor_input >> 1;
+        }
+    }
+    if (!direction_right)
+    {
+        P2OUT = (unsigned int) motor_input;
+        if (motor_input == 8)
+        {
+            motor_input = 1;
+            steps_counter++;
+            ablolute_steps--;
+        }
+        else
+        {
+            motor_input = motor_input << 1;
+        }
+    }
+    TACTL &= ~TAIFG;
+    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+
+}
+
+#pragma vector=TIMER1_A0_VECTOR
+__interrupt void delayTimerISR(void)
+{
+    TA0CTL &= ~MC_3; // Stop Timer
+    TA0CTL &= ~TAIFG;
+    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+}
+
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR (void)
+{
+    if (adcChannel==0)
+    {
+        v_y = ADC10MEM;
+    }
+    else
+    {
+        v_x = ADC10MEM;
+        ADC10CTL0 &= ~ADC10IE;
+        __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+    }
+    adcChannel ^= 1;
+    ADC10CTL0 &= ~ADC10IFG;
 }
