@@ -13,6 +13,7 @@ static int direction_right=1;
 static int motor_input=0;
 static int steps_counter = 0;
 static int ablolute_steps = 0;
+static int switch0 = 0;
 
 static unsigned int motorSequence = 0x10;
 static int scan = 0;
@@ -219,9 +220,9 @@ int main(void)
     // Connect P2 to LEDs to see values
     P2SEL = 0;
     P2DIR = 0xFF;
-//    P1SEL &= ~BIT5;
-//    P1DIR &= ~BIT5;
-//    P1IE |= BIT5;
+    P1SEL &= ~BIT5;
+    P1DIR &= ~BIT5;
+    P1IE  |= BIT5;
     configureADC();
     configureUart();
     enableUartInterrupt();
@@ -245,12 +246,12 @@ int main(void)
 __interrupt void USCI0TX_ISR(void)
 {
 
-            UCA0TXBUF = sendUartNumber&0xff;                 // TX next sample, send LSB
-            if (counter >=1){
-                IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
-                counter = 0;
-            }
-            counter++;
+        UCA0TXBUF = sendUartNumber&0xff;                 // TX next sample, send LSB
+        if (counter >=1){
+            IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
+            counter = 0;
+        }
+        counter++;
 
 }
 
@@ -272,6 +273,14 @@ __interrupt void USCI0RX_ISR(void)
             IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
             UCA0TXBUF =  sendUartNumber>>8;//MSB
         }
+    else if (UCA0RXBUF == 'c')                     // 'u' received?
+            {
+                if (switch0 == 1)
+                    UCA0TXBUF =  's' ;
+                else
+                    UCA0TXBUF =  0 ;
+            }
+
 }
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void motorTimerISR(void)
@@ -338,9 +347,8 @@ __interrupt void ADC10_ISR(void)
 #pragma vector = PORT1_VECTOR
 __interrupt void port1ISR(void)
 {
-
-    UCA0TXBUF =  0x511>>8;
-    IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
+    P1IFG &= ~BIT5;
+    switch0 = 1;
     __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
 
 }
