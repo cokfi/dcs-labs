@@ -61,6 +61,7 @@ void enableUartInterrupt(){
 
 void startADC()
 {
+    ADC10CTL1 |= CONSEQ_2; // Repeat Sequence of Channels Mode
     ADC10CTL0 |= ADC10IE;
     ADC10CTL0 |= ENC; // Enable Conversions (Must be reset before changing configuration)
     ADC10CTL0 |= ADC10SC; // Start Conversion
@@ -221,13 +222,13 @@ int main(void)
 //    P1SEL &= ~BIT5;
 //    P1DIR &= ~BIT5;
 //    P1IE |= BIT5;
-    //configureADC();
+    configureADC();
     configureUart();
     enableUartInterrupt();
-    //startADC();
 
     while (1)
     {
+        startADC();
         __bis_SR_register(LPM0_bits + GIE);       // Enter LPM3 w/ int until Byte RXed
         nop = 0;
 
@@ -259,11 +260,11 @@ __interrupt void USCI0TX_ISR(void)
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)
 {
-    if (UCA0RXBUF == 'u')                     // 'u' received?
+    if (UCA0RXBUF == 'x')                     // 'u' received?
     {
         sendUartNumber = v_x;
-        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
         UCA0TXBUF =  sendUartNumber>>8; //send MSB
+        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
     }
     else if (UCA0RXBUF == 'y')                     // 'u' received?
         {
@@ -328,6 +329,8 @@ __interrupt void ADC10_ISR(void)
         v_x = ADC10MEM;
         ADC10CTL0 &= ~ADC10IE;
         __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+        ADC10CTL0 &= ~ENC;
+        ADC10CTL1 &= ~CONSEQ_3;
     }
     adcChannel ^= 1;
     ADC10CTL0 &= ~ADC10IFG;

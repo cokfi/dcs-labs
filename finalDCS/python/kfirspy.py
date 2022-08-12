@@ -15,13 +15,8 @@ def main():
         while (s.in_waiting > 0):  # while the input buffer isn't empty
             line = s.read_until(terminator='\n')  # read  from the buffer until the terminator is received,
                                                   # readline() can also be used if the terminator is '\n'
-            # number = line.decode()
-            # for i in range(len(number)):
-            #     print(int(number[i]))
-            #     #ptint(int())
 
-            #print(hex(number))
-            # print(type(number))
+            print(line)
             number = int.from_bytes(line, "big",signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
             print(hex(number))
             print(number)
@@ -32,7 +27,7 @@ def main():
             inChar = input("Enter char:")
             bytesChar = bytes(inChar, 'ascii')
             s.write(bytesChar)
-            if s.out_waiting == 0 and 'u' in inChar:
+            if s.out_waiting == 0 and ('x' or 'y' in inChar):
                 enableTX = False
 
 if __name__ == '__main__':
