@@ -160,7 +160,7 @@ int main(void)
 __interrupt void USCI0TX_ISR(void)
 {
 
-            UCA0TXBUF = 2;                 // TX next sample
+            UCA0TXBUF = 0x511&0xff;                 // TX next sample
             if (counter >=1){
                 IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
                 counter = 0;
@@ -178,6 +178,6 @@ __interrupt void USCI0RX_ISR(void)
     if (UCA0RXBUF == 'u')                     // 'u' received?
     {
         IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-        UCA0TXBUF = 1;
+        UCA0TXBUF =  0x511>>8;
       }
 }
