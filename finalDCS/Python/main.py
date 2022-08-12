@@ -12,6 +12,9 @@ CANVAS_RESOLUTION = (480,480)
 POINT_SIZE = (4,4)
 MODE_TEXT = ["Write","Erase","Neutral"]
 
+UP_THRESHOLD = 120 # Need to check real values
+DOWN_THRESHOLD = -120 # Need to check real values
+
 class MainMenu:
 	def __init__(self):
 		if __name__=='__main__':
@@ -32,7 +35,8 @@ class PaintCursor:
 	y = CANVAS_RESOLUTION[1]//2
 
 class Painter:
-	def __init__(self):
+	def __init__(self, UART):
+		self.UART = UART
 		self.canvas = sg.Graph(CANVAS_RESOLUTION,(0,0),CANVAS_RESOLUTION,key='CANVAS',background_color='white')
 		self.cursor = PaintCursor()
 		self.mode = PainterMode.NEUTRAL
@@ -63,68 +67,131 @@ class Painter:
 		self.window['Mode'].update(MODE_TEXT[self.mode])
 	
 	def paint(self):
-		
 		while True:
 			event,values = self.window.read()
 			
-			self.window.bind('<Up>','-UP-')
-			self.window.bind('<Down>','-DOWN-')
-			self.window.bind('<Left>','-LEFT-')
-			self.window.bind('<Right>','-RIGHT-')
-			self.window.bind('<Return>','-SHIFT_MODE-')
-			
-			dx = 0
-			dy = 0
-			
+			# self.window.bind('<Up>','-UP-')
+			# self.window.bind('<Down>','-DOWN-')
+			# self.window.bind('<Left>','-LEFT-')
+			# self.window.bind('<Right>','-RIGHT-')
+			# self.window.bind('<Return>','-SHIFT_MODE-')
+		
+			# dx = 0
+			# dy = 0
+			command = self.UART.getCommand()
+			print(command)
+			if command == 's':
+				self.changeMode()
+			else:
+				dx,dy=self.UART.getJoystickRead()
 			if event in (sg.WIN_CLOSED,'Exit'):
 				break
-			if event=="-UP-":
-				dy = 1
-			
-			elif event=='-DOWN-':
-				dy = -1
-			
-			elif event=='-LEFT-':
-				dx = -1
-			
-			elif event=='-RIGHT-':
-				dx = 1
-			
-			elif event=='-SHIFT_MODE-':
-				self.changeMode()
+			# if event=="-UP-":
+			# 	dy = 1
+			#
+			# elif event=='-DOWN-':
+			# 	dy = -1
+			#
+			# elif event=='-LEFT-':
+			# 	dx = -1
+			#
+			# elif event=='-RIGHT-':
+			# 	dx = 1
+			#
+			# elif event=='-SHIFT_MODE-':
+			# 	self.changeMode()
 			
 			self.moveCursor(dx,dy)
 			print(event)  # ------ Process menu choices ------ #
-		
 		self.window.close()
 
+class UART:
+	def __init__(self):
+		self.channel = ser.Serial('COM3',baudrate=9600,bytesize=ser.EIGHTBITS,parity=ser.PARITY_NONE,stopbits=ser.STOPBITS_ONE,
+		               timeout=1)  # timeout of 1 sec so that the read and write operations are blocking,  # after the timeout the program continues
+		self.channel.reset_input_buffer()
+		self.channel.reset_output_buffer()
+		
+	def send(self, message):
+		enableTX = True
+		while self.channel.out_waiting>0 or enableTX:  # while the output buffer isn't empty
+			inChar = message
+			bytesChar = bytes(inChar,'ascii')
+			self.channel.write(bytesChar)
+			if self.channel.out_waiting==0 and ('x' or 'y' or 'c' in inChar):
+				enableTX = False
+	
+	def receive(self):
+		while self.channel.in_waiting>0:  # while the input buffer isn't empty
+			line = self.channel.read_until(terminator='\n')  # read  from the buffer until the terminator is received,
+			number = int.from_bytes(line,"big",signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
+			number_hex = hex(number)
+			
+			if self.channel.in_waiting==0:
+				return number # maybe return number_hex instead?
+			
+	def getCommand(self):
+		self.send('c')
+		number = self.receive()
+		return number
+		# TODO - Add a way to translate command, maybe 'receive()' should output the bytes without translation
+	
+	def getJoystickRead(self):
+		self.send('x')
+		x = self.receive()
+		self.send('y')
+		y = self.receive()
+		return x,y
+		
 def main():
 	main_menu = MainMenu()
 	current_choice = 1
+	uart = UART()
 	while True:
 		event,values = main_menu.window.read()
 		
-		main_menu.window.bind('<Up>','-UP-')
-		main_menu.window.bind('<Down>','-DOWN-')
-		main_menu.window.bind('<Return>','-CHOOSE-')
+		# main_menu.window.bind('<Up>','-UP-')
+		# main_menu.window.bind('<Down>','-DOWN-')
+		# main_menu.window.bind('<Return>','-CHOOSE-')
 		
 		if event in (sg.WIN_CLOSED,'Exit'):
 			break
-		if event=="-UP-":
+			
+		dx,dy = uart.getJoystickRead()
+		command = uart.getCommand()
+		
+		if dy > UP_THRESHOLD:
 			if current_choice>1:
 				main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 				current_choice = current_choice-1
-		
-		elif event=='-DOWN-':
+		# if event=="-UP-":
+		# 	if current_choice>1:
+		# 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
+		# 		current_choice = current_choice-1
+		elif dy < DOWN_THRESHOLD:
 			if current_choice<4:
 				main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 				current_choice = current_choice+1
-		
-		elif event=='-CHOOSE-':
-			
-			if current_choice==2:
+		# elif event=='-DOWN-':
+		# 	if current_choice<4:
+		# 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
+		# 		current_choice = current_choice+1
+		elif command=='s':
+			if current_choice==1:
+				print("Motor Control")
+			elif current_choice==2:
+				print("Painter")
 				painter = Painter()
 				painter.paint()
+			elif current_choice==3:
+				print("Motor Calibration")
+			else:
+				print("Script Mode")
+		# elif event=='-CHOOSE-':
+		#
+		# 	if current_choice==2:
+		# 		painter = Painter()
+		# 		painter.paint()
 		
 		print(event,values)
 		# ------ Process menu choices ------ #
@@ -133,38 +200,7 @@ def main():
 	
 	main_menu.window.close()
 	
-	# Finish up by removing from the screen  # window.close()
 
-# s = ser.Serial('COM3',baudrate=9600,bytesize=ser.EIGHTBITS,parity=ser.PARITY_NONE,stopbits=ser.STOPBITS_ONE,
-#                timeout=1)  # timeout of 1 sec so that the read and write operations are blocking,
-# # after the timeout the program continues
-# enableTX = True
-# isGetDelay = False
-# # clear buffers
-# s.reset_input_buffer()
-# s.reset_output_buffer()
-# while 1:
-# 	while s.in_waiting>0:  # while the input buffer isn't empty
-# 		line = s.read_until()  # read  from the buffer until the terminator is received,
-# 		# readline() can also be used if the terminator is '\n'
-# 		print(line.decode("ascii"))
-# 		if s.in_waiting==0:
-# 			enableTX = True
-# 	while s.out_waiting>0 or enableTX:  # while the output buffer isn't empty
-# 		inChar = input("Enter char:")
-# 		if isGetDelay:
-# 			bytesChar = bytes(inChar+'\n','ascii')
-# 		else:
-# 			bytesChar = bytes(inChar,'ascii')
-# 		s.write(bytesChar)
-# 		if isGetDelay:
-# 			time.sleep(0.25)  # delay for accurate read/write operations on both ends
-# 		if s.out_waiting==0 and ('1' or '2' or '4' or '3' or '0' in inChar):
-# 			if '4' in inChar:
-# 				isGetDelay = True
-# 			else:
-# 				isGetDelay = False
-# 			enableTX = False
 
 if __name__=='__main__':
 	main()
