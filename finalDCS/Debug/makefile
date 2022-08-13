@@ -2,60 +2,27 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /Applications/ti/ccs1110/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS
+SHELL = cmd.exe
+
+CG_TOOL_ROOT := E:/Programs/CCS/ccsv7/tools/compiler/ti-cgt-msp430_16.9.6.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./main.obj" \
-"./source/ADC/bspADC.obj" \
-"./source/ADC/halADC.obj" \
-"./source/APIs/communicationAPI.obj" \
-"./source/APIs/joystickAPI.obj" \
-"./source/APIs/motorAPI.obj" \
-"./source/APIs/scriptAPI.obj" \
-"./source/Apps/motorApp.obj" \
-"./source/Apps/motorCalibrationApp.obj" \
-"./source/Apps/painterApp.obj" \
-"./source/Apps/scriptApp.obj" \
-"./source/FLASH/FLASH.obj" \
-"./source/GPIO/bspGPIO.obj" \
-"./source/GPIO/halGPIO.obj" \
-"./source/Timers/bspTimers.obj" \
-"./source/Timers/halTimers.obj" \
-"./source/UART/bspUART.obj" \
-"./source/UART/halUART.obj" \
-"./source/Utilities/Conversions.obj" \
 "../lnk_msp430g2553.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 
 -include ../makefile.init
 
-RM := rm -rf
-RMDIR := rm -rf
+RM := DEL /F
+RMDIR := RMDIR /S/Q
 
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
--include source/ADC/subdir_vars.mk
--include source/APIs/subdir_vars.mk
--include source/Apps/subdir_vars.mk
--include source/FLASH/subdir_vars.mk
--include source/GPIO/subdir_vars.mk
--include source/Timers/subdir_vars.mk
--include source/UART/subdir_vars.mk
--include source/Utilities/subdir_vars.mk
 -include subdir_rules.mk
--include source/ADC/subdir_rules.mk
--include source/APIs/subdir_rules.mk
--include source/Apps/subdir_rules.mk
--include source/FLASH/subdir_rules.mk
--include source/GPIO/subdir_rules.mk
--include source/Timers/subdir_rules.mk
--include source/UART/subdir_rules.mk
--include source/Utilities/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -165,29 +132,26 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "finalDCS.out"
+all: finalDCS.out
 
 # Tool invocations
 finalDCS.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"/Applications/ti/ccs1110/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/cl430" -vmsp --use_hw_mpy=none --advice:power=all --define=__MSP430G2553__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number -z -m"finalDCS.map" --heap_size=80 --stack_size=80 -i"/Applications/ti/ccs1110/ccs/ccs_base/msp430/include" -i"/Applications/ti/ccs1110/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib" -i"/Applications/ti/ccs1110/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="finalDCS_linkInfo.xml" --use_hw_mpy=none --rom_model -o "finalDCS.out" $(ORDERED_OBJS)
+	"E:/Programs/CCS/ccsv7/tools/compiler/ti-cgt-msp430_16.9.6.LTS/bin/cl430" -vmsp --use_hw_mpy=none --define=__MSP430G2553__ --printf_support=minimal -z --heap_size=80 --stack_size=80 -i"E:/Programs/CCS/ccsv7/ccs_base/msp430/include" --reread_libs --warn_sections --use_hw_mpy=none --rom_model -o "finalDCS.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 finalDCS.hex: $(EXE_OUTPUTS)
-	@echo 'Building secondary target: "$@"'
+	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"/Applications/ti/ccs1110/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "finalDCS.hex" $(EXE_OUTPUTS__QUOTED)
-	@echo 'Finished building secondary target: "$@"'
+	"E:/Programs/CCS/ccsv7/tools/compiler/ti-cgt-msp430_16.9.6.LTS/bin/hex430" --memwidth=8 --romwidth=8 -o "finalDCS.hex" $(EXE_OUTPUTS__QUOTED)
+	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "source/ADC/bspADC.obj" "source/ADC/halADC.obj" "source/APIs/communicationAPI.obj" "source/APIs/joystickAPI.obj" "source/APIs/motorAPI.obj" "source/APIs/scriptAPI.obj" "source/Apps/motorApp.obj" "source/Apps/motorCalibrationApp.obj" "source/Apps/painterApp.obj" "source/Apps/scriptApp.obj" "source/FLASH/FLASH.obj" "source/GPIO/bspGPIO.obj" "source/GPIO/halGPIO.obj" "source/Timers/bspTimers.obj" "source/Timers/halTimers.obj" "source/UART/bspUART.obj" "source/UART/halUART.obj" "source/Utilities/Conversions.obj" 
-	-$(RM) "main.d" "source/ADC/bspADC.d" "source/ADC/halADC.d" "source/APIs/communicationAPI.d" "source/APIs/joystickAPI.d" "source/APIs/motorAPI.d" "source/APIs/scriptAPI.d" "source/Apps/motorApp.d" "source/Apps/motorCalibrationApp.d" "source/Apps/painterApp.d" "source/Apps/scriptApp.d" "source/FLASH/FLASH.d" "source/GPIO/bspGPIO.d" "source/GPIO/halGPIO.d" "source/Timers/bspTimers.d" "source/Timers/halTimers.d" "source/UART/bspUART.d" "source/UART/halUART.d" "source/Utilities/Conversions.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

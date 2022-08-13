@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+SHELL = cmd.exe
+
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/ADC/bspADC.c \
@@ -16,12 +18,12 @@ OBJS += \
 ./source/ADC/halADC.obj 
 
 OBJS__QUOTED += \
-"source/ADC/bspADC.obj" \
-"source/ADC/halADC.obj" 
+"source\ADC\bspADC.obj" \
+"source\ADC\halADC.obj" 
 
 C_DEPS__QUOTED += \
-"source/ADC/bspADC.d" \
-"source/ADC/halADC.d" 
+"source\ADC\bspADC.d" \
+"source\ADC\halADC.d" 
 
 C_SRCS__QUOTED += \
 "../source/ADC/bspADC.c" \

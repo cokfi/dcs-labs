@@ -16,6 +16,7 @@
 #define BUTTON_PRESSED_MESSAGE 'p'
 #define UP_MESSAGE 'u'
 #define DOWN_MESSAGE 'd'
+#define END_OF_LINE '\n'
 // check if message is available but don't wait if not
 int checkMessages();
 

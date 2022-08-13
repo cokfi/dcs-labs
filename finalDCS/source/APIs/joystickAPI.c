@@ -17,11 +17,12 @@ void configureJoystick()
 
 void readJoysctickPos()
 {
-    read_available_flag = 0;
-    while (!xy_valid)
+    read_available_flag= 0;
+    while (!read_available_flag)
     {
         startADC();
-        __bic_SR_register(CPUOFF + GIE);
+        __bis_SR_register(CPUOFF + GIE);
+        read_available_flag = checkXYvalid();
     }
 
     v_x = getVx();

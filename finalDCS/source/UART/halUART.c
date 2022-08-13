@@ -61,7 +61,10 @@ void enableUartTxInterrupt()
         configureUart();
     IE2 |= UCA0TXIE;                          // Enable USCI_A0 RX interrupt
 }
-
+void setSendData(int msg)
+{
+    send_buffer = msg;
+}
 //-------------------------------------------------------------
 //           interrupt vector uartTx
 //-------------------------------------------------------------
@@ -70,11 +73,7 @@ __interrupt void USCI0TX_ISR(void)
 {
 
     UCA0TXBUF = send_buffer;               // TX next sample, send LSB
-    if (counter >= 1)
-    {
-        IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
-
-    }
+    IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
     messageSent_flag = 1;
     __bic_SR_register_on_exit(CPUOFF);
 }

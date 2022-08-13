@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+SHELL = cmd.exe
+
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../source/UART/bspUART.c \
@@ -16,12 +18,12 @@ OBJS += \
 ./source/UART/halUART.obj 
 
 OBJS__QUOTED += \
-"source/UART/bspUART.obj" \
-"source/UART/halUART.obj" 
+"source\UART\bspUART.obj" \
+"source\UART\halUART.obj" 
 
 C_DEPS__QUOTED += \
-"source/UART/bspUART.d" \
-"source/UART/halUART.d" 
+"source\UART\bspUART.d" \
+"source\UART\halUART.d" 
 
 C_SRCS__QUOTED += \
 "../source/UART/bspUART.c" \

@@ -29,7 +29,7 @@ static unsigned int send_buffer;
 
 void configureUart();
 void enableUartRxInterrupt();
-
+void setSendData(int msg);
 void enableUartTxInterrupt();
 
 //-------------------------------------------------------------

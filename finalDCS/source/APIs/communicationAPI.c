@@ -32,7 +32,7 @@ int readMessage()
         configureUart();
 
     enableUartRxInterrupt();
-    __bic_SR_register(CPUOFF + GIE);
+    __bis_SR_register(CPUOFF + GIE);
     return receive_buffer;
 }
 
@@ -41,10 +41,13 @@ int sendMessage(unsigned int message_data)
     messageSent_flag = 0;
     if (!uartConfigured_flag)
         configureUart();
-    send_buffer = message_data;
+    setSendData(message_data);
     enableUartTxInterrupt();
-    __bic_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
-    if (messageSent_flag)
-        return 0;
-    return -1;
+    __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
+    setSendData(END_OF_LINE);
+    enableUartTxInterrupt();
+    __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
+//    if (messageSent_flag)
+//        return 0;
+    return 0;
 }
