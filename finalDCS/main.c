@@ -35,7 +35,7 @@ void main()
     while (1)
     {
 
-        if (buttonPressed)
+        if (isButtonPressed())
         {
             sendMessage(BUTTON_PRESSED_MESSAGE);
 
@@ -49,7 +49,7 @@ void main()
             y = getVy();
             if (y > UP_THRESHOLD)
             {
-                sendMessage(DOWN_MESSAGE);
+                sendMessage(UP_MESSAGE);
 
                 if (current_choice > 1)
                     current_choice--;

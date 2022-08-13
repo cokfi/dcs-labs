@@ -10,16 +10,21 @@
 
 #include  <msp430g2553.h>          // MSP430x2xx
 
+#define   debounceVal      250
+
 static int pushButtonConfigured;
 static int buttonPressed;
 
 void configurePushButton();
+
+int isButtonPressed();
 
 void enablePushButton();
 
 void configureMotorPorts();
 
 void configureJoystickPorts();
+
 void blinkRGB(int x);
 
 void rlcLEDs(int x);
@@ -27,6 +32,7 @@ void rlcLEDs(int x);
 void rrcLEDs(int x);
 
 void setDelay(int d);
+
 void clearAllLEDs();
 
 void stepperDeg(int p);
