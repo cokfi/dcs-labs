@@ -10,7 +10,24 @@
 
 #include  "bspADC.h"
 
+static int adcChannel;
+static int v_x;
+static int v_y;
+static int xy_valid;
+static int current_adc_channel;
+static int adcConfigured;
 
+void configureADC();
 
+void startADC();
+
+int getVx();
+
+int getVy();
+
+//-------------------------------------------------------------
+//           interrupt vector ADC10
+//-------------------------------------------------------------
+__interrupt void ADC10_ISR(void);
 
 #endif /* HEADER_ADC_HALADC_H_ */

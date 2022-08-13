@@ -11,9 +11,15 @@ ORDERED_OBJS += \
 "./main.obj" \
 "./source/ADC/bspADC.obj" \
 "./source/ADC/halADC.obj" \
-"./source/API/motor.obj" \
-"./source/DMA/bspDMA.obj" \
-"./source/DMA/halDMA.obj" \
+"./source/APIs/communicationAPI.obj" \
+"./source/APIs/joystickAPI.obj" \
+"./source/APIs/motorAPI.obj" \
+"./source/APIs/scriptAPI.obj" \
+"./source/Apps/motorApp.obj" \
+"./source/Apps/motorCalibrationApp.obj" \
+"./source/Apps/painterApp.obj" \
+"./source/Apps/scriptApp.obj" \
+"./source/FLASH/FLASH.obj" \
 "./source/GPIO/bspGPIO.obj" \
 "./source/GPIO/halGPIO.obj" \
 "./source/Timers/bspTimers.obj" \
@@ -34,16 +40,18 @@ RMDIR := rm -rf
 -include sources.mk
 -include subdir_vars.mk
 -include source/ADC/subdir_vars.mk
--include source/API/subdir_vars.mk
--include source/DMA/subdir_vars.mk
+-include source/APIs/subdir_vars.mk
+-include source/Apps/subdir_vars.mk
+-include source/FLASH/subdir_vars.mk
 -include source/GPIO/subdir_vars.mk
 -include source/Timers/subdir_vars.mk
 -include source/UART/subdir_vars.mk
 -include source/Utilities/subdir_vars.mk
 -include subdir_rules.mk
 -include source/ADC/subdir_rules.mk
--include source/API/subdir_rules.mk
--include source/DMA/subdir_rules.mk
+-include source/APIs/subdir_rules.mk
+-include source/Apps/subdir_rules.mk
+-include source/FLASH/subdir_rules.mk
 -include source/GPIO/subdir_rules.mk
 -include source/Timers/subdir_rules.mk
 -include source/UART/subdir_rules.mk
@@ -178,8 +186,8 @@ finalDCS.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "source/ADC/bspADC.obj" "source/ADC/halADC.obj" "source/API/motor.obj" "source/DMA/bspDMA.obj" "source/DMA/halDMA.obj" "source/GPIO/bspGPIO.obj" "source/GPIO/halGPIO.obj" "source/Timers/bspTimers.obj" "source/Timers/halTimers.obj" "source/UART/bspUART.obj" "source/UART/halUART.obj" "source/Utilities/Conversions.obj" 
-	-$(RM) "main.d" "source/ADC/bspADC.d" "source/ADC/halADC.d" "source/API/motor.d" "source/DMA/bspDMA.d" "source/DMA/halDMA.d" "source/GPIO/bspGPIO.d" "source/GPIO/halGPIO.d" "source/Timers/bspTimers.d" "source/Timers/halTimers.d" "source/UART/bspUART.d" "source/UART/halUART.d" "source/Utilities/Conversions.d" 
+	-$(RM) "main.obj" "source/ADC/bspADC.obj" "source/ADC/halADC.obj" "source/APIs/communicationAPI.obj" "source/APIs/joystickAPI.obj" "source/APIs/motorAPI.obj" "source/APIs/scriptAPI.obj" "source/Apps/motorApp.obj" "source/Apps/motorCalibrationApp.obj" "source/Apps/painterApp.obj" "source/Apps/scriptApp.obj" "source/FLASH/FLASH.obj" "source/GPIO/bspGPIO.obj" "source/GPIO/halGPIO.obj" "source/Timers/bspTimers.obj" "source/Timers/halTimers.obj" "source/UART/bspUART.obj" "source/UART/halUART.obj" "source/Utilities/Conversions.obj" 
+	-$(RM) "main.d" "source/ADC/bspADC.d" "source/ADC/halADC.d" "source/APIs/communicationAPI.d" "source/APIs/joystickAPI.d" "source/APIs/motorAPI.d" "source/APIs/scriptAPI.d" "source/Apps/motorApp.d" "source/Apps/motorCalibrationApp.d" "source/Apps/painterApp.d" "source/Apps/scriptApp.d" "source/FLASH/FLASH.d" "source/GPIO/bspGPIO.d" "source/GPIO/halGPIO.d" "source/Timers/bspTimers.d" "source/Timers/halTimers.d" "source/UART/bspUART.d" "source/UART/halUART.d" "source/Utilities/Conversions.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

@@ -113,8 +113,9 @@ PDE_DEPS__QUOTED :=
 SUBDIRS := \
 . \
 source/ADC \
-source/API \
-source/DMA \
+source/APIs \
+source/Apps \
+source/FLASH \
 source/GPIO \
 source/Timers \
 source/UART \

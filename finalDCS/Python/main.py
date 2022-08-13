@@ -15,6 +15,15 @@ MODE_TEXT = ["Write","Erase","Neutral"]
 UP_THRESHOLD = 120 # Need to check real values
 DOWN_THRESHOLD = -120 # Need to check real values
 
+# COMMUNICATION MESSAGES #
+EXIT_MESSAGE ='b'
+ERROR_MESSAGE ='e'
+ACKNOWLEDGE_MESSAGE ='a'
+BUTTON_PRESSED_MESSAGE ='p'
+UP_MESSAGE ='u'
+DOWN_MESSAGE ='d'
+
+
 class MainMenu:
 	def __init__(self):
 		if __name__=='__main__':
@@ -128,13 +137,20 @@ class UART:
 			number_hex = hex(number)
 			
 			if self.channel.in_waiting==0:
-				return number # maybe return number_hex instead?
+				return line # maybe return number_hex instead?
 			
 	def getCommand(self):
-		self.send('c')
-		number = self.receive()
-		return number
+		# self.send('c')
+		line = self.receive()
+		msg = bytes(line,'ascii')
+		return msg
 		# TODO - Add a way to translate command, maybe 'receive()' should output the bytes without translation
+	
+	def getData(self):
+		# self.send('d')
+		line = self.receive()
+		msg = int.from_bytes(line,"big",signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
+		return msg
 	
 	def getJoystickRead(self):
 		self.send('x')
@@ -142,7 +158,37 @@ class UART:
 		self.send('y')
 		y = self.receive()
 		return x,y
+
+class MotorControlApp:
+	def __init__(self, UART):
+		self.UART = UART
+		layout = [sg.Text("Control Motor Using Joystick")]
+		self.window = sg.Window("Motor Control",layout,return_keyboard_events=True)
+	
+	def run(self):
+		while(True):
+			event,values = self.window.read()
+			if event in (sg.WIN_CLOSED,'Exit'):
+				self.UART.send(EXIT_MESSAGE)
+				break
+
+class MotorCalibrationApp:
+	def __init__(self, UART):
+		self.UART = UART
 		
+		layout = [sg.Text("Press joystick button to start the motor"),
+		          sg.Text("Press again to stop when reaching 0 angle"),
+		          [sg.Text('FCS'), sg.Text(key='Nphi')]]
+		self.window = sg.Window("Motor Control",layout,return_keyboard_events=True)
+		
+	def run(self):
+		while(True):
+			fcs = self.UART.getData() # Full Circle Steps
+			nphi = self.UART.getData() # Nominal Angle
+			command = self.UART.getCommand()
+			if(command==EXIT_MESSAGE):
+				break
+	
 def main():
 	main_menu = MainMenu()
 	current_choice = 1
@@ -157,10 +203,10 @@ def main():
 		if event in (sg.WIN_CLOSED,'Exit'):
 			break
 			
-		dx,dy = uart.getJoystickRead()
+		# dx,dy = uart.getJoystickRead()
 		command = uart.getCommand()
 		
-		if dy > UP_THRESHOLD:
+		if command==UP_MESSAGE:
 			if current_choice>1:
 				main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 				current_choice = current_choice-1
@@ -168,7 +214,7 @@ def main():
 		# 	if current_choice>1:
 		# 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 		# 		current_choice = current_choice-1
-		elif dy < DOWN_THRESHOLD:
+		elif command==DOWN_MESSAGE:
 			if current_choice<4:
 				main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 				current_choice = current_choice+1
@@ -176,15 +222,20 @@ def main():
 		# 	if current_choice<4:
 		# 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
 		# 		current_choice = current_choice+1
-		elif command=='s':
+		elif command==BUTTON_PRESSED_MESSAGE:
 			if current_choice==1:
 				print("Motor Control")
+				mc = MotorControlApp()
+				mc.run()
+				
 			elif current_choice==2:
 				print("Painter")
 				painter = Painter()
 				painter.paint()
 			elif current_choice==3:
 				print("Motor Calibration")
+				mc = MotorCalibrationApp()
+				mc.run()
 			else:
 				print("Script Mode")
 		# elif event=='-CHOOSE-':
