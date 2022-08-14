@@ -27,10 +27,12 @@ void runApp(int choice)
 
 void main()
 {
-
+    WDTCTL = WDTPW | WDTHOLD; // Stop watchdog timer
     configureJoystick();
     configureUart();
-
+    __bic_SR_register(GIE);
+    enableUartRxInterrupt();
+    __bis_SR_register(CPUOFF + GIE);// debug RX
     int current_choice = 1;
     int y;
     while (1)
