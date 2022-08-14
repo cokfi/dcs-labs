@@ -14,6 +14,7 @@
 #define ERROR_MESSAGE 'e'
 #define ACKNOWLEDGE_MESSAGE 'a'
 #define BUTTON_PRESSED_MESSAGE 'p'
+#define NO_COMMAND_MESSAGE 'n'
 #define UP_MESSAGE 'u'
 #define DOWN_MESSAGE 'd'
 #define END_OF_LINE '\n'

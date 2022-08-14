@@ -48,5 +48,10 @@ int sendMessage(unsigned int message_data)
     {
         __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
     }
+    enableUartRxInterrupt();
+
+    __bis_SR_register(CPUOFF + GIE);// ack
+    if (getReceiveBuffer() !=ACKNOWLEDGE_MESSAGE)
+        return 1;
     return 0;
 }

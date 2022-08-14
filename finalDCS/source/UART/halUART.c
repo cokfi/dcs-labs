@@ -69,7 +69,10 @@ void setSendData(int msg)
 }
 int getReceiveBuffer()
 {
-    return receive_buffer;
+    int var;
+    var = receive_buffer;
+    receive_buffer = 0;
+    return var;
 }
 int getMessageSentFlag()
 {

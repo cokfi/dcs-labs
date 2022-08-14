@@ -22,6 +22,7 @@ ACKNOWLEDGE_MESSAGE = 'a'
 BUTTON_PRESSED_MESSAGE = 'p'
 UP_MESSAGE = 'u'
 DOWN_MESSAGE = 'd'
+NO_COMMAND_MESSAGE = 'n'
 
 
 class MainMenu:
@@ -95,10 +96,16 @@ class Painter:
 
             command = self.UART.getCommand()
             print(command)
+            self.window.finalize()
+            #print(command)
             if command == BUTTON_PRESSED_MESSAGE:
                 self.changeMode()
+                self.window.finalize()
             else:
                 dx, dy = self.UART.getJoystickRead()
+                print("x = ",dx,", y = ",dy)
+
+                self.window.finalize()
 
             # if event=="-UP-":
             # 	dy = 1
@@ -138,7 +145,8 @@ class UART:
                                                     ACKNOWLEDGE_MESSAGE or
                                                     BUTTON_PRESSED_MESSAGE or
                                                     UP_MESSAGE or
-                                                    DOWN_MESSAGE  in inChar):
+                                                    DOWN_MESSAGE or
+                                                    NO_COMMAND_MESSAGE in inChar):
                 enableTX = False
 
     def receive(self):
@@ -158,7 +166,7 @@ class UART:
         while(line == None):
             line = self.receive()
         msg = chr(line[0])
-        print(msg)
+        #print(msg)
         #if msg == BUTTON_PRESSED_MESSAGE:
             #time.sleep(0.5)
             #self.channel.reset_input_buffer()
@@ -178,19 +186,23 @@ class UART:
     def getJoystickRead(self):
         self.send('x')
         x_bytes = self.receive()
+        time.sleep(0.1)
+        self.send(ACKNOWLEDGE_MESSAGE)
         if x_bytes is None:
             x = 0
         else:
             x = int.from_bytes(x_bytes, "big", signed=True)/100
         time.sleep(0.25)
-        print("x= ", x)
+        #print("x= ", x)
         self.send('y')
         y_bytes = self.receive()
+        time.sleep(0.1)
+        self.send(ACKNOWLEDGE_MESSAGE)
         if y_bytes is None:
             y = 0
         else:
             y = int.from_bytes(y_bytes, "big", signed=True)/100
-            print("y= ", y)
+            #print("y= ", y)
         return x, y
 
 

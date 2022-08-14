@@ -42,7 +42,10 @@ void main()
         {
 
               __bic_SR_register(GIE);
-              sendMessage(BUTTON_PRESSED_MESSAGE);
+              while (sendMessage(BUTTON_PRESSED_MESSAGE))
+                  {
+                      //trap
+                  }
               runApp(current_choice);
         }
         else
@@ -53,15 +56,20 @@ void main()
             y = getVy();
             if (y > UP_THRESHOLD)
             {
-                sendMessage(UP_MESSAGE);
+                while (sendMessage(UP_MESSAGE))
+                {
+                    //trap
+                }
 
                 if (current_choice > 1)
                     current_choice--;
             }
             else if (y < DOWN_THRESHOLD)
             {
-                sendMessage(DOWN_MESSAGE);
-
+                while (sendMessage(DOWN_MESSAGE))
+                {
+                    //trap
+                }
                 if (current_choice < 4)
                     current_choice++;
             }
