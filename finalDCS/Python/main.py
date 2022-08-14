@@ -79,11 +79,11 @@ class Painter:
         self.window['Mode'].update(MODE_TEXT[self.mode])
 
     def paint(self):
-        self.window.finalize()
+
 
         while True:
             time.sleep(0.1)
-
+            self.window.finalize()
             # self.window.bind('<Up>','-UP-')
             # self.window.bind('<Down>','-DOWN-')
             # self.window.bind('<Left>','-LEFT-')
@@ -159,9 +159,9 @@ class UART:
             line = self.receive()
         msg = chr(line[0])
         print(msg)
-        if msg == BUTTON_PRESSED_MESSAGE:
-            time.sleep(0.5)
-            self.channel.reset_input_buffer()
+        #if msg == BUTTON_PRESSED_MESSAGE:
+            #time.sleep(0.5)
+            #self.channel.reset_input_buffer()
         time.sleep(0.5)
         self.send(ACKNOWLEDGE_MESSAGE)
         return msg
@@ -231,7 +231,7 @@ def main():
     current_choice = 1
     uart = UART()
     uart.send(ACKNOWLEDGE_MESSAGE)
-    main_menu.window.finalize()
+
 
     while True:
         #event, values = main_menu.window.read()
@@ -245,7 +245,7 @@ def main():
 
         # dx,dy = uart.getJoystickRead()
 
-
+        main_menu.window.finalize()
         command = uart.getCommand()
 
 
