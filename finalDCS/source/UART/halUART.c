@@ -52,6 +52,7 @@ void enableUartRxInterrupt()
 {
     if (!uartConfigured_flag)
         configureUart();
+    UCA0CTL1 &= ~UCSWRST;                   // **Initialize USCI state machine**
     IE2 |= UCA0RXIE;                          // Enable USCI_A0 RX interrupt
 }
 
@@ -103,7 +104,7 @@ __interrupt void USCI0TX_ISR(void)
     UCA0TXBUF = send_buffer;               // TX next sample, send LSB
     IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
     messageSent_flag = 1;
-    __bic_SR_register_on_exit(CPUOFF);
+    __bic_SR_register_on_exit(CPUOFF+GIE);
 }
 
 //-------------------------------------------------------------
@@ -114,7 +115,7 @@ __interrupt void USCI0RX_ISR(void)
 {
     receive_buffer = UCA0RXBUF;
     messageRecieved_flag = 1;
-    __bic_SR_register_on_exit(CPUOFF);
+    __bic_SR_register_on_exit(CPUOFF+GIE);
 }
 
 //

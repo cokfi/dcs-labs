@@ -38,10 +38,17 @@ void disableADC()
     ADC10CTL0 &= ~ADC10IE;
     ADC10CTL0 &= ~ADC10SC;
 }
+void killADC()
+{
+    ADC10CTL0 = 0x0;
+    ADC10CTL1 = 0x0;
+    adcConfigured = 0;
+}
 
 
 void startADC()
 {
+    __bic_SR_register(GIE);
     xy_valid = 0;
     if (!adcConfigured)
         configureADC();
@@ -83,7 +90,7 @@ __interrupt void ADC10_ISR(void)
         ADC10CTL0 &= ~ADC10IE;
         ADC10CTL1 &= ~CONSEQ_3;
         xy_valid = 1;
-        __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+        __bic_SR_register_on_exit(CPUOFF+GIE); // Enable CPU so the main while loop continues
     }
     adcChannel ^= 1;
     ADC10CTL0 &= ~ADC10IFG;

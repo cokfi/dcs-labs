@@ -136,7 +136,7 @@ __interrupt void motorTimerISR(void)
         }
     }
     TACTL &= ~TAIFG;
-    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+    __bic_SR_register_on_exit(CPUOFF+GIE); // Enable CPU so the main while loop continues
 }
 
 //-------------------------------------------------------------
@@ -147,5 +147,5 @@ __interrupt void delayTimerISR(void)
 {
     TA0CTL &= ~MC_3; // Stop Timer
     TA0CTL &= ~TAIFG;
-    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+    __bic_SR_register_on_exit(CPUOFF+GIE); // Enable CPU so the main while loop continues
 }

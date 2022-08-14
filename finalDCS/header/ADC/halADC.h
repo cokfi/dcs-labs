@@ -21,6 +21,8 @@ void configureADC();
 
 void disableADC();
 
+void killADC();
+
 void startADC();
 
 int getVx();

@@ -27,6 +27,7 @@ void runApp(int choice)
 
 void main()
 {
+
     configureJoystick();
     configureUart();
 
@@ -38,14 +39,19 @@ void main()
         if (isButtonPressed())
         {
 
-
+              __bic_SR_register(GIE);
               sendMessage(BUTTON_PRESSED_MESSAGE);
-              runApp(current_choice);
+              enableUartRxInterrupt();
+              //killADC();
+              __bis_SR_register(LPM0_bits + GIE);// debug RX
+              if (getReceiveBuffer()==ACKNOWLEDGE_MESSAGE)
+                  runApp(current_choice);
         }
         else
         {
+            __bic_SR_register(GIE);
             readJoysctickPos();
-
+            __bis_SR_register(GIE);
             y = getVy();
             if (y > UP_THRESHOLD)
             {

@@ -139,6 +139,7 @@ class UART:
                 enableTX = False
 
     def receive(self):
+
         while self.channel.in_waiting > 0:  # while the input buffer isn't empty
             line = self.channel.read() #_until(terminator='\n')  # read  from the buffer until the terminator is received,
             number = int.from_bytes(line, "big",
@@ -146,15 +147,17 @@ class UART:
             number_hex = hex(number)
 
             if self.channel.in_waiting == 0:
+                self.channel.reset_input_buffer()
                 return line  # maybe return number_hex instead?
 
     def getCommand(self):
-        # self.send('c')
         line = self.receive()
         while(line == None):
             line = self.receive()
         msg = chr(line[0])
         print(msg)
+        time.sleep(0.5)
+        self.send(ACKNOWLEDGE_MESSAGE)
         return msg
 
     # TODO - Add a way to translate command, maybe 'receive()' should output the bytes without translation
@@ -272,6 +275,8 @@ def main():
         main_menu.window[current_choice].set_focus(force=True)
         main_menu.window[current_choice].update(button_color=BUTTON_COLOR_CHOSEN)
         time.sleep(1)
+        uart.channel.reset_input_buffer()
+        uart.channel.reset_output_buffer()
 
     main_menu.window.close()
 

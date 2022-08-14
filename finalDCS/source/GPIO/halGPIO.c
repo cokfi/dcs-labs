@@ -154,6 +154,6 @@ __interrupt void port1ISR(void)
         P1IFG &= ~BIT5;
         buttonPressed = 1;
     }
-    __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
+    __bic_SR_register_on_exit(CPUOFF+GIE); // Enable CPU so the main while loop continues
 
 }
