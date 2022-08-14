@@ -43,11 +43,7 @@ void main()
 
               __bic_SR_register(GIE);
               sendMessage(BUTTON_PRESSED_MESSAGE);
-              enableUartRxInterrupt();
-              //killADC();
-              __bis_SR_register(LPM0_bits + GIE);// debug RX
-              if (getReceiveBuffer()==ACKNOWLEDGE_MESSAGE)
-                  runApp(current_choice);
+              runApp(current_choice);
         }
         else
         {

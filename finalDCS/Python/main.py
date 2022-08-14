@@ -79,8 +79,10 @@ class Painter:
         self.window['Mode'].update(MODE_TEXT[self.mode])
 
     def paint(self):
+        self.window.finalize()
+
         while True:
-            self.window.finalize()
+            time.sleep(0.1)
 
             # self.window.bind('<Up>','-UP-')
             # self.window.bind('<Down>','-DOWN-')
@@ -90,6 +92,7 @@ class Painter:
 
             dx = 0
             dy = 0
+
             command = self.UART.getCommand()
             print(command)
             if command == BUTTON_PRESSED_MESSAGE:
@@ -169,13 +172,25 @@ class UART:
         # self.send('d')
         line = self.receive()
         msg = int.from_bytes(line, "big", signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
+        time.sleep(0.05)
         return msg
 
     def getJoystickRead(self):
         self.send('x')
-        x = self.receive()
+        x_bytes = self.receive()
+        if x_bytes is None:
+            x = 0
+        else:
+            x = int.from_bytes(x_bytes, "big", signed=True)/100
+        time.sleep(0.25)
+        print("x= ", x)
         self.send('y')
-        y = self.receive()
+        y_bytes = self.receive()
+        if y_bytes is None:
+            y = 0
+        else:
+            y = int.from_bytes(y_bytes, "big", signed=True)/100
+            print("y= ", y)
         return x, y
 
 
@@ -216,7 +231,7 @@ def main():
     current_choice = 1
     uart = UART()
     uart.send(ACKNOWLEDGE_MESSAGE)
-
+    main_menu.window.finalize()
 
     while True:
         #event, values = main_menu.window.read()
@@ -230,7 +245,7 @@ def main():
 
         # dx,dy = uart.getJoystickRead()
 
-        main_menu.window.finalize()
+
         command = uart.getCommand()
 
 
