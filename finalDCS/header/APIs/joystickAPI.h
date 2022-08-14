@@ -16,10 +16,13 @@
 static int v_x;
 static int v_y;
 static int read_available_flag;
+static int joystickEnable;
 
 void configureJoystick();
 
 void readJoysctickPos();
+void enableJoystick();
+void disableJoystick();
 
 int checkPushButton();
 #endif /* HEADER_APIS_JOYSTICKAPI_H_ */

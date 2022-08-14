@@ -37,15 +37,15 @@ void main()
 
         if (isButtonPressed())
         {
-            sendMessage(BUTTON_PRESSED_MESSAGE);
 
-            int msg = readMessage();
-            if (msg == ACKNOWLEDGE_MESSAGE)
-                runApp(current_choice);
+
+              sendMessage(BUTTON_PRESSED_MESSAGE);
+              runApp(current_choice);
         }
         else
         {
             readJoysctickPos();
+
             y = getVy();
             if (y > UP_THRESHOLD)
             {

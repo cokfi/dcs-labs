@@ -10,14 +10,13 @@
 // check if message is available but don't wait if not
 int checkMessages()
 {
-    if (!uartConfigured_flag)
+    if (!getUartConfiguredFlag())
         configureUart();
 
     int message;
-    if (messageRecieved_flag)
+    if (getMessageRecivedFlag())
     {
-        message = receive_buffer;
-        messageRecieved_flag = 0;
+        message = getReceiveBuffer();
         return message;
     }
     else
@@ -27,27 +26,27 @@ int checkMessages()
 // check if message is available and wait if not
 int readMessage()
 {
-    messageRecieved_flag = 0;
-    if (!uartConfigured_flag)
+    if (!getUartConfiguredFlag())
         configureUart();
 
     enableUartRxInterrupt();
-    __bis_SR_register(CPUOFF + GIE);
-    return receive_buffer;
+    if (!getMessageRecivedFlag())
+    {
+        __bis_SR_register(CPUOFF + GIE);
+    }
+
+    return getReceiveBuffer();
 }
 
 int sendMessage(unsigned int message_data)
 {
-    messageSent_flag = 0;
-    if (!uartConfigured_flag)
+    if (!getUartConfiguredFlag())
         configureUart();
     setSendData(message_data);
     enableUartTxInterrupt();
-    __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
-//    setSendData(END_OF_LINE);
-//    enableUartTxInterrupt();
-//    __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
-//    if (messageSent_flag)
-//        return 0;
+    if (!getMessageSentFlag())
+    {
+        __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
+    }
     return 0;
 }

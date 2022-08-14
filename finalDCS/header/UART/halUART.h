@@ -23,6 +23,7 @@ static int uartConfigured_flag;
 
 static int messageRecieved_flag; //
 static int messageSent_flag;
+
 // TODO change vx vy to send/receive buffers
 static unsigned int receive_buffer;
 static unsigned int send_buffer;
@@ -31,6 +32,10 @@ void configureUart();
 void enableUartRxInterrupt();
 void setSendData(int msg);
 void enableUartTxInterrupt();
+int getReceiveBuffer();
+int getMessageSentFlag();
+int getMessageRecivedFlag();
+int getUartConfiguredFlag();
 
 //-------------------------------------------------------------
 //           interrupt vector uartTx

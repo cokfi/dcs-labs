@@ -19,6 +19,11 @@ void configurePushButton()
 
 int isButtonPressed()
 {
+    if (buttonPressed)
+    {
+        buttonPressed = 0;
+        return 1;
+    }
     return buttonPressed;
 }
 void enablePushButton()
@@ -143,9 +148,12 @@ __interrupt void port1ISR(void)
     for (i=0; i<debounceVal; i++)
     {
         //delay 250 clk
-    }      
-    P1IFG &= ~BIT5;
-    buttonPressed = 1;
+    }
+    if (P1IFG &BIT5)
+    {
+        P1IFG &= ~BIT5;
+        buttonPressed = 1;
+    }
     __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
 
 }

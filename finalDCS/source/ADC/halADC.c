@@ -30,13 +30,22 @@ void configureADC()
     ADC10CTL1 |= ADC10DF + ADC10DIV_4; // 2's Complement format
     adcConfigured = 1;
 }
+void disableADC()
+{
+    ADC10CTL0 &= ~ENC;
+    ADC10CTL0 &= ~MSC;
+    ADC10CTL0 &= ~ADC10ON;
+    ADC10CTL0 &= ~ADC10IE;
+    ADC10CTL0 &= ~ADC10SC;
+}
+
 
 void startADC()
 {
     xy_valid = 0;
     if (!adcConfigured)
         configureADC();
-
+    ADC10CTL0 |= ADC10ON + MSC;
     ADC10CTL1 |= CONSEQ_2; // Repeat Sequence of Channels Mode
     ADC10CTL0 |= ADC10IE;
     ADC10CTL0 |= ENC; // Enable Conversions (Must be reset before changing configuration)
@@ -70,11 +79,11 @@ __interrupt void ADC10_ISR(void)
     else
     {
         v_x = ADC10MEM;
-        ADC10CTL0 &= ~ADC10IE;
-        __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
         ADC10CTL0 &= ~ENC;
+        ADC10CTL0 &= ~ADC10IE;
         ADC10CTL1 &= ~CONSEQ_3;
         xy_valid = 1;
+        __bic_SR_register_on_exit(CPUOFF); // Enable CPU so the main while loop continues
     }
     adcChannel ^= 1;
     ADC10CTL0 &= ~ADC10IFG;

@@ -27,6 +27,7 @@ void startMotorTimer();
 
 void stopMotorTimer();
 void configureDelayTimer();
+//void setDelay(int delay);
 
 void startDelayTimer();
 

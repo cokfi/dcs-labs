@@ -54,8 +54,13 @@ void startDelayTimer()
 {
     if (!delayTimerConfigured)
         configureDelayTimer();
-    TA0CTL |= MC_1;
+    TA1CTL |= MC_1;
 }
+
+//void setDelay(int delay)
+//{
+//    TA1CCR0 = delay;
+//}
 
 //void startScan()
 //{

@@ -64,6 +64,34 @@ void enableUartTxInterrupt()
 void setSendData(int msg)
 {
     send_buffer = msg;
+    messageSent_flag = 0;
+}
+int getReceiveBuffer()
+{
+    return receive_buffer;
+}
+int getMessageSentFlag()
+{
+    if (messageSent_flag)
+    {
+        messageSent_flag =0;
+        return 1;
+    }
+    return messageSent_flag;
+}
+int getMessageRecivedFlag()
+{
+    if (messageRecieved_flag)
+        {
+            messageRecieved_flag =0;
+            return 1;
+        }
+    return messageRecieved_flag;
+
+}
+int getUartConfiguredFlag()
+{
+    return uartConfigured_flag;
 }
 //-------------------------------------------------------------
 //           interrupt vector uartTx

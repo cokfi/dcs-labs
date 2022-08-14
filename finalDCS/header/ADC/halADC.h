@@ -19,6 +19,8 @@ static int adcConfigured;
 
 void configureADC();
 
+void disableADC();
+
 void startADC();
 
 int getVx();
@@ -26,6 +28,7 @@ int getVx();
 int getVy();
 
 int checkXYvalid();
+
 //-------------------------------------------------------------
 //           interrupt vector ADC10
 //-------------------------------------------------------------
