@@ -156,6 +156,9 @@ class UART:
             line = self.receive()
         msg = chr(line[0])
         print(msg)
+        if msg == BUTTON_PRESSED_MESSAGE:
+            time.sleep(0.5)
+            self.channel.reset_input_buffer()
         time.sleep(0.5)
         self.send(ACKNOWLEDGE_MESSAGE)
         return msg
@@ -212,6 +215,8 @@ def main():
     main_menu = MainMenu()
     current_choice = 1
     uart = UART()
+    uart.send(ACKNOWLEDGE_MESSAGE)
+
 
     while True:
         #event, values = main_menu.window.read()
