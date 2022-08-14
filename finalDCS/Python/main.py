@@ -32,7 +32,7 @@ class MainMenu:
             button_3 = sg.Button("3. Stepper Calibration", key=3, size=BUTTON_SIZE, button_color=BUTTON_COLOR_UNPRESSED)
             button_4 = sg.Button("4. Script Mode", key=4, size=BUTTON_SIZE, button_color=BUTTON_COLOR_UNPRESSED)
             layout = [[button_1], [button_2], [button_3], [button_4]]
-            self.window = sg.Window('DCS Final Project Main Menu', layout, resizable=True, return_keyboard_events=True, finalize=True)
+            self.window = sg.Window('DCS Final Project Main Menu', layout, resizable=True, return_keyboard_events=True)
 
 
 class PainterMode:
@@ -80,7 +80,7 @@ class Painter:
 
     def paint(self):
         while True:
-            event, values = self.window.read()
+            self.window.finalize()
 
             # self.window.bind('<Up>','-UP-')
             # self.window.bind('<Down>','-DOWN-')
@@ -88,16 +88,15 @@ class Painter:
             # self.window.bind('<Right>','-RIGHT-')
             # self.window.bind('<Return>','-SHIFT_MODE-')
 
-            # dx = 0
-            # dy = 0
+            dx = 0
+            dy = 0
             command = self.UART.getCommand()
             print(command)
-            if command == 's':
+            if command == BUTTON_PRESSED_MESSAGE:
                 self.changeMode()
             else:
                 dx, dy = self.UART.getJoystickRead()
-            if event in (sg.WIN_CLOSED, 'Exit'):
-                break
+
             # if event=="-UP-":
             # 	dy = 1
             #
@@ -114,7 +113,6 @@ class Painter:
             # 	self.changeMode()
 
             self.moveCursor(dx, dy)
-            print(event)  # ------ Process menu choices ------ #
         self.window.close()
 
 
@@ -132,12 +130,17 @@ class UART:
             inChar = message
             bytesChar = bytes(inChar, 'ascii')
             self.channel.write(bytesChar)
-            if self.channel.out_waiting == 0 and ('x' or 'y' or 'c' in inChar):
+            if self.channel.out_waiting == 0 and   (EXIT_MESSAGE or
+                                                    ERROR_MESSAGE or
+                                                    ACKNOWLEDGE_MESSAGE or
+                                                    BUTTON_PRESSED_MESSAGE or
+                                                    UP_MESSAGE or
+                                                    DOWN_MESSAGE  in inChar):
                 enableTX = False
 
     def receive(self):
         while self.channel.in_waiting > 0:  # while the input buffer isn't empty
-            line = self.channel.read_until(terminator='\n')  # read  from the buffer until the terminator is received,
+            line = self.channel.read() #_until(terminator='\n')  # read  from the buffer until the terminator is received,
             number = int.from_bytes(line, "big",
                                     signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
             number_hex = hex(number)
@@ -206,6 +209,7 @@ def main():
     main_menu = MainMenu()
     current_choice = 1
     uart = UART()
+
     while True:
         #event, values = main_menu.window.read()
 
@@ -217,12 +221,16 @@ def main():
         #    break
 
         # dx,dy = uart.getJoystickRead()
+
+        main_menu.window.finalize()
         command = uart.getCommand()
+
 
         if command == UP_MESSAGE:
             if current_choice > 1:
                 main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
                 current_choice = current_choice - 1
+                print(current_choice)
         # if event=="-UP-":
         # 	if current_choice>1:
         # 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
@@ -231,11 +239,13 @@ def main():
             if current_choice < 4:
                 main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
                 current_choice = current_choice + 1
+                print(current_choice)
         # elif event=='-DOWN-':
         # 	if current_choice<4:
         # 		main_menu.window[current_choice].update(button_color=BUTTON_COLOR_UNPRESSED)
         # 		current_choice = current_choice+1
         elif command == BUTTON_PRESSED_MESSAGE:
+            uart.send(ACKNOWLEDGE_MESSAGE)
             if current_choice == 1:
                 print("Motor Control")
                 mc = MotorControlApp()
@@ -243,7 +253,7 @@ def main():
 
             elif current_choice == 2:
                 print("Painter")
-                painter = Painter()
+                painter = Painter(uart)
                 painter.paint()
             elif current_choice == 3:
                 print("Motor Calibration")
@@ -261,6 +271,7 @@ def main():
         # ------ Process menu choices ------ #
         main_menu.window[current_choice].set_focus(force=True)
         main_menu.window[current_choice].update(button_color=BUTTON_COLOR_CHOSEN)
+        time.sleep(1)
 
     main_menu.window.close()
 
