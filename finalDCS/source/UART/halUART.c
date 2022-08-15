@@ -68,9 +68,9 @@ void setSendData(int msg)
     send_buffer = msg;
     messageSent_flag = 0;
 }
-int getReceiveBuffer()
+char getReceiveBuffer()
 {
-    int var;
+    char var;
     var = receive_buffer;
     receive_buffer = 0;
     return var;

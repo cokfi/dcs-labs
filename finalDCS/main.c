@@ -39,6 +39,7 @@ void main()
     unsigned int y;
     while (1)
     {
+        runApp(getState());
         if (isButtonPressed())
         {
 
@@ -48,7 +49,6 @@ void main()
                   }
               __bis_SR_register(CPUOFF + GIE);//    //trap
 
-              runApp(getState());
         }
         else
         {

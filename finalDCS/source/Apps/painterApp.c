@@ -15,40 +15,21 @@ void painter()
     while (1)
     {
 
-//        messages_check = checkMessages();
-//        if (messages_check == EXIT_MESSAGE)
-//        {
-//            sendMessage(ACKNOWLEDGE_MESSAGE);
-//            return;
-//        }
         if (isButtonPressed())
         {
             sendMessage(BUTTON_PRESSED_MESSAGE);
         }
 
-        int request = getReceiveBuffer();
-//        if (request == 0)
-//            __bis_SR_register(CPUOFF + GIE);// wait for request
+        char request = getReceiveBuffer();
+
         readJoysctickPos();
         if (request == 'x')
         {
             sendMessage((getVx())>>2);
         }
-        else if (request == 'y')
-        {
-            sendMessage((getVy())>>2);
-        }
-
-        enableUartRxInterrupt();
         request = getReceiveBuffer();
-//        if (request == 0)
-//            __bis_SR_register(CPUOFF + GIE);// wait for request
-       if (request == 'x')
-       {
-           sendMessage((getVx())>>2);
 
-       }
-       else if (request == 'y')
+       if (request == 'y')
        {
            sendMessage((getVy())>>2);
        }

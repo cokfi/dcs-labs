@@ -32,7 +32,7 @@ void configureUart();
 void enableUartRxInterrupt();
 void setSendData(int msg);
 void enableUartTxInterrupt();
-int getReceiveBuffer();
+char getReceiveBuffer();
 int getMessageSentFlag();
 int getMessageRecivedFlag();
 int getUartConfiguredFlag();
