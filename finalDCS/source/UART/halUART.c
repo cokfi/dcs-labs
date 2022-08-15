@@ -107,7 +107,7 @@ __interrupt void USCI0TX_ISR(void)
     UCA0TXBUF = send_buffer;               // TX next sample, send LSB
     IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
     messageSent_flag = 1;
-    __bic_SR_register_on_exit(CPUOFF);
+    //__bic_SR_register_on_exit(CPUOFF);
 }
 
 //-------------------------------------------------------------
@@ -121,23 +121,3 @@ __interrupt void USCI0RX_ISR(void)
     __bic_SR_register_on_exit(CPUOFF);
 }
 
-//
-//if (UCA0RXBUF == 'x')                     // 'u' received?
-//    {
-//        sendUartNumber = v_x;
-//        UCA0TXBUF = sendUartNumber >> 8; //send MSB
-//        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-//    }
-//    else if (UCA0RXBUF == 'y')                     // 'u' received?
-//    {
-//        sendUartNumber = v_y;
-//        IE2 |= UCA0TXIE;                        // Enable USCI_A0 TX interrupt
-//        UCA0TXBUF = sendUartNumber >> 8;                        //MSB
-//    }
-//    else if (UCA0RXBUF == 'c')                     // 'u' received?
-//    {
-//        if (switch0 == 1)
-//            UCA0TXBUF = 's';
-//        else
-//            UCA0TXBUF = 0;
-//    }

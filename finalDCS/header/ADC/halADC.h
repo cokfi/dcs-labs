@@ -19,6 +19,8 @@ static int adcConfigured;
 
 void configureADC();
 
+void chooseADCchannel(int chosenChannel);
+
 void disableADC();
 
 void killADC();

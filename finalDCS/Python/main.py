@@ -191,7 +191,9 @@ class UART:
         if x_bytes is None:
             x = 0
         else:
-            x = int.from_bytes(x_bytes, "big", signed=True)/100
+            bytestring = x_bytes.hex()
+            x = (int(bytestring,base = 16) -127)/127
+            # x = int.from_bytes(x_bytes, "big", signed=True)/100
         time.sleep(0.25)
         #print("x= ", x)
         self.send('y')
@@ -201,7 +203,9 @@ class UART:
         if y_bytes is None:
             y = 0
         else:
-            y = int.from_bytes(y_bytes, "big", signed=True)/100
+            bytestring = y_bytes.hex()
+            y = (127 - int(bytestring, base=16)) / 127
+            # y = int.from_bytes(y_bytes, "big", signed=True)/100
             #print("y= ", y)
         return x, y
 

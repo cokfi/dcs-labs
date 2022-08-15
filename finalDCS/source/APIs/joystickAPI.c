@@ -29,12 +29,11 @@ void readJoysctickPos()
     while (!read_available_flag)
     {
         startADC();
-        if (!checkXYvalid())
-            __bis_SR_register(CPUOFF + GIE);
+//        if (!checkXYvalid())
+//            __bis_SR_register(CPUOFF + GIE);
         read_available_flag = checkXYvalid();
     }
-    disableADC();
-
+    //disableADC();
     v_x = getVx();
     v_y = getVy();
     read_available_flag = 1;

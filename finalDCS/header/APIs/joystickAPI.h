@@ -10,8 +10,8 @@
 #include "../ADC/halADC.h"
 #include "../GPIO/halGPIO.h"
 
-#define UP_THRESHOLD 10000
-#define DOWN_THRESHOLD -10000
+#define UP_THRESHOLD 700
+#define DOWN_THRESHOLD 300
 
 static int v_x;
 static int v_y;
