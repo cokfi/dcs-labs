@@ -10,7 +10,6 @@ void painter()
 {
     configureJoystick();
     configureUart();
-    __bis_SR_register(GIE);
 
     int x, y, messages_check;
     while (1)
@@ -25,15 +24,11 @@ void painter()
         if (isButtonPressed())
         {
             sendMessage(BUTTON_PRESSED_MESSAGE);
-            __bis_SR_register(GIE);
         }
         else
         {
             sendMessage(NO_COMMAND_MESSAGE);
-            __bis_SR_register(GIE);
         }
-
-        enableUartRxInterrupt();
 
         int request = getReceiveBuffer();
 //        if (request == 0)
@@ -41,13 +36,11 @@ void painter()
         readJoysctickPos();
         if (request == 'x')
         {
-            sendMessage((getVx()+2048)>>2);
-            __bis_SR_register(GIE);
+            sendMessage((getVx())>>2);
         }
         else if (request == 'y')
         {
-            sendMessage((getVy()+2112)>>2);
-            __bis_SR_register(GIE);
+            sendMessage((getVy())>>2);
         }
 
         enableUartRxInterrupt();
@@ -56,15 +49,13 @@ void painter()
 //            __bis_SR_register(CPUOFF + GIE);// wait for request
        if (request == 'x')
        {
-           sendMessage((getVx()+2048)>>2);
-           __bis_SR_register(GIE);
+           sendMessage((getVx())>>2);
+
        }
        else if (request == 'y')
        {
-           sendMessage((getVy()+2112)>>2);
-           __bis_SR_register(GIE);
+           sendMessage((getVy())>>2);
        }
-
     }
 }
 

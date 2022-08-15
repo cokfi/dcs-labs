@@ -13,8 +13,8 @@
 #define UP_THRESHOLD 700
 #define DOWN_THRESHOLD 300
 
-static int v_x;
-static int v_y;
+//static unsigned int vx;
+//static unsigned int vy;
 static int read_available_flag;
 static int joystickEnable;
 

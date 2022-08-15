@@ -12,7 +12,7 @@
 #include "../APIs/joystickAPI.h"
 #include "../APIs/communicationAPI.h"
 
-float xyToAngle(int x, int y);
+float xyToAngle(unsigned int x, unsigned int y);
 void motorControl();
 
 #endif /* HEADER_APPS_MOTORAPP_H_ */

@@ -11,8 +11,8 @@
 #include  "bspADC.h"
 
 static int adcChannel;
-static int v_x;
-static int v_y;
+static unsigned int v_x;
+static unsigned int v_y;
 static int xy_valid;
 static int current_adc_channel;
 static int adcConfigured;
@@ -27,9 +27,9 @@ void killADC();
 
 void startADC();
 
-int getVx();
+unsigned int getVx();
 
-int getVy();
+unsigned int getVy();
 
 int checkXYvalid();
 

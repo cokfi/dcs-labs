@@ -6,20 +6,22 @@
 #include "header/APIs/joystickAPI.h"
 #include "header/APIs/communicationAPI.h"
 
-void runApp(int choice)
+void runApp(char choice)
 {
     switch (choice)
     {
-    case 1:
+    case '1':
         motorControl();
         break;
-    case 2:
+    case '2':
         painter();
         break;
-    case 3:
+    case '3':
         motorCalibration();
         break;
-    case 4:
+    case '4':
+        break;
+    default:
         break;
     }
 
@@ -34,25 +36,23 @@ void main()
     enableUartRxInterrupt();
     __bis_SR_register(CPUOFF + GIE);// debug RX
     int current_choice = 1;
-    int y;
+    unsigned int y;
     while (1)
     {
-
         if (isButtonPressed())
         {
 
-              __bic_SR_register(GIE);
               while (sendMessage(BUTTON_PRESSED_MESSAGE))
                   {
                       //trap
                   }
-              runApp(current_choice);
+              __bis_SR_register(CPUOFF + GIE);//    //trap
+
+              runApp(getState());
         }
         else
         {
-            __bic_SR_register(GIE);
             readJoysctickPos();
-            __bis_SR_register(GIE);
             y = getVy();
             if (y > UP_THRESHOLD)
             {

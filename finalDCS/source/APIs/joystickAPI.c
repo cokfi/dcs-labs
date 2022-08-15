@@ -34,8 +34,8 @@ void readJoysctickPos()
         read_available_flag = checkXYvalid();
     }
     //disableADC();
-    v_x = getVx();
-    v_y = getVy();
+    //v_x = getVx();
+    //v_y = getVy();
     read_available_flag = 1;
 }
 

@@ -7,7 +7,7 @@
 
 #include "../../header/Apps/motorApp.h"
 
-float xyToAngle(int x, int y)
+float xyToAngle(unsigned int x, unsigned int y)
 {
     float angle = 0;
 
@@ -21,7 +21,8 @@ void motorControl()
     configureJoystick();
     configureUart();
 
-    int x, y, messages_check, joystick_angle;
+    unsigned int x, y;
+    int messages_check, joystick_angle;
     while (1)
     {
         messages_check = checkMessages();

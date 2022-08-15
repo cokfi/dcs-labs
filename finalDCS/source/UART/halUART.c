@@ -20,6 +20,7 @@ uartConfigured_flag = 0;
 
 messageRecieved_flag = 0; //
 messageSent_flag = 0;
+static char state = '0';
 // TODO change vx vy to send/receive buffers
 //receive_buffer;
 //send_buffer;
@@ -97,6 +98,10 @@ int getUartConfiguredFlag()
 {
     return uartConfigured_flag;
 }
+char getState()
+{
+    return state;
+}
 //-------------------------------------------------------------
 //           interrupt vector uartTx
 //-------------------------------------------------------------
@@ -118,6 +123,10 @@ __interrupt void USCI0RX_ISR(void)
 {
     receive_buffer = UCA0RXBUF;
     messageRecieved_flag = 1;
+    if (UCA0RXBUF=='1' | UCA0RXBUF=='2' |UCA0RXBUF=='3' |UCA0RXBUF=='4')
+    {
+        state = UCA0RXBUF;
+    }
     __bic_SR_register_on_exit(CPUOFF);
 }
 

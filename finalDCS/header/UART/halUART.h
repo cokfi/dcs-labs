@@ -36,6 +36,7 @@ int getReceiveBuffer();
 int getMessageSentFlag();
 int getMessageRecivedFlag();
 int getUartConfiguredFlag();
+char getState();
 
 //-------------------------------------------------------------
 //           interrupt vector uartTx
