@@ -37,8 +37,8 @@ void configureUart() // Moved to halUART
 
     P1SEL = BIT1 + BIT2;                     // P1.1 = RXD, P1.2=TXD
     P1SEL2 = BIT1 + BIT2;                     // P1.1 = RXD, P1.2=TXD
-    P1DIR |= RXLED + TXLED;
-    P1OUT &= 0x00;
+    //P1DIR |= RXLED + TXLED;
+    //P1OUT &= 0x00;
 
     UCA0CTL1 |= UCSSEL_2;                     // CLK = SMCLK
     UCA0BR0 = 104;                           //
@@ -107,7 +107,7 @@ __interrupt void USCI0TX_ISR(void)
     UCA0TXBUF = send_buffer;               // TX next sample, send LSB
     IE2 &= ~UCA0TXIE;                       // Disable USCI_A0 TX interrupt
     messageSent_flag = 1;
-    __bic_SR_register_on_exit(CPUOFF+GIE);
+    __bic_SR_register_on_exit(CPUOFF);
 }
 
 //-------------------------------------------------------------
@@ -118,7 +118,7 @@ __interrupt void USCI0RX_ISR(void)
 {
     receive_buffer = UCA0RXBUF;
     messageRecieved_flag = 1;
-    __bic_SR_register_on_exit(CPUOFF+GIE);
+    __bic_SR_register_on_exit(CPUOFF);
 }
 
 //

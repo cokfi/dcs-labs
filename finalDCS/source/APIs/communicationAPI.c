@@ -40,6 +40,7 @@ int readMessage()
 
 int sendMessage(unsigned int message_data)
 {
+    __bic_SR_register(GIE);
     if (!getUartConfiguredFlag())
         configureUart();
     setSendData(message_data);
@@ -47,10 +48,13 @@ int sendMessage(unsigned int message_data)
     if (!getMessageSentFlag())
     {
         __bis_SR_register(CPUOFF + GIE); // Maybe take this out and use getters to access send/receive info
+        __bic_SR_register(GIE);
     }
     enableUartRxInterrupt();
-
-    __bis_SR_register(CPUOFF + GIE);// ack
+    int request = getReceiveBuffer();
+    if (request == 0)
+        __bis_SR_register(CPUOFF + GIE);// wait for ack
+    __bic_SR_register(GIE);
     if (getReceiveBuffer() !=ACKNOWLEDGE_MESSAGE)
         return 1;
     return 0;
