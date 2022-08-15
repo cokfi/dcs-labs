@@ -18,7 +18,8 @@ void GPIOconfig(void)
   // TODO Check if good
   PBsArrPortSel &= ~0x07;            // P1.
   PBsArrPortDir &= ~0x07;            //
-  
+  P4SEL = 0x00;
+  P4DIR |=0x07;
   
   //PBsArrIntEdgeSel |= 0x01;  	     // pull-up mode PB1
   //PBsArrIntEdgeSel &= ~0x06;         // pull-down mode PB2-3

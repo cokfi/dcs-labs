@@ -8,6 +8,7 @@ extern int song1[SONG1_SIZE];
 extern int song2[SONG2_SIZE];
 extern int song3[SONG3_SIZE];
 extern int recorder[RECORD_SIZE];
+extern int RGBmatrix[8];
 extern unsigned int countingIndexRecord;
 extern int keypadButton;
 #endif

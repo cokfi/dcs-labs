@@ -23,6 +23,25 @@ void sysConfigState2(void)
     TIMERconfig();
     DMAConfig();
 }
+void sysConfigState3(void)
+{
+    DMA0CTL &= ~DMAEN;
+    DMACTL0 |= DMA0TSEL_8;
+    DMA0CTL |= DMADT_5 + DMASRCINCR_3;
+    DMA0CTL |= DMASRCBYTE + DMADSTBYTE + DMAEN;
+    DMA0SZ = 0x08;
+    __data16_write_addr((unsigned short) &DMA0SA, (unsigned short) RGBmatrix); // Ignore
+    __data16_write_addr((unsigned short) &DMA0DA, (unsigned int) &P4OUT); // Ignore
+
+    // TimerA Configuration
+    TBCTL |= TBSSEL_1 +TBCLR;          // SMCLK, clear TBR, up mode
+    TBCCR0 = 0x3E80; // Count to 500ms
+    TBCTL |= MC_1 +TBIE;
+    TBCCTL0 |= CCIE + OUTMOD_7;
+
+
+
+}
 // Polling based Delay function
 void delay(unsigned int t)
 {  // t[msec]
@@ -281,14 +300,15 @@ __interrupt void PBs_handler(void)
     }
     else if (PBsArrIntPend & PB2)
     {
-        if (state == state2)
-        {
-            menuIndex = menuIndex + 1;
-            if(menuIndex>4){
-                menuIndex = 0;
-            }
-            //showMenu();
-        }
+           state = state3;
+//        if (state == state2)
+//        {
+//            menuIndex = menuIndex + 1;
+//            if(menuIndex>4){
+//                menuIndex = 0;
+//            }
+//            //showMenu();
+//        }
 
         PBsArrIntPend &= ~PB2;
     }
@@ -442,8 +462,10 @@ __interrupt void timerA_ISR(void)
 #pragma vector = TIMERB0_VECTOR
 __interrupt void timerB_ISR(void)
 {
+    DMA0CTL |= DMAREQ;
     TBCTL &= ~TBIFG; // Clear interrupt flag
-    BuzzerArrPort ^= Buzzer; //TODO Check if good
+    __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx, interrupts enabled
+    __bis_SR_register_on_exit(GIE); // Exit LPMx, interrupts enabled
 }
 
 

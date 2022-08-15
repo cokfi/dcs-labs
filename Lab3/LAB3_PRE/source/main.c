@@ -20,6 +20,7 @@ int keypadButton;
 int song1[SONG1_SIZE] ={2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,4,4,2,11,11,9,9,7,2,7,7,7,2,7,7,7,7,7,7,2,7,7,7,2,7,7,7,2,4,4,2,11,11,9,9,7}; // Uncle Moshe
 int song2[SONG2_SIZE] ={0,5,9,0,5,9,9, 7,7,7,7,9,10,10,10,12,10,9,7,9,9,9,9,5,7,9, 10,10,10,12,10,10, 9,5,9,12,12, 0,4,7,10,9,7,5,5,5,5}; // Our Auto
 int song3[SONG3_SIZE] ={4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0,4,7,4,4,7,4,12,11,9,7,5,2,5,9,7,7,5,4,2,0}; // Hands Up!
+int RGBmatrix[8] = {2,1,2,3,4,5,6,7};
 int recorder[RECORD_SIZE];
 int initState = 1;
 unsigned int countingIndexRecord = 32; //32 notes to play
@@ -71,6 +72,20 @@ void main(void)
 				clearLCD();
                                 //enable_interrupts();
 				break;
+	  	case state3:
+	  	  if (initState >0){
+                clearConfig();
+                sysConfigState3();
+                //P4OUT = 0x07;
+                initState = 0;
+	  	                  }
+	  	        enterLPM(lpm_mode);
+	  	        //TODO function;
+	  	         //leave state
+	  	        if (state!= state3){
+	  	            initState = 1;
+	  	            clearLCD();
+	  	        }
 		} // Switch
   } // While
 } // Main

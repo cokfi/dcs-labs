@@ -75,6 +75,36 @@ void disable_interrupts()
     _BIC_SR(GIE);
 }
 
+void readVoltage()
+{
+    /* 
+        ADC10CTL1:
+        - INCH_1   to choose P1 as input to read from
+        - CONSEQ_2 Repeat single channel mode
+        
+
+        ADC10CTL0:
+        - ADC10SHT_3 Sample&Hold Time (Not sure about it)
+        - ADC10ON    ADC is 'On' (Shocking!)
+        - MSC        ADC continous automatically after first trigger 
+        
+        -
+        Notes:
+        - ADC10 is disabled in clearConfig()
+        - To stop ADC reset the MSC
+
+    */
+
+    ADC10CTL1 = INCH_1  + CONSEQ_2;// P1 as input, repeat single channel
+    ADC10CTL0 = ADC10SHT_3 + ADC10ON + MSC + ADC10IE;
+    ADC10AE0 = 0x04;
+
+    for (;;)
+    {
+        ADC10CTL0 |= ENC + ADC10SC; // Enable and start conversions
+        __bis_SR_register(CPUOFF + GIE);   // LPM0, ADC10_ISR will force exit
+    }
+}
 
 
 //-------------------------------------------------------------
@@ -234,6 +264,7 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) Timer_A (void)
   __bic_SR_register_on_exit(LPM0_bits); // Exit LPMx
 }
 
+
 //-------------------------------------------------------------
 //           interrupt vector uartTx
 //-------------------------------------------------------------
@@ -388,4 +419,26 @@ else {                                     // expecting Delay to be chosen by th
         LPM4_EXIT; // must be called from ISR only
         break;
     }
+}
+
+
+//-------------------------------------------------------------
+// ADC10 interrupt service routine
+//-------------------------------------------------------------
+
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector=ADC10_VECTOR
+__interrupt void ADC10_ISR (void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(ADC10_VECTOR))) ADC10_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+    volatge[2] = ADC10MEM[9] + '0';
+    volatge[1] = ADC10MEM[8] + '0';
+    volatge[0] = ADC10MEM[7] + '0';
+
+    lcd_puts(voltage);
+    __bic_SR_register_on_exit(CPUOFF); // Clear CPUOFF bit from 0(SR)
 }
