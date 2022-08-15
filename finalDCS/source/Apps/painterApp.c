@@ -25,10 +25,6 @@ void painter()
         {
             sendMessage(BUTTON_PRESSED_MESSAGE);
         }
-        else
-        {
-            sendMessage(NO_COMMAND_MESSAGE);
-        }
 
         int request = getReceiveBuffer();
 //        if (request == 0)

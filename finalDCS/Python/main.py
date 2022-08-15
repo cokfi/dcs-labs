@@ -84,7 +84,7 @@ class Painter:
 
         self.UART.send('2')
         while True:
-            time.sleep(0.1)
+            # time.sleep(0.1)
             self.window.finalize()
             # self.window.bind('<Up>','-UP-')
             # self.window.bind('<Down>','-DOWN-')
@@ -96,7 +96,6 @@ class Painter:
             dy = 0
 
             command = self.UART.getCommand()
-            print(command)
             self.window.finalize()
             #print(command)
             if command == BUTTON_PRESSED_MESSAGE:
@@ -104,7 +103,7 @@ class Painter:
                 self.window.finalize()
             else:
                 dx, dy = self.UART.getJoystickRead()
-                print("x = ",dx,", y = ",dy)
+                # print("x = ",dx,", y = ",dy)
 
                 self.window.finalize()
 
@@ -150,7 +149,7 @@ class UART:
         line = self.receive()
         if (line != None):
             msg = chr(line[0])
-            time.sleep(0.5)
+            # time.sleep(0.5)
             self.send(ACKNOWLEDGE_MESSAGE)
             return msg
 
@@ -163,31 +162,33 @@ class UART:
         # self.send('d')
         line = self.receive()
         msg = int.from_bytes(line, "big", signed=True)  # format is int.from_bytes(byte array, endian, signed/unsigned)
-        time.sleep(0.05)
+        # time.sleep(0.05)
         return msg
 
     def getJoystickRead(self):
         self.send('x')
         x_bytes = self.receive()
-        time.sleep(0.1)
+        # time.sleep(0.1)
         self.send(ACKNOWLEDGE_MESSAGE)
         if x_bytes is None:
             x = 0
         else:
             bytestring = x_bytes.hex()
-            x = (int(bytestring,base = 16) -127)/127
+            x = (int(bytestring,base = 16) -127)/20
             # x = int.from_bytes(x_bytes, "big", signed=True)/100
-        time.sleep(0.25)
+        # time.sleep(0.25)
         #print("x= ", x)
         self.send('y')
         y_bytes = self.receive()
-        time.sleep(0.1)
+        if y_bytes is not None:
+            self.channel.reset_input_buffer()
+        # time.sleep(0.1)
         self.send(ACKNOWLEDGE_MESSAGE)
         if y_bytes is None:
             y = 0
         else:
             bytestring = y_bytes.hex()
-            y = (127 - int(bytestring, base=16)) / 127
+            y = (127 - int(bytestring, base=16)) /20
             # y = int.from_bytes(y_bytes, "big", signed=True)/100
             #print("y= ", y)
         return x, y
