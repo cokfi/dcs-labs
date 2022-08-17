@@ -9,6 +9,7 @@
 motorConfigured_flag = 0;
 start_pos_calibrated_flag = 0;
 angle_calibrated_flag = 0;
+static float nominal_angle = 0.88;
 //nominal_angle;
 //motor_current_angle;
 //full_circle_steps;
@@ -19,6 +20,10 @@ void configureMotor()
     configureMotorTimer();
     configurePushButton();
     motorConfigured_flag = 1;
+}
+float getNominalAngle()
+{
+    return nominal_angle;
 }
 
 int angleToSteps(float angle)
@@ -33,8 +38,6 @@ float stepsToAngle( steps)
 
 int moveMotorBySteps(int steps, char direction)
 {
-    if (!motorConfigured_flag)
-        configureMotor();
 
     int previous_pos = getCurrentPos();
     setSteps(steps);

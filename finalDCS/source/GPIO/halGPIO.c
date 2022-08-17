@@ -35,7 +35,8 @@ void enablePushButton()
 
 void configureMotorPorts()
 {
-    // TODO - Complete
+    P2SEL &= ~0x0f;
+    P2DIR |= 0x0f;
 }
 
 void configureJoystickPorts()

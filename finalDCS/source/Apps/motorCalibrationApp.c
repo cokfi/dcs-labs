@@ -20,7 +20,7 @@ void motorCalibration()
         calibrateMotorAngle();
     }
     sendMessage(full_circle_steps);
-    sendMessage(nominal_angle);
+    sendMessage(getNominalAngle());
     sendMessage(EXIT_MESSAGE);
     return;
 }

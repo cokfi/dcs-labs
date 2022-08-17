@@ -22,20 +22,35 @@ void motorControl()
     configureUart();
 
     unsigned int x, y;
-    int messages_check, joystick_angle;
+    int  joystick_angle;
+    char messages_check;
     while (1)
     {
-        messages_check = checkMessages();
+        messages_check = getReceiveBuffer();
         if (messages_check == EXIT_MESSAGE)
         {
             sendMessage(ACKNOWLEDGE_MESSAGE);
             return;
         }
         readJoysctickPos();
-        if (read_available_flag)
+            x = getVx();
+            y = getVy();
+        if (x>500 & y>500) // first quarter
         {
-            x = v_x;
-            y = v_y;
+            moveMotorByAngle(45);
+        }
+        else if (x<500 & y>500) // second
+        {
+            moveMotorByAngle(135);
+        }
+
+        else if(x<500 & y<500) // third
+        {
+            moveMotorByAngle(225);
+        }
+        else
+        {
+            moveMotorByAngle(315);
         }
 
         joystick_angle = xyToAngle(x, y);

@@ -14,7 +14,6 @@
 static int motorConfigured_flag;
 static int start_pos_calibrated_flag;
 static int angle_calibrated_flag;
-static float nominal_angle;
 static int motor_current_angle;
 static int full_circle_steps;
 
@@ -22,6 +21,8 @@ void configureMotor();
 int angleToSteps(float angle);
 float stepsToAngle(steps);
 int moveMotorBySteps(int steps, char direction);
+
+float getNominalAngle();
 
 void moveMotorByAngle(float dest_angle);
 
